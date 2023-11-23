@@ -1,22 +1,19 @@
 #include "pieces.h"
 
-const int CAPS_DIFF = 'a' - 'A'; // difference between a chars capital and lowercase versions
-
-Piece::Piece(const char icon, const bool isWhite)
-: icon{icon}, isWhite{isWhite} {}
+Piece::Piece(const bool isWhite): isWhite{isWhite} {}
 
 Piece::~Piece() {}
 
 bool Piece::pieceIsWhite() const {
-    return this->isWhite;
+    return isWhite;
 }
 
-void Piece::setPieceIcon(const char c) {
-    this->icon = c;
+PieceType Piece::getType() const {
+    return type;
 }
 
-char Piece::getPieceIcon() const {
-    return this->icon;
+void Piece::setType(PieceType pt) {
+    type = pt;
 }
 
 // *** unimplemented
@@ -29,27 +26,37 @@ bool Piece::capture(string pos) {
     return true;
 }
 
-// update a piece icon to caps if it is a white piece, otherwise do nothing
-static void modifyPieceIconForColor(Piece *p) {
-    if (p->pieceIsWhite()) { // make white icons capital letters
-        p->setPieceIcon(p->getPieceIcon() - CAPS_DIFF);
-    }
+EmptyPiece::EmptyPiece(): Piece(false) {
+    setType(PieceType::EMPTY);
 }
 
-Pawn::Pawn(const bool isWhite)
-: Piece{'p', isWhite} 
-{
-    modifyPieceIconForColor(this);
+King::King(const bool isWhite): Piece(isWhite) {
+    setType(PieceType::King);
 }
 
-Rook::Rook(const bool isWhite)
-: Piece{'r', isWhite} 
-{
-    modifyPieceIconForColor(this);
+Queen::Queen(const bool isWhite): Piece(isWhite) {
+    setType(PieceType::Queen);
+}
+
+Bishop::Bishop(const bool isWhite): Piece(isWhite) {
+    setType(PieceType::Bishop);
+}
+
+Rook::Rook(const bool isWhite): Piece(isWhite) {
+    setType(PieceType::Rook);
+}
+
+Knight::Knight(const bool isWhite): Piece(isWhite) {
+    setType(PieceType::Knight);
+}
+
+Pawn::Pawn(const bool isWhite): Piece(isWhite) {
+    setType(PieceType::Pawn);
 }
 
 ostream &operator<<(ostream &out, const Piece &p) {
-    string icon{p.getPieceIcon()};
+    // string icon{p.getPieceIcon()};
+    string icon = "X";
     out << icon;
     
     return out;

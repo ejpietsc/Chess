@@ -1,16 +1,22 @@
 // includes game interface
 
-#ifndef GAME
-#define GAME
+#ifndef GAME_H
+#define GAME_H
 
 #include "board.h"
 #include "pieces.h"
+#include "player.h"
 
 using namespace std;
 
+enum class GameState { Setup, Play, Check, Checkmate, Stalemate };
+
 class Game {
-    string gameState; // "Setup", "In-play", "_ is in check." "Checkmate! _ wins!", "Stalemate!"
+    GameState gameState = GameState::Setup;
     Board *gameBoard; // pointer to current gameboard
+    Player *player1;
+    Player *player2;
+    int nextPlay = 0;
 
     public:
     // create a new game

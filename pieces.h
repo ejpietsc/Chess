@@ -1,20 +1,22 @@
 // provides piece classes
 
-#ifndef PIECES
-#define PIECES
+#ifndef PIECES_H
+#define PIECES_H
 
 #include <string>
 
 using namespace std;
 
+enum class PieceType { EMPTY, King, Queen, Bishop, Rook, Knight, Pawn };
+
 // provides the piece ABC
 class Piece {
-    char icon; // char icon (i.e P for white pawn)
+    PieceType type = PieceType::EMPTY;
     bool isWhite; // true if piece is white
 
     public:
     // ctor
-    Piece(const char icon, const bool isWhite);
+    Piece(const bool isWhite);
 
     // dtor
     virtual ~Piece() = 0;
@@ -22,11 +24,9 @@ class Piece {
     // return isWhite bool
     bool pieceIsWhite() const;
 
-    // set piece's icon to c
-    void setPieceIcon(const char c);
+    PieceType getType() const;
 
-    // return piece's icon
-    char getPieceIcon() const;
+    void setType(PieceType pt);
 
     // attempt to move piece to pos (eg. "e4"), return true if success
     //  (UNIMPLEMENTED)
@@ -38,14 +38,39 @@ class Piece {
 
 };
 
-class Pawn final : public Piece {
+class EmptyPiece : public Piece {
     public:
-    Pawn(const bool isWhite);
+    EmptyPiece();
+};
+
+class King final : public Piece {
+    public:
+    King(const bool isWhite);
+};
+
+class Queen final : public Piece {
+    public:
+    Queen(const bool isWhite);
+};
+
+class Bishop final : public Piece {
+    public:
+    Bishop(const bool isWhite);
 };
 
 class Rook final : public Piece {
     public:
     Rook(const bool isWhite);
+};
+
+class Knight final : public Piece {
+    public:
+    Knight(const bool isWhite);
+};
+
+class Pawn final : public Piece {
+    public:
+    Pawn(const bool isWhite);
 };
 
 // ... more piece classes

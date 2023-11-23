@@ -1,7 +1,7 @@
 // provides board and tile classes
 
-#ifndef BOARD
-#define BOARD
+#ifndef BOARD_H
+#define BOARD_H
 
 #include "pieces.h"
 #include <iostream>
