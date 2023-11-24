@@ -6,9 +6,11 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <memory>
 #include "util.h"
 #include "pieces.h"
 #include "observer.h"
+#include "player.h"
 
 using namespace std;
 
@@ -16,9 +18,9 @@ using namespace std;
 class Board {
     vector<vector<Piece *>> board;
     GameState state;
-    Player *blackPlayer;
-    Player *whitePlayer;
-    Player *currPlayer;
+    unique_ptr<Player> blackPlayer;
+    unique_ptr<Player> whitePlayer;
+    Colour turn;
 
     public:
     // Ctor
@@ -35,9 +37,6 @@ class Board {
     // Dtor
     ~Board();
 
-    // Notify observers
-    void notifyObservers();
-
     // Change the pieces
     void initBoard();
     void addPiece(Position pos, PieceType pt, Colour col);
@@ -47,11 +46,14 @@ class Board {
     GameState getState();
     void setState(GameState state);
     Player *getPlayerByColour(Colour clr);
-    Player *getCurrPlayer();
+    Colour getTurn();
     Piece *getPiece(Position p);
+    void updateState();
 
     // General gameplay logic
     vector<Move> getValidMoves(Player &plr);
+    bool isPlayerMoveValid();
+
 };
 
 #endif

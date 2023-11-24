@@ -8,47 +8,65 @@
 
 using namespace std;
 
-class Player {
-    public:
-    Player();
+enum class PlayerType
+{
+    Human,
+    Computer
+};
 
+class Player
+{
+    Colour team;
+    PlayerType p;
+
+public:
+    Player(Colour team, PlayerType p);
+
+    virtual ~Player() = 0;
+
+    /* BIG 5 - Not needed given current implementation _______________________
+    !IF NEEDED LATER MAKE PROTECTED
     // Copy ctor and assignment operator
     Player(const Player& other);
     Player& operator=(const Player& other);
 
     // Move ctor and assignment operator
     Player(Player&& other);
-    Player& operator=(Player&& other);
-
-    virtual ~Player();
-
-    virtual Move getNextMove() = 0; // return next Move
-
+    Player& operator=(Player&& other); */
 };
 
-class Human final : public Player {
-
+class Human final : public Player
+{
+public:
+    Move getHumanMove(string inputLine);
 };
 
-class Computer : public Player {
-    virtual Move generateMove() = 0; // generate next move, to be overwritten by
-                                    // different level AI's 
+class Computer : public Player
+{
+    virtual Move generateMove(vector<Move> moves) = 0;
+
+public:
+    Move getComputerMove(); // NVI - calls generateMove()
 };
 
-class LevelOne final : public Computer {
-
+class LevelOne final : public Computer
+{
+    Move generateMove(vector<Move> moves) override; // random pick
 };
 
-class LevelTwo final : public Computer {
-
+class LevelTwo final : public Computer
+{
+    Move generateMove(vector<Move> moves) override; // prefers capture & checks
 };
 
-class LevelThree final : public Computer {
-
+class LevelThree final : public Computer
+{
+    Move generateMove(vector<Move> moves) override; // prefers avoiding capture, capture & checks
 };
 
-class LevelFour final : public Computer {
-
+class LevelFour final : public Computer
+{
+    Move generateMove(vector<Move> moves) override; // something sophisticated
 };
 
 #endif

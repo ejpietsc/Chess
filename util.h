@@ -7,14 +7,15 @@ using namespace std;
 
 enum class PieceType { King, Queen, Bishop, Rook, Knight, Pawn };
 enum class Colour { White, Black };
-enum class GameState { Setup, Play, Check, Checkmate, Stalemate };
+enum class GameState { Setup, Play, Check, Checkmate, Stalemate, CTRL_D };
 
 struct Position {
     int row, col;
 };
 
 struct Move {
-    Position position1, position2;
+    Position startPos, endPos;
+    bool captured;
 };
 
 #endif

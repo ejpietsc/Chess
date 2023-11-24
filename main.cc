@@ -1,7 +1,6 @@
-
 #include <iostream>
 #include <string>
-#include "game.h"
+#include "board.h"
 #include "util.h"
 
 using namespace std;
@@ -20,13 +19,11 @@ int main()
     {
         cin >> cmd;
         cin >> whitePlayer;
-        if (whitePlayer == "computer") {
+        if (whitePlayer == "computer")
+        {
             cin >> computerLvl;
         }
         cin >> blackPlayer;
         Board board;
-        
-
-
     }
 }
