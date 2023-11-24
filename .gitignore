@@ -1,3 +1,11 @@
 *.d
 *.o
 chess
+
+*.aux
+*.fdb*
+*.fls
+*.log
+*.out
+*.toc
+*.synctex*
