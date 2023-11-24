@@ -15,10 +15,7 @@
 
 using namespace std;
 
-enum class PieceType { King, Queen, Bishop, Rook, Knight, Pawn };
 enum class Colour { White, Black };
-enum class GameState { Setup, Play, Check, Checkmate, Stalemate, CTRL_D };
-enum class PlayerType { Human, Computer };
 
 struct Position {
     int row, col;

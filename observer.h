@@ -4,10 +4,10 @@
 #include "util.h"
 
 class Observer {
-  virtual void notify(Move& move, GameState state) = 0;
+  virtual void doNotify(Move& move, GameState state) = 0;
  public:
   // NVI - call notify
-  virtual void doNotify(Move& move, GameState state);
+  virtual void notify(Move& move, GameState state);
   virtual ~Observer() = default;
 };
 

@@ -6,6 +6,8 @@
 
 using namespace std;
 
+enum class GameState { Setup, Play, Check, Checkmate, Stalemate, CTRL_D };
+
 // class for the game board
 class Board {
     vector<vector<Piece *>> board;

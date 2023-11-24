@@ -7,6 +7,8 @@
 
 using namespace std;
 
+enum class PieceType { King, Queen, Bishop, Rook, Knight, Pawn };
+
 // Abstract Subject
 class Piece
 {
