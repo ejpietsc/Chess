@@ -20,7 +20,7 @@ class Player
     PlayerType p;
 
     // Computer overwrites to call generateMove, Human overwrites to call getHumanMove()
-    virtual Move getNextMove() = 0;
+    virtual Move doGetNextMove() = 0;
 
 public:
     Player(Colour team, PlayerType p);
@@ -28,7 +28,7 @@ public:
     virtual ~Player() = 0;
     
     // NVI - call getNextMove()
-    Move doGetNextMove();
+    Move getNextMove();
 
     /* BIG 5 - Not needed given current implementation _______________________
     !IF NEEDED LATER MAKE PROTECTED
@@ -47,7 +47,7 @@ class Human final : public Player
     Move getHumanMove();
 
     // call getHumanMove()
-    Move getNextMove() override;
+    Move doGetNextMove() override;
 };
 
 class Computer : public Player
@@ -56,7 +56,7 @@ class Computer : public Player
     virtual Move generateMove(vector<Move> moves) = 0;
 
     // call generateMove()
-    Move getNextMove() override;
+    Move doGetNextMove() override;
 };
 
 class LevelOne final : public Computer
