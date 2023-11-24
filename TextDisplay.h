@@ -6,9 +6,10 @@
 class TextDisplay : public Observer
 {
     std::vector<std::vector<char>> theDisplay;
+    void doNotify(Move& move, GameState state) override;
+    
 public:
     TextDisplay();
-    void doNotify(Move& move, GameState state) override;
     void updateMsg(ostream& out, string msg);
     void displayScoreBoard(ostream& out);
     ~TextDisplay();

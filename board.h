@@ -38,7 +38,7 @@ class Board {
 
     // Change the pieces
     void initBoard();
-    void addPiece(Position pos, PieceType pt, Colour col);
+    void addPiece(Position pos, PieceType pt, Colour clr);
     void delPiece(Position pos);
 
     // Getters and setters
@@ -46,7 +46,7 @@ class Board {
     void setState(GameState state);
     Player *getPlayerByColour(Colour clr);
     Colour getTurn();
-    Piece *getPiece(Position p);
+    Piece *getPiece(Position pos);
     void updateState();
 
     // General gameplay logic

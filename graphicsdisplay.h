@@ -7,9 +7,10 @@
 class GraphicsDisplay : public Observer
 {
     Xwindow window;
+    void doNotify(Move& move, GameState state) override;
+
 public:
     GraphicsDisplay();
-    void doNotify(Move& move, GameState state) override;
     ~GraphicsDisplay();
 
     friend std::ostream &operator<<(std::ostream &out, const GraphicsDisplay &td);

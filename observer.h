@@ -6,8 +6,8 @@
 class Observer {
   virtual void doNotify(Move& move, GameState state) = 0;
  public:
-  // NVI - call notify
-  virtual void notify(Move& move, GameState state);
+  // NVI - call doNotify
+  void notify(Move& move, GameState state);
   virtual ~Observer() = default;
 };
 
