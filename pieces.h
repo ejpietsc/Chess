@@ -26,7 +26,7 @@ public:
 
     /* checks:
     1. conform to piece move  2. vacant or has enemy */
-    vector<Position> getMoves(Piece &p); // NVI - doGetMoves
+    vector<Position> getMoves(Piece &p); // NVI - call doGetMoves
 
     void makeMove(Position &landingPos);
 
