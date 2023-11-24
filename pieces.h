@@ -94,8 +94,8 @@ public:
 
 class Pawn final : public Piece
 {
-public:
     vector<Position> doGetMoves(Piece &p) override;
+public:
     Pawn(Colour colour, int x, int y) : Piece{PieceType::Pawn, colour, Position{x, y}} {}
 };
 
