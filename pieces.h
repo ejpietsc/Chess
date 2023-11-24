@@ -12,13 +12,13 @@ enum class PieceType { King, Queen, Bishop, Rook, Knight, Pawn };
 // Abstract Subject
 class Piece
 {
+    virtual vector<Position> doGetMoves(Piece &p) = 0;
+
 protected:
     vector<Observer *> observers; // textDisplay & GraphicsDisplay
     PieceType type;               //! may need to be in concretePieces
     Colour colour;
     Position pos;
-
-    virtual vector<Position> doGetMoves(Piece &p) = 0;
 
 public:
     // Ctor
@@ -59,44 +59,44 @@ public:
 
 class King final : public Piece
 {
+    vector<Position> doGetMoves(Piece &p) override;
 public:
     King(Colour colour, int x, int y) : Piece{PieceType::King, colour, Position{x, y}} {}
-    vector<Position> doGetMoves(Piece &p) override;
 };
 
 class Queen final : public Piece
 {
+    vector<Position> doGetMoves(Piece &p) override;
 public:
     Queen(Colour colour, int x, int y) : Piece{PieceType::Queen, colour, Position{x, y}} {}
-    vector<Position> doGetMoves(Piece &p) override;
 };
 
 class Bishop final : public Piece
 {
+    vector<Position> doGetMoves(Piece &p) override;
 public:
     Bishop(Colour colour, int x, int y) : Piece{PieceType::Bishop, colour, Position{x, y}} {}
-    vector<Position> doGetMoves(Piece &p) override;
 };
 
 class Rook final : public Piece
 {
+    vector<Position> doGetMoves(Piece &p) override;
 public:
     Rook(Colour colour, int x, int y) : Piece{PieceType::Rook, colour, Position{x, y}} {}
-    vector<Position> doGetMoves(Piece &p) override;
 };
 
 class Knight final : public Piece
 {
+    vector<Position> doGetMoves(Piece &p) override;
 public:
     Knight(Colour colour, int x, int y) : Piece{PieceType::Knight, colour, Position{x, y}} {}
-    vector<Position> doGetMoves(Piece &p) override;
 };
 
 class Pawn final : public Piece
 {
 public:
-    Pawn(Colour colour, int x, int y) : Piece{PieceType::Pawn, colour, Position{x, y}} {}
     vector<Position> doGetMoves(Piece &p) override;
+    Pawn(Colour colour, int x, int y) : Piece{PieceType::Pawn, colour, Position{x, y}} {}
 };
 
 #endif
