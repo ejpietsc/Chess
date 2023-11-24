@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "vector": "cpp",
+        "map": "cpp",
+        "iosfwd": "cpp"
+    }
+}
