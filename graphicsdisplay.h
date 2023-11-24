@@ -1,8 +1,7 @@
 #ifndef GRAPHICSDISPLAY_H
 #define GRAPHICSDISPLAY_H
 
-#include <vector>
-#include "observer.h"
+#include "util.h"
 #include "window.h"
 
 class GraphicsDisplay : public Observer

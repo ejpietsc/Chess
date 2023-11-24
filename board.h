@@ -2,15 +2,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <iostream>
-#include <map>
-#include <string>
-#include <vector>
-#include <memory>
 #include "util.h"
-#include "pieces.h"
-#include "observer.h"
-#include "player.h"
 
 using namespace std;
 
@@ -21,6 +13,11 @@ class Board {
     unique_ptr<Player> blackPlayer;
     unique_ptr<Player> whitePlayer;
     Colour turn;
+
+    // Determine GameStates
+    bool isPlayerInCheck(Player &plr);
+    bool isPlayerCheckmated(Player &plr);
+    bool isPlayerStalemated(Player &plr);
 
     public:
     // Ctor
@@ -53,6 +50,9 @@ class Board {
     // General gameplay logic
     vector<Move> getValidMoves(Player &plr);
     bool isPlayerMoveValid();
+    // Check if plr is checkmated or stalemated, 
+    //  if this returns true, main can then call getState() to determine what to do
+    bool didPlayerLose(Player &plr);
 
 };
 

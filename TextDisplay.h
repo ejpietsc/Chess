@@ -1,8 +1,6 @@
 #ifndef TEXTDISPLAY_H
 #define TEXTDISPLAY_H
 
-#include <vector>
-#include "observer.h"
 #include "util.h"
 
 class TextDisplay : public Observer

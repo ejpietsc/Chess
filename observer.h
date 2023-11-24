@@ -1,10 +1,13 @@
 #ifndef OBSERVER_H
 #define OBSERVER_H
+
 #include "util.h"
 
 class Observer {
- public:
   virtual void notify(Move& move, GameState state) = 0;
+ public:
+  // NVI - call notify
+  virtual void doNotify(Move& move, GameState state);
   virtual ~Observer() = default;
 };
 

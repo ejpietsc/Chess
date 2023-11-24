@@ -4,9 +4,6 @@
 #define PIECES_H
 
 #include "util.h"
-#include "observer.h"
-#include <string>
-#include <vector>
 
 using namespace std;
 
@@ -42,7 +39,7 @@ public:
     int getCol() const;
 
     void setType(PieceType pt);
-    void setColour();
+    void setColour(Colour clr);
     void setPosition(int r, int c);
     // void setRow() const;
     // void setCol() const;

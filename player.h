@@ -4,25 +4,21 @@
 #define PLAYER_H
 
 #include "util.h"
-#include <string>
 
 using namespace std;
-
-enum class PlayerType
-{
-    Human,
-    Computer
-};
 
 class Player
 {
     Colour team;
     PlayerType p;
+    virtual Move getNextMove() = 0;
 
 public:
     Player(Colour team, PlayerType p);
-
     virtual ~Player() = 0;
+
+    // NVI - call getNextMove(), which Human/Computer overwrites
+    Move doGetNextMove();
 
     /* BIG 5 - Not needed given current implementation _______________________
     !IF NEEDED LATER MAKE PROTECTED
@@ -37,16 +33,14 @@ public:
 
 class Human final : public Player
 {
-public:
+    // call this in the overwritten getNextMove() method
     Move getHumanMove(string inputLine);
 };
 
 class Computer : public Player
 {
+    // call this in the overwritten getNextMove() method
     virtual Move generateMove(vector<Move> moves) = 0;
-
-public:
-    Move getComputerMove(); // NVI - calls generateMove()
 };
 
 class LevelOne final : public Computer
