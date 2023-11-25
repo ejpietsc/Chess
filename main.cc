@@ -35,21 +35,6 @@ static bool isLowerCaseString(const string &s)
     return true;
 }
 
-// return a Position given a tile string (eg. "a4" -> Position{0, 3})
-//  return Position{-1, -1} for invalid input
-static Position strToPosition(const string &s)
-{
-    const int len = s.length();
-    if (len != 2)
-    {
-        return Position{-1, -1};
-    }
-
-    const int col = s[0] - 'a';
-    const int row = s[1] - '1';
-    return Position{row, col};
-}
-
 // given a string (eg. "computer4"), return the appropriate PlayerType
 //  or NULL_PLR if invalid input
 static PlayerType strToPlayer(const string &s)
@@ -217,7 +202,7 @@ static bool enterSetupMode(Board &gameBoard)
                 continue;
             }
 
-            Position piecePosition = strToPosition(lowerOption2);
+            Position piecePosition{lowerOption2};
             if (piecePosition.col < 0 || piecePosition.col >= 8 || piecePosition.row < 0 || piecePosition.row >= 8)
             {
                 cout << "Invalid position input! Try again" << endl;
@@ -238,7 +223,7 @@ static bool enterSetupMode(Board &gameBoard)
             }
 
             const string lowerOption1 = toLowerString(option1);
-            Position pos = strToPosition(lowerOption1);
+            Position pos{lowerOption1};
             if (pos.col < 0 || pos.col >= 8 || pos.row < 0 || pos.row >= 8)
             {
                 cout << INVALID_COMMAND << endl;
@@ -354,7 +339,17 @@ static void playGame(Board &gameBoard)
                 }
                 else if (lowerCmdPrefix == "move")
                 {
-                    gameBoard.move();
+                    try {
+                        const bool succ = gameBoard.move();
+                        if (!succ) 
+                        {
+                            cout << "Invalid move! Try again" << endl;
+                        }
+                    }
+                    catch(...) // handle fatal read error
+                    {
+                        return;
+                    }
                 }
                 else
                 {
@@ -409,7 +404,7 @@ int main()
         // handle fatal read fail
         if (cin.fail())
         {
-            outScore(0, 0);
+            outScore(0, 0); // we don't have enough info to create a gameBoard, output dummy values
             return;
         }
 

@@ -22,7 +22,7 @@ class Player
     PlayerType p;
 
     // Computer overwrites to call generateMove, Human overwrites to call getHumanMove()
-    virtual Move doGetNextMove() = 0;
+    virtual Move doGetNextMove() const = 0;
 
 public:
     Player(Colour team, PlayerType p);
@@ -30,47 +30,56 @@ public:
     virtual ~Player() = default;
 
     // NVI - call getNextMove()
-    Move getNextMove();
+    Move getNextMove() const;
     Colour getColour() const;
     PlayerType getPlayerType() const;
 };
 
 class Human final : public Player
 {
+    Human(Colour team, PlayerType p);
+
     // get next move from input and return it as a Move object
-    Move getHumanMove();
+    //  this will throw if it fails to read from cin - handled in main
+    Move getHumanMove() const;
 
     // call getHumanMove()
-    Move doGetNextMove() override;
+    Move doGetNextMove() const override;
 };
 
 class Computer : public Player
 {
+    Computer(Colour team, PlayerType p);
+
+    // generate a vector of valid moves to pass to generateMove
+    virtual vector<Move> generateValidMoves() const = 0;
+
     // generate a Move object using algorithm depending on Computer level
-    virtual Move generateMove(vector<Move> moves) = 0;
+    //  pass it generateValidMoves() rvalue
+    virtual Move generateMove(vector<Move> &&moves) const = 0;
 
     // call generateMove()
-    Move doGetNextMove() override;
+    Move doGetNextMove() const override;
 };
 
 class LevelOne final : public Computer
 {
-    Move generateMove(vector<Move> moves) override; // random pick
+    Move generateMove(vector<Move> &&moves) const override; // random pick
 };
 
 class LevelTwo final : public Computer
 {
-    Move generateMove(vector<Move> moves) override; // prefers capture & checks
+    Move generateMove(vector<Move> &&moves) const override; // prefers capture & checks
 };
 
 class LevelThree final : public Computer
 {
-    Move generateMove(vector<Move> moves) override; // prefers avoiding capture, capture & checks
+    Move generateMove(vector<Move> &&moves) const override; // prefers avoiding capture, capture & checks
 };
 
 class LevelFour final : public Computer
 {
-    Move generateMove(vector<Move> moves) override; // something sophisticated
+    Move generateMove(vector<Move> &&moves) const override; // something sophisticated
 };
 
 /* BIG 5 - Not needed given current implementation _____________________
