@@ -34,7 +34,7 @@ static bool isLowerCaseString(const string &s) {
 
 // return a Position given a tile string (eg. "a4" -> Position{0, 3})
 //  return Position{-1, -1} for invalid input
-static Position positionStringToPosition(const string &s) {
+static Position strToPosition(const string &s) {
     const int len = s.length();
     if (len != 2) {
         return Position{-1, -1};
@@ -47,7 +47,7 @@ static Position positionStringToPosition(const string &s) {
 
 // given a string (eg. "computer4"), return the appropriate PlayerType
 //  or NULL_PLR if invalid input
-static PlayerType playerStringToPlayerType(const string &s) {
+static PlayerType strToPlayer(const string &s) {
     const string lowerS = toLowerString(s);
 
     if (lowerS == "human") {
@@ -68,8 +68,8 @@ static PlayerType playerStringToPlayerType(const string &s) {
 }
 
 // given a string (eg. "computer4"), return the appropriate PlayerType
-//  or NULL_PLR if invalid input
-static PieceType pieceStringToPieceType(const string &s) {
+//  or NULL_PLR if invalid input strToPieceType
+static PieceType strToPieceType(const string &s) {
     const string lowerS = toLowerString(s);
 
     if (lowerS == "k") {
@@ -90,8 +90,8 @@ static PieceType pieceStringToPieceType(const string &s) {
 }
 
 // given a string (eg. "computer4"), return the associated computer level
-//  or 0 if it does not have a level
-static int playerStringToLevel(const string &s) {
+//  or 0 if it does not have a level strToComputerLvl
+static int strToComputerLvl(const string &s) {
     int level;
     const int len = s.length();
 
@@ -113,7 +113,7 @@ static int playerStringToLevel(const string &s) {
 
 // determine if move is within the validMoves vector
 static bool moveIsValid(Move &move, vector<Move> &validMoves) {
-    for (auto childMove : validMoves) {
+    for (const auto& childMove : validMoves) {
         if (move == childMove) {
             return true;
         }
@@ -182,7 +182,7 @@ static bool enterSetupMode(Board &gameBoard) {
 
             // determine piece type to add
             const string lowerOption1 = toLowerString(option1);
-            PieceType pieceType = pieceStringToPieceType(lowerOption1);
+            PieceType pieceType = strToPieceType(lowerOption1);
 
             // handle invalid input
             if (pieceType == PieceType::NULL_PIECE) {
@@ -373,8 +373,8 @@ int main()
                 continue;
             }
 
-            PlayerType whitePt = playerStringToPlayerType(whitePlayer);
-            PlayerType blackPt = playerStringToPlayerType(blackPlayer);
+            PlayerType whitePt = strToPlayer(whitePlayer);
+            PlayerType blackPt = strToPlayer(blackPlayer);
 
             // handle invalid input
             if (whitePt == PlayerType::NULL_PLR || blackPt == PlayerType::NULL_PLR) {
@@ -382,8 +382,8 @@ int main()
             }
 
             // retrieve Player level
-            whiteLevel = playerStringToLevel(whitePlayer);
-            blackLevel = playerStringToLevel(blackPlayer);
+            whiteLevel = strToComputerLvl(whitePlayer);
+            blackLevel = strToComputerLvl(blackPlayer);
 
             // create board and commence main gameplay loop
             Board gameBoard{whitePt, whiteLevel, blackPt, blackLevel};

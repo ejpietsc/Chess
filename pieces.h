@@ -7,7 +7,7 @@
 
 using namespace std;
 
-// ! added NULL_PIECE for return purposes in pieceStringToPieceType() function in main.cc
+// ! added NULL_PIECE for return purposes in strToPieceType() function in main.cc
 enum class PieceType { King, Queen, Bishop, Rook, Knight, Pawn, NULL_PIECE };
 enum class Colour { White, Black };
 
