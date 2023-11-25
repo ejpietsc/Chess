@@ -9,6 +9,7 @@ using namespace std;
 
 // ! added NULL_PIECE for return purposes in pieceStringToPieceType() function in main.cc
 enum class PieceType { King, Queen, Bishop, Rook, Knight, Pawn, NULL_PIECE };
+enum class Colour { White, Black };
 
 // Abstract Subject
 class Piece
@@ -16,13 +17,14 @@ class Piece
     virtual vector<Position> doGetMoves(Piece &p) = 0;
 
 protected:
-    vector<Observer *> observers; // textDisplay & GraphicsDisplay
-    PieceType type;               //! may need to be in concretePieces
+    PieceType type;
     Colour colour;
     Position pos;
 
 public:
-    // Ctor
+    // Default Ctor
+    Piece();
+    // ctor
     Piece(PieceType type, Colour colour, Position pos);
 
     /* checks:
@@ -30,10 +32,6 @@ public:
     vector<Position> getMoves(Piece &p); // NVI - call doGetMoves
 
     void makeMove(Position &landingPos);
-
-    // Observer Pattern methods
-    void notifyObservers() const;
-    void attach(Observer *o);
 
     // Getters and setters
     PieceType getType() const;

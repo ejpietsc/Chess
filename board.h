@@ -6,16 +6,17 @@
 
 using namespace std;
 
-enum class GameState { Setup, Play, Check, Checkmate, Stalemate, CTRL_D };
+enum class GameState { Setup, Play, Check, Checkmate, Stalemate };
 
 // class for the game board
 //   ! Board now persists between games
 class Board {
-    vector<vector<Piece *>> board;
-    GameState state;
-    unique_ptr<Player> blackPlayer;
+    vector<Observer *> observers; // textDisplay & GraphicsDisplay
+    vector<vector<unique_ptr<Piece>>> board; // 2D vector
+    GameState state; // ! discuss
+    unique_ptr<Player> blackPlayer; // ! TO BE DISCUSSED
     unique_ptr<Player> whitePlayer;
-    Colour turn;
+    Player* currPlayer; // non-ownership
     float whiteScore, blackScore = 0;
 
     // Determine GameStates
@@ -40,6 +41,10 @@ class Board {
 
     // Dtor
     ~Board();
+
+    // Observer Pattern methods
+    void notifyObservers() const;
+    void attach(Observer *o);
 
     // Change the pieces
     void initBoard();

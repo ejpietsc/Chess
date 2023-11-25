@@ -1,9 +1,8 @@
 # Questions
-
-- I think Board should be the subject
+- I think Board should be the subject - RESOLVED
 - or at the very least if we have piece subjects, the board doesn't
-need to observe pieces
-- Move may need to store capture info
+need to observe pieces 
+- Move may need to store capture info - TBD
 - does notify take state or does the controller (main) communicate it
 - return Move or Move&
 

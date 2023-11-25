@@ -27,20 +27,12 @@ class Player
 public:
     Player(Colour team, PlayerType p);
 
-    virtual ~Player() = 0;
-    
+    virtual ~Player() = default;
+
     // NVI - call getNextMove()
     Move getNextMove();
-
-    /* BIG 5 - Not needed given current implementation _______________________
-    !IF NEEDED LATER MAKE PROTECTED
-    // Copy ctor and assignment operator
-    Player(const Player& other);
-    Player& operator=(const Player& other);
-
-    // Move ctor and assignment operator
-    Player(Player&& other);
-    Player& operator=(Player&& other); */
+    Colour getColour() const;
+    PlayerType getPlayerType() const;
 };
 
 class Human final : public Player
@@ -80,5 +72,15 @@ class LevelFour final : public Computer
 {
     Move generateMove(vector<Move> moves) override; // something sophisticated
 };
+
+/* BIG 5 - Not needed given current implementation _____________________
+!IF NEEDED LATER MAKE PROTECTED
+// Copy ctor and assignment operator
+Player(const Player& other);
+Player& operator=(const Player& other);
+
+// Move ctor and assignment operator
+Player(Player&& other);
+Player& operator=(Player&& other); */
 
 #endif
