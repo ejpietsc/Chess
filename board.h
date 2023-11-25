@@ -43,6 +43,8 @@ class Board {
 
     // Change the pieces
     void initBoard();
+    // ! Note: addPiece/delPiece are responsible for confirming that
+    // !    pos is a valid Position (it will be taken from input)
     void addPiece(Position pos, PieceType pt, Colour clr);
     void delPiece(Position pos);
 

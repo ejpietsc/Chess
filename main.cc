@@ -32,7 +32,7 @@ static bool isLowerCaseString(const string &s) {
     return true;
 }
 
-// return a position given a tile string (eg. "a4" -> Position{0, 3})
+// return a Position given a tile string (eg. "a4" -> Position{0, 3})
 static Position positionStringToPosition(const string &s) {
     const int len = s.length();
     if (len != 2) {
@@ -47,7 +47,7 @@ static Position positionStringToPosition(const string &s) {
 // given a string (eg. "computer4"), return the appropriate PlayerType
 //  or NULL_PLR if invalid input
 static PlayerType playerStringToPlayerType(const string &s) {
-    string lowerS = toLowerString(s);
+    const string lowerS = toLowerString(s);
 
     if (lowerS == "human") {
         return PlayerType::Human;
@@ -65,7 +65,7 @@ static PlayerType playerStringToPlayerType(const string &s) {
 // given a string (eg. "computer4"), return the appropriate PlayerType
 //  or NULL_PLR if invalid input
 static PieceType pieceStringToPieceType(const string &s) {
-    string lowerS = toLowerString(s);
+    const string lowerS = toLowerString(s);
 
     if (lowerS == "k") {
         return PieceType::King;
@@ -89,7 +89,7 @@ static PieceType pieceStringToPieceType(const string &s) {
 static int playerStringToLevel(const string &s) {
     int level;
     const int len = s.length();
-    string levelStr = s.substr(len - 1, len);
+    const string levelStr = s.substr(len - 1, len);
 
     stringstream ss{levelStr};
     ss >> level;
@@ -140,7 +140,7 @@ static bool enterSetupMode(Board &gameBoard) {
             continue;
         }
 
-        string lowerCmd = toLowerString(cmd);
+        const string lowerCmd = toLowerString(cmd);
 
         if (lowerCmd == "done") {
             if (gameBoard.boardIsValid()) {
@@ -160,7 +160,7 @@ static bool enterSetupMode(Board &gameBoard) {
                 continue;
             }
 
-            string lowerOption2 = toLowerString(option2);
+            const string lowerOption2 = toLowerString(option2);
             
             // determine piece colour to add
             Colour pieceColour;
@@ -171,7 +171,7 @@ static bool enterSetupMode(Board &gameBoard) {
             }
 
             // determine piece type to add
-            string lowerOption1 = toLowerString(option1);
+            const string lowerOption1 = toLowerString(option1);
             PieceType pieceType = pieceStringToPieceType(lowerOption1);
 
             // handle invalid input
@@ -193,7 +193,7 @@ static bool enterSetupMode(Board &gameBoard) {
                 continue;
             }
 
-            string lowerOption1 = toLowerString(option1);
+            const string lowerOption1 = toLowerString(option1);
             Position pos = positionStringToPosition(lowerOption1);
             gameBoard.delPiece(pos);
         }
@@ -207,7 +207,7 @@ static bool enterSetupMode(Board &gameBoard) {
                 continue;
             }
 
-            string lowerOption1 = toLowerString(option1);
+            const string lowerOption1 = toLowerString(option1);
 
             if (lowerOption1 == "white") {
                 gameBoard.setTurn(Colour::White);
@@ -249,7 +249,7 @@ static void playGame(Board &gameBoard) {
                 continue;
             }
 
-            string lowerCmd = toLowerString(cmd);
+            const string lowerCmd = toLowerString(cmd);
             
             if (lowerCmd == "start") { // get out of this loop and progress to gameplay
                 break;
@@ -279,7 +279,7 @@ static void playGame(Board &gameBoard) {
                     return;
                 }
 
-                string lowerCmdPrefix = toLowerString(cmdPrefix);
+                const string lowerCmdPrefix = toLowerString(cmdPrefix);
                 if (lowerCmdPrefix == "resign") {
                     gameBoard.incrementScore(otherClr, WIN_POINTS);
                     break;
@@ -342,7 +342,7 @@ int main()
             continue;
         }
 
-        string lowerCmd = toLowerString(cmd);
+        const string lowerCmd = toLowerString(cmd);
 
         if (lowerCmd == "game") { // try to obtain sufficient info to start the game
             ss >> whitePlayer >> blackPlayer;
