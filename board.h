@@ -47,6 +47,7 @@ class Board {
     void attach(Observer *o);
 
     // Change the pieces
+    // ! note: initBoard needs to set its own GameState to ::Play
     void initBoard();
     void addPiece(Position pos, PieceType pt, Colour clr);
     void delPiece(Position pos);

@@ -4,6 +4,7 @@ using namespace std;
 
 static const float WIN_POINTS = 1;
 static const float STALEMATE_POINTS = 0.5;
+static const string INVALID_COMMAND = "Invalid command read! Try again";
 
 // convert string to be fully lowercase (eg. "HElLo" -> "hello")
 static string toLowerString(const string &s)
@@ -50,7 +51,7 @@ static Position strToPosition(const string &s)
 }
 
 // given a string (eg. "computer4"), return the appropriate PlayerType
-//  or NULL_PLR if invalid input 
+//  or NULL_PLR if invalid input
 static PlayerType strToPlayer(const string &s)
 {
     const string lowerS = toLowerString(s);
@@ -138,9 +139,9 @@ static int strToComputerLvl(const string &s)
 }
 
 // enable Board setup mode
-// TODO (complete this)
 static bool enterSetupMode(Board &gameBoard)
 {
+    gameBoard.setState(GameState::Setup);
     string curLine;
     string cmd, option1, option2;
 
@@ -151,6 +152,7 @@ static bool enterSetupMode(Board &gameBoard)
         // handle fatal read fail
         if (cin.fail())
         {
+            gameBoard.setState(GameState::Play);
             return false; // indicate that setup failed
         }
 
@@ -160,7 +162,7 @@ static bool enterSetupMode(Board &gameBoard)
         // handle read fail (1)
         if (ss.fail())
         {
-            cout << "Invalid command read!" << endl;
+            cout << INVALID_COMMAND << endl;
             continue;
         }
 
@@ -170,11 +172,12 @@ static bool enterSetupMode(Board &gameBoard)
         {
             if (gameBoard.boardIsValid())
             {
+                gameBoard.setState(GameState::Play);
                 return true; // indicate that setup succeeded
             }
             else
             {
-                cout << "Invalid board setup!" << endl;
+                cout << INVALID_COMMAND << endl;
                 continue;
             }
         }
@@ -186,7 +189,7 @@ static bool enterSetupMode(Board &gameBoard)
             // handle read fail (2)
             if (ss.fail())
             {
-                cout << "Invalid command read!" << endl;
+                cout << INVALID_COMMAND << endl;
                 continue;
             }
 
@@ -210,14 +213,14 @@ static bool enterSetupMode(Board &gameBoard)
             // handle invalid input
             if (pieceType == PieceType::NULL_PIECE)
             {
-                cout << "Invalid piece type!" << endl;
+                cout << "Invalid piece type! Try again" << endl;
                 continue;
             }
 
             Position piecePosition = strToPosition(lowerOption2);
             if (piecePosition.col < 0 || piecePosition.col >= 8 || piecePosition.row < 0 || piecePosition.row >= 8)
             {
-                cout << "Invalid position input!" << endl;
+                cout << "Invalid position input! Try again" << endl;
                 continue;
             }
             gameBoard.addPiece(piecePosition, pieceType, pieceColour);
@@ -230,7 +233,7 @@ static bool enterSetupMode(Board &gameBoard)
             // handle read fail (3)
             if (ss.fail())
             {
-                cout << "Invalid command read!" << endl;
+                cout << INVALID_COMMAND << endl;
                 continue;
             }
 
@@ -238,7 +241,7 @@ static bool enterSetupMode(Board &gameBoard)
             Position pos = strToPosition(lowerOption1);
             if (pos.col < 0 || pos.col >= 8 || pos.row < 0 || pos.row >= 8)
             {
-                cout << "Invalid position input!" << endl;
+                cout << INVALID_COMMAND << endl;
                 continue;
             }
 
@@ -252,7 +255,7 @@ static bool enterSetupMode(Board &gameBoard)
             // handle read fail (4)
             if (ss.fail())
             {
-                cout << "Invalid command read!" << endl;
+                cout << INVALID_COMMAND << endl;
                 continue;
             }
 
@@ -300,7 +303,7 @@ static void playGame(Board &gameBoard)
             // handle read fail
             if (ss.fail())
             {
-                cout << "Invalid command read!" << endl;
+                cout << INVALID_COMMAND << endl;
                 continue;
             }
 
@@ -324,16 +327,16 @@ static void playGame(Board &gameBoard)
             }
         }
 
-        // TODO vvv COMPLETE THIS vvv
         while (true)
         { // this loop iterates each player to process their moves until the game ends
-            Colour currClr = gameBoard.getTurn();
-            Colour otherClr = getOtherColour(currClr);
-            Player &currPlr = *(gameBoard.getPlayerByColour(currClr));
+            Player &currPlr = *(gameBoard.getCurrPlayer());
+            Colour currClr = currPlr.getColour();
+            Colour otherClr = currClr == Colour::White ? Colour::Black : Colour::White;
 
             GameState state = gameBoard.getState();
-            if (state == GameState::Play)
-            { // nobody is in check, stalemate, etc - normal game operations
+
+            if (state == GameState::Play || state == GameState::Check)
+            { // normal game operations, the player can move
                 string cmdPrefix;
                 cin >> cmdPrefix;
 
@@ -357,12 +360,36 @@ static void playGame(Board &gameBoard)
                 {
                     string trash;
                     getline(cin, trash); // flush current line
-                    cout << "Invalid command read!" << endl;
+                    cout << INVALID_COMMAND << endl;
                     continue;
                 }
             }
+
+            else if (state == GameState::Checkmate)
+            { // current player is checkmated
+                gameBoard.incrementScore(otherClr, WIN_POINTS);
+                break;
+            }
+            else if (state == GameState::Stalemate)
+            {
+                gameBoard.incrementScore(currClr, STALEMATE_POINTS);
+                gameBoard.incrementScore(otherClr, STALEMATE_POINTS);
+                break;
+            }
+            else {
+                cout << "Invalid GameState! Restarting..." << endl;
+                break;
+            }
         }
     }
+}
+
+// output formatted score
+static void outScore(const float whiteScore, const float blackScore) 
+{
+    cout << "Final Score:\n";
+    cout << "White: " << whiteScore << "\n";
+    cout << "Black: " << blackScore << endl;
 }
 
 int main()
@@ -382,6 +409,7 @@ int main()
         // handle fatal read fail
         if (cin.fail())
         {
+            outScore(0, 0);
             return;
         }
 
@@ -391,7 +419,7 @@ int main()
         // handle read fail
         if (ss.fail())
         {
-            cout << "Invalid command read!" << endl;
+            cout << INVALID_COMMAND << endl;
             continue;
         }
 
@@ -404,7 +432,7 @@ int main()
             // handle read fail
             if (ss.fail())
             {
-                cout << "Invalid command read!" << endl;
+                cout << INVALID_COMMAND << endl;
                 continue;
             }
 
@@ -436,8 +464,5 @@ int main()
     const float whiteScore = gameBoard.getScore(Colour::White);
     const float blackScore = gameBoard.getScore(Colour::Black);
 
-    std::cout << "Final Score:\n";
-    std::cout << "White: " << whiteScore << "\n";
-    std::cout << "Black: " << blackScore << endl;
+    outScore(whiteScore, blackScore);
 }
-
