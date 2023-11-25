@@ -105,6 +105,8 @@ static void playGame(Board &gameBoard) {
 
             GameState state = gameBoard.getState();
             if (state == GameState::Play) { // nobody is in check, stalemate, etc - normal game operations
+                
+                // TODO vvv the below logic should be ideally wrapped in a Board.getMove() method vvv
                 Move move = currPlr.getNextMove(); // prompt plr for move if human, or generate one if computer
                 
                 if (move == RESIGNATION_MOVE) { // player resigns
@@ -124,6 +126,7 @@ static void playGame(Board &gameBoard) {
                         gameBoard.setTurn(otherClr);
                     }
                 }
+                // TODO ^^^ the above logic should be ideally wrapped in a Board.getMove() method ^^^
             
             }
         }

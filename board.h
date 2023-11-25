@@ -51,6 +51,10 @@ class Board {
     void setState(GameState state);
     Player *getPlayerByColour(Colour clr);
     Colour getTurn();
+    // ! [added] 1 new method (for switching between player turns in main)
+    // TODO discuss if setTurn is necessary - ideally board has a getMove() method that calls
+    // TODO   the current player's getMove() method AND AFTERWARDS sets the next player's turn upon
+    // TODO   a SUCCESSFUL turn, instead of main doing this
     void setTurn(Colour clr);
     Piece *getPiece(Position pos);
     void updateState();
@@ -59,6 +63,9 @@ class Board {
     void incrementScore(Colour clr, float addTo); // add addTo to player's score
 
     // General gameplay logic
+    // ! [added] 1 new method
+    bool boardIsValid() const; // for setup mode, returns true if board has 
+                                // valid configuration (1 king, pawns not on 1st/8th rows)
     vector<Move> getValidMoves(Player &plr);
     bool isPlayerMoveValid();
     // Check if plr is checkmated or stalemated, 
