@@ -19,3 +19,8 @@ it prefers based on lvl
 - piece doesn't need to have a ptr to board of know anything abt board
 - Big 5 not needed for pieces
 - utils is prob bad design - low cohesion
+
+# Changes
+- Changed Board to be the subject instead of Pieces - say a Piece moves, we can redraw the 
+Piece by calling Piece.notify(). But how would we tell the display to draw the blank tile over
+where the Piece used to be? There is no Piece there to notify
