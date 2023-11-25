@@ -7,7 +7,8 @@
 
 using namespace std;
 
-enum class PieceType { King, Queen, Bishop, Rook, Knight, Pawn };
+// ! added NULL_PIECE for return purposes in pieceStringToPieceType() function in main.cc
+enum class PieceType { King, Queen, Bishop, Rook, Knight, Pawn, NULL_PIECE };
 
 // Abstract Subject
 class Piece

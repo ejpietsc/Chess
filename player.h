@@ -8,7 +8,7 @@
 
 using namespace std;
 
-// NULL_PLR added to return from stringToPlayerType in main.cc
+// ! NULL_PLR added to return from stringToPlayerType in main.cc
 enum class PlayerType
 {
     Human,

@@ -7,20 +7,69 @@ using namespace std;
 static const float WIN_POINTS = 1;
 static const float STALEMATE_POINTS = 0.5;
 
+// convert string to be fully lowercase (eg. "HElLo" -> "hello")
+static string toLowerString(const string &s) {
+    const int len = s.length();
+    string newStr = s;
+
+    for (int i = 0; i < len; ++i) {
+        newStr[i] = tolower(s[i]);
+    }
+
+    return newStr;
+}
+
+// determine if a string is lowercase (that is, it has no uppercase characters)
+static bool isLowerCaseString(const string &s) {
+    const int len = s.length();
+
+    for (int i = 0; i < len; ++i) {
+        if (tolower(s[i]) != s[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 // given a string (eg. "computer4"), return the appropriate PlayerType
 //  or NULL_PLR if invalid input
-static PlayerType playerStringToPlayerType(const string &s) {
-    if (s == "human") {
+static PlayerType playerStringToPlayerType(string &s) {
+    string lowerS = toLowerString(s);
+
+    if (lowerS == "human") {
         return PlayerType::Human;
 
     } else {
         const int len = s.length();
-        if (s.substr(0, len - 1) == "computer") {
+        if (lowerS.substr(0, len - 1) == "computer") {
             return PlayerType::Computer;
         }
     }
 
     return PlayerType::NULL_PLR;
+}
+
+// given a string (eg. "computer4"), return the appropriate PlayerType
+//  or NULL_PLR if invalid input
+static PieceType pieceStringToPieceType(string &s) {
+    string lowerS = toLowerString(s);
+
+    if (lowerS == "k") {
+        return PieceType::King;
+    } else if (lowerS == "q") {
+        return PieceType::Queen;
+    } else if (lowerS == "r") {
+        return PieceType::Rook;
+    } else if (lowerS == "n") {
+        return PieceType::Knight;
+    } else if (lowerS == "b") {
+        return PieceType::Bishop;
+    } else if (lowerS == "p") {
+        return PieceType::Pawn;
+    }
+
+    return PieceType::NULL_PIECE;
 }
 
 // given a string (eg. "computer4"), return the associated computer level
@@ -57,9 +106,96 @@ static Colour getOtherColour(Colour clr) {
 }
 
 // perform Board setup
-// TODO
+// TODO (complete this)
 static void enterSetupMode(Board &gameBoard) {
+    string curLine;
+    string cmd, option1, option2;
 
+    while (true) {
+        getline(cin, curLine);
+
+        // handle fatal read fail
+        // ! does this need to communicate to the playGame function to also return??
+        if (cin.fail()) {
+            return;
+        }
+
+        stringstream ss{curLine};
+        ss >> cmd;
+
+        // handle read fail (1)
+        if (ss.fail()) {
+            continue;
+        }
+
+        string lowerCmd = toLowerString(cmd);
+
+        if (lowerCmd == "done") {
+            return;
+        }
+        
+        if (lowerCmd == "+") { // + K e1 command
+            ss >> option1 >> option2;
+
+            // handle read fail (2)
+            if (ss.fail()) {
+                continue;
+            }
+
+            string lowerOption2 = toLowerString(option2);
+            
+            // determine piece colour to add
+            Colour pieceColour;
+            if (isLowerCaseString(option1)) {
+                pieceColour = Colour::Black;
+            } else {
+                pieceColour = Colour::White;
+            }
+
+            // determine piece type to add
+            string lowerOption1 = toLowerString(option1);
+            PieceType pieceType = pieceStringToPieceType(lowerOption1);
+
+            // handle invalid input
+            if (pieceType == PieceType::NULL_PIECE) {
+                continue;
+            }
+            // TODO vvv
+
+        }
+
+        if (lowerCmd == "-") { // - e1 command
+            ss >> option1;
+
+            // handle read fail (3)
+            if (ss.fail()) {
+                continue;
+            }
+
+            string lowerOption1 = toLowerString(option1);
+            // TODO vvv
+
+        }
+
+        if (lowerCmd == "=") { // = colour command
+            ss >> option1;
+
+            // handle read fail (4)
+            if (ss.fail()) {
+                continue;
+            }
+
+            string lowerOption1 = toLowerString(option1);
+
+            if (lowerOption1 == "white") {
+                gameBoard.setTurn(Colour::White);
+            } else if (lowerOption1 == "black") {
+                gameBoard.setTurn(Colour::Black);
+            }
+        }
+    }
+
+    
 }
 
 // run the general game loop to play a chess game given the Board to play on
@@ -89,12 +225,15 @@ static void playGame(Board &gameBoard) {
             if (ss.fail()) {
                 continue;
             }
+
+            string lowerCmd = toLowerString(cmd);
             
-            if (cmd == "start") { // get out of this loop and progress to gameplay
+            if (lowerCmd == "start") { // get out of this loop and progress to gameplay
                 break;
 
-            } else if (cmd == "setup") {
+            } else if (lowerCmd == "setup") { // enter setup then progress to gameplay
                 enterSetupMode(gameBoard);
+                break;
             }
         }
 
@@ -154,8 +293,15 @@ int main()
 
         stringstream ss{curLine};
         ss >> cmd;
+        
+        // handle read fail
+        if (ss.fail()) {
+            continue;
+        }
 
-        if (cmd == "game") { // try to obtain sufficient info to start the game
+        string lowerCmd = toLowerString(cmd);
+
+        if (lowerCmd == "game") { // try to obtain sufficient info to start the game
             ss >> whitePlayer >> blackPlayer;
 
             // handle read fail
