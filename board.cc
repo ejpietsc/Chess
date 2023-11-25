@@ -2,16 +2,51 @@
 
 using namespace std;
 
-// TODO
-Board::Board(Colour team1, PlayerType p1, Colour team2, PlayerType p2):
-//! TO DO
-    // board{<vector<unique_ptr<Piece>>[8]} 
-    state{GameState::Play}, blackPlayer{make_unique<Player>(team1, p1)},
-    whitePlayer{make_unique<Player>(team2, p2)}, currPlayer{whitePlayer.get()} {
-        for (auto& ptr:board) {
-
+// determine if move is within the validMoves vector
+static bool moveIsValid(Move &move, vector<Move> &validMoves)
+{
+    for (const auto &childMove : validMoves)
+    {
+        if (move == childMove)
+        {
+            return true;
         }
+    }
+    return false;
 }
 
+Colour Board::getOtherColour(Colour clr) const
+{
+    return (clr == Colour::White ? Colour::Black : Colour::White);
+}
 
+//todo update: called right after move cmd is read
+bool Board::move()
+{
+    Move move = currPlayer->getNextMove();
+
+    vector<Move> validMoves = getValidMoves(*currPlayer);
+
+    if (moveIsValid(move, validMoves))
+    {
+        Piece *pieceToMove = getPiece(move.startPos);
+
+        if (pieceToMove != nullptr)
+        { // a valid move has occurred!
+            pieceToMove->makeMove(move.endPos);
+            setTurn(getOtherColour(currPlayer->getColour()));
+        }
+    } // else do ntg here
+}
+
+// TODO
+// Board::Board(Colour team1, PlayerType p1, Colour team2, PlayerType p2):
+// //! TO DO
+//     // board{<vector<unique_ptr<Piece>>[8]}
+//     state{GameState::Play}, blackPlayer{make_unique<Player>(team1, p1)},
+//     whitePlayer{make_unique<Player>(team2, p2)}, currPlayer{whitePlayer.get()} {
+//         for (auto& ptr:board) {
+
+//         }
+// }
 

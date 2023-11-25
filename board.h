@@ -48,16 +48,17 @@ class Board {
 
     // Change the pieces
     void initBoard();
-    // ! Note: addPiece/delPiece are responsible for confirming that
-    // !    pos is a valid Position (it will be taken from input)
     void addPiece(Position pos, PieceType pt, Colour clr);
     void delPiece(Position pos);
 
-    // Getters and setters
-    GameState getState();
+    // getters 
+    GameState getState() const;
+    Player *getPlayerByColour(Colour clr) const;
+    Player *getCurrPlayer() const;
+    Colour getOtherColour(Colour clr) const;
+    // setters
     void setState(GameState state);
-    Player *getPlayerByColour(Colour clr);
-    Colour getTurn();
+
     // ! [added] 1 new method (for switching between player turns in main, and for setup '= color' command)
     // TODO discuss - ideally board has a getMove() method that calls
     // TODO   the current player's getMove() method AND AFTERWARDS sets the next player's turn upon
@@ -70,6 +71,7 @@ class Board {
     void incrementScore(Colour clr, float addTo); // add addTo to player's score
 
     // General gameplay logic
+    bool move();
     // ! [added] 1 new method
     bool boardIsValid() const; // for setup mode, returns true if board has 
                                 // valid configuration (1 king, pawns not on 1st/8th rows)
