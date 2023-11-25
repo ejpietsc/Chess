@@ -21,6 +21,7 @@ Colour Board::getOtherColour(Colour clr) const
 }
 
 //todo update: called right after move cmd is read
+// ! modified fn to return bool
 bool Board::move()
 {
     Move move = currPlayer->getNextMove();
@@ -35,8 +36,11 @@ bool Board::move()
         { // a valid move has occurred!
             pieceToMove->makeMove(move.endPos);
             setTurn(getOtherColour(currPlayer->getColour()));
+            return true;
         }
     } // else do ntg here
+
+    return false;
 }
 
 // TODO
