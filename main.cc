@@ -310,6 +310,10 @@ static void playGame(Board &gameBoard)
                     return;
                 }
             }
+            else 
+            {
+                cout << INVALID_COMMAND << endl;
+            }
         }
 
         while (true)
@@ -447,6 +451,10 @@ int main()
             // we have all the information we need - we never need to return to this loop
             //  therefore break the loop and start the main game loop
             break;
+        }
+        else 
+        {
+            cout << INVALID_COMMAND << endl;
         }
     }
 
