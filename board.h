@@ -27,7 +27,7 @@ class Board {
     void clearBoard();
 
     public:
-    // Ctor
+    // ! [updated] Ctor
     Board(PlayerType whitePt, const int whiteLevel, PlayerType blackPt, const int blackLevel);
 
     // Copy ctor and assignment operator
@@ -54,7 +54,7 @@ class Board {
     void setTurn(Colour clr);
     Piece *getPiece(Position pos);
     void updateState();
-    // ! [added] new setters and getters
+    // ! [added] 2 new setters and getters
     float getScore(Colour clr);
     void incrementScore(Colour clr, float addTo); // add addTo to player's score
 

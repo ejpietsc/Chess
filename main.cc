@@ -152,7 +152,7 @@ int main()
         stringstream ss{curLine};
         ss >> cmd;
 
-        if (cmd == "game") { // start the game
+        if (cmd == "game") { // try to obtain sufficient info to start the game
             ss >> whitePlayer >> blackPlayer;
 
             // handle read fail
@@ -165,7 +165,7 @@ int main()
 
             // handle invalid input
             if (whitePt == PlayerType::NULL_PLR || blackPt == PlayerType::NULL_PLR) {
-                continue; // return to beginning of outer loop
+                continue; // try again -> return to beginning of outer loop
             }
 
             // retrieve Player level
