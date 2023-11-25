@@ -33,6 +33,7 @@ static bool isLowerCaseString(const string &s) {
 }
 
 // return a Position given a tile string (eg. "a4" -> Position{0, 3})
+//  return Position{-1, -1} for invalid input
 static Position positionStringToPosition(const string &s) {
     const int len = s.length();
     if (len != 2) {
@@ -89,6 +90,11 @@ static PieceType pieceStringToPieceType(const string &s) {
 static int playerStringToLevel(const string &s) {
     int level;
     const int len = s.length();
+
+    if (len < 1) { // prevent bad input from throwing on s.substr
+        return 0;
+    }
+
     const string levelStr = s.substr(len - 1, len);
 
     stringstream ss{levelStr};
@@ -112,7 +118,7 @@ static bool moveIsValid(Move &move, vector<Move> &validMoves) {
     return false;
 }
 
-// given a clr, get the OTHER colour (white -> black, black -> white)
+// given a clr, get the OTHER colour (White -> Black, Black -> White)
 static Colour getOtherColour(Colour clr) {
     return (clr == Colour::White ? Colour::Black : Colour::White);
 }
@@ -264,6 +270,7 @@ static void playGame(Board &gameBoard) {
             }
         }
 
+        // TODO vvv COMPLETE THIS vvv
         while (true) { // this loop iterates each player to process their moves until the game ends
             Colour currClr = gameBoard.getTurn();
             Colour otherClr = getOtherColour(currClr);
