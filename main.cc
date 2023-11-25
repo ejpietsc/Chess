@@ -40,8 +40,8 @@ static Position positionStringToPosition(const string &s) {
         return Position{-1, -1};
     }
     
-    int col = s[0] - 'a';
-    int row = s[1] - '1';
+    const int col = s[0] - 'a';
+    const int row = s[1] - '1';
     return Position{row, col};
 }
 
@@ -55,6 +55,10 @@ static PlayerType playerStringToPlayerType(const string &s) {
 
     } else {
         const int len = s.length();
+        if (len < 1) {
+            return PlayerType::NULL_PLR;
+        }
+
         if (lowerS.substr(0, len - 1) == "computer") {
             return PlayerType::Computer;
         }
@@ -187,6 +191,10 @@ static bool enterSetupMode(Board &gameBoard) {
             }
 
             Position piecePosition = positionStringToPosition(lowerOption2);
+            if (piecePosition.col < 0 || piecePosition.col >= 8 || piecePosition.row < 0 || piecePosition.row >= 8) {
+                cout << "Invalid position input!" << endl;
+                continue;
+            }
             gameBoard.addPiece(piecePosition, pieceType, pieceColour);
         }
 
@@ -201,6 +209,11 @@ static bool enterSetupMode(Board &gameBoard) {
 
             const string lowerOption1 = toLowerString(option1);
             Position pos = positionStringToPosition(lowerOption1);
+            if (pos.col < 0 || pos.col >= 8 || pos.row < 0 || pos.row >= 8) {
+                cout << "Invalid position input!" << endl;
+                continue;
+            }
+
             gameBoard.delPiece(pos);
         }
 
