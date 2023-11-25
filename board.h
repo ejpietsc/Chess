@@ -51,8 +51,8 @@ class Board {
     void setState(GameState state);
     Player *getPlayerByColour(Colour clr);
     Colour getTurn();
-    // ! [added] 1 new method (for switching between player turns in main)
-    // TODO discuss if setTurn is necessary - ideally board has a getMove() method that calls
+    // ! [added] 1 new method (for switching between player turns in main, and for setup '= color' command)
+    // TODO discuss - ideally board has a getMove() method that calls
     // TODO   the current player's getMove() method AND AFTERWARDS sets the next player's turn upon
     // TODO   a SUCCESSFUL turn, instead of main doing this
     void setTurn(Colour clr);

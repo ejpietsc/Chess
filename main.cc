@@ -32,9 +32,21 @@ static bool isLowerCaseString(const string &s) {
     return true;
 }
 
+// return a position given a tile string (eg. "a4" -> Position{0, 3})
+static Position positionStringToPosition(const string &s) {
+    const int len = s.length();
+    if (len != 2) {
+        return Position{-1, -1};
+    }
+    
+    int col = s[0] - 'a';
+    int row = s[1] - '1';
+    return Position{row, col};
+}
+
 // given a string (eg. "computer4"), return the appropriate PlayerType
 //  or NULL_PLR if invalid input
-static PlayerType playerStringToPlayerType(string &s) {
+static PlayerType playerStringToPlayerType(const string &s) {
     string lowerS = toLowerString(s);
 
     if (lowerS == "human") {
@@ -52,7 +64,7 @@ static PlayerType playerStringToPlayerType(string &s) {
 
 // given a string (eg. "computer4"), return the appropriate PlayerType
 //  or NULL_PLR if invalid input
-static PieceType pieceStringToPieceType(string &s) {
+static PieceType pieceStringToPieceType(const string &s) {
     string lowerS = toLowerString(s);
 
     if (lowerS == "k") {
@@ -107,7 +119,7 @@ static Colour getOtherColour(Colour clr) {
 
 // perform Board setup
 // TODO (complete this)
-static void enterSetupMode(Board &gameBoard) {
+static bool enterSetupMode(Board &gameBoard) {
     string curLine;
     string cmd, option1, option2;
 
@@ -115,9 +127,8 @@ static void enterSetupMode(Board &gameBoard) {
         getline(cin, curLine);
 
         // handle fatal read fail
-        // ! does this need to communicate to the playGame function to also return??
         if (cin.fail()) {
-            return;
+            return false; // indicate that setup failed
         }
 
         stringstream ss{curLine};
@@ -125,13 +136,19 @@ static void enterSetupMode(Board &gameBoard) {
 
         // handle read fail (1)
         if (ss.fail()) {
+            cout << "Invalid command read!" << endl;
             continue;
         }
 
         string lowerCmd = toLowerString(cmd);
 
         if (lowerCmd == "done") {
-            return;
+            if (gameBoard.boardIsValid()) {
+                return true; // indicate that setup succeeded
+            } else {
+                cout << "Invalid board setup!" << endl;
+                continue;
+            }
         }
         
         if (lowerCmd == "+") { // + K e1 command
@@ -139,6 +156,7 @@ static void enterSetupMode(Board &gameBoard) {
 
             // handle read fail (2)
             if (ss.fail()) {
+                cout << "Invalid command read!" << endl;
                 continue;
             }
 
@@ -158,10 +176,12 @@ static void enterSetupMode(Board &gameBoard) {
 
             // handle invalid input
             if (pieceType == PieceType::NULL_PIECE) {
+                cout << "Invalid piece type!" << endl;
                 continue;
             }
-            // TODO vvv
 
+            Position piecePosition = positionStringToPosition(lowerOption2);
+            gameBoard.addPiece(piecePosition, pieceType, pieceColour);
         }
 
         if (lowerCmd == "-") { // - e1 command
@@ -169,12 +189,13 @@ static void enterSetupMode(Board &gameBoard) {
 
             // handle read fail (3)
             if (ss.fail()) {
+                cout << "Invalid command read!" << endl;
                 continue;
             }
 
             string lowerOption1 = toLowerString(option1);
-            // TODO vvv
-
+            Position pos = positionStringToPosition(lowerOption1);
+            gameBoard.delPiece(pos);
         }
 
         if (lowerCmd == "=") { // = colour command
@@ -182,6 +203,7 @@ static void enterSetupMode(Board &gameBoard) {
 
             // handle read fail (4)
             if (ss.fail()) {
+                cout << "Invalid command read!" << endl;
                 continue;
             }
 
@@ -231,9 +253,13 @@ static void playGame(Board &gameBoard) {
             if (lowerCmd == "start") { // get out of this loop and progress to gameplay
                 break;
 
-            } else if (lowerCmd == "setup") { // enter setup then progress to gameplay
-                enterSetupMode(gameBoard);
-                break;
+            } else if (lowerCmd == "setup") { // enter setup then progress to gameplay if setup succeeded
+                bool succ = enterSetupMode(gameBoard);
+                if (succ) {
+                    break;
+                } else { // fatal read fail occured in enterSetupMode
+                    return;
+                }
             }
         }
 

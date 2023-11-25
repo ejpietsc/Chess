@@ -22,6 +22,6 @@ it prefers based on lvl
 
 # Changes
 - Changed Board to be the subject instead of Pieces - say a Piece moves, we can redraw the Piece by calling Piece.notify(). But how would we tell the display to draw the blank tile over where the Piece used to be? There is no Piece there to notify
-- Added PlayerType::NULL_PLR to return from the playerStringToPlayerType method in main.cc when invalid input is given
+- Added PlayerType::NULL_PLR to return from the playerStringToPlayerType method in main.cc when invalid input is given (same reasoning for adding NULL_PIECE)
 - Made Board persist between games instead of being destroyed and recreated. This allowed us to keep track of score in the Board instead of in main
     - with this, we had to add whiteScore and blackScore private fields to Board, in addition to public setters/getters
