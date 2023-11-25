@@ -117,7 +117,7 @@ static Colour getOtherColour(Colour clr) {
     return (clr == Colour::White ? Colour::Black : Colour::White);
 }
 
-// perform Board setup
+// enable Board setup mode
 // TODO (complete this)
 static bool enterSetupMode(Board &gameBoard) {
     string curLine;
@@ -245,6 +245,7 @@ static void playGame(Board &gameBoard) {
 
             // handle read fail
             if (ss.fail()) {
+                cout << "Invalid command read!" << endl;
                 continue;
             }
 
@@ -270,28 +271,43 @@ static void playGame(Board &gameBoard) {
 
             GameState state = gameBoard.getState();
             if (state == GameState::Play) { // nobody is in check, stalemate, etc - normal game operations
-                
-                // TODO vvv the below logic should be ideally wrapped in a Board.getMove() method vvv
-                Move move = currPlr.getNextMove(); // prompt plr for move if human, or generate one if computer
-                
-                if (move == RESIGNATION_MOVE) { // player resigns
+                string cmdPrefix;
+                cin >> cmdPrefix;
+
+                // handle fatal read error
+                if (cin.fail()) {
+                    return;
+                }
+
+                string lowerCmdPrefix = toLowerString(cmdPrefix);
+                if (lowerCmdPrefix == "resign") {
                     gameBoard.incrementScore(otherClr, WIN_POINTS);
                     break;
-                }
-                
-                vector<Move> validMoves = gameBoard.getValidMoves(currPlr);
 
-                if (moveIsValid(move, validMoves)) {
-                    Position &startPos = move.startPos;
-                    Position &endPos = move.endPos;
-                    Piece *pieceToMove = gameBoard.getPiece(startPos);
+                } else if (lowerCmdPrefix == "move") {
+                    // TODO vvv the below logic should be ideally wrapped in a Board.getMove() method vvv
+                    Move move = currPlr.getNextMove(); // prompt plr for move if human, or generate one if computer
+                    
+                    vector<Move> validMoves = gameBoard.getValidMoves(currPlr);
 
-                    if (pieceToMove != nullptr) { // a valid move has occurred!
-                        pieceToMove->makeMove(endPos);
-                        gameBoard.setTurn(otherClr);
+                    if (moveIsValid(move, validMoves)) {
+                        Position &startPos = move.startPos;
+                        Position &endPos = move.endPos;
+                        Piece *pieceToMove = gameBoard.getPiece(startPos);
+
+                        if (pieceToMove != nullptr) { // a valid move has occurred!
+                            pieceToMove->makeMove(endPos);
+                            gameBoard.setTurn(otherClr);
+                        }
                     }
+                    // TODO ^^^ the above logic should be ideally wrapped in a Board.getMove() method ^^^
+                
+                } else {
+                    string trash;
+                    getline(cin, trash); // flush current line
+                    cout << "Invalid command read!" << endl;
+                    continue;
                 }
-                // TODO ^^^ the above logic should be ideally wrapped in a Board.getMove() method ^^^
             
             }
         }
@@ -322,6 +338,7 @@ int main()
         
         // handle read fail
         if (ss.fail()) {
+            cout << "Invalid command read!" << endl;
             continue;
         }
 
@@ -332,6 +349,7 @@ int main()
 
             // handle read fail
             if (ss.fail()) {
+                cout << "Invalid command read!" << endl;
                 continue;
             }
 

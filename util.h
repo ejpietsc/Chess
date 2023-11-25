@@ -21,6 +21,7 @@ struct Move; // forward-declaration
 
 enum class Colour { White, Black };
 
+// 0 based coordinates ( eg. "a1" becomes (0, 0) )
 struct Position {
     int row, col;
 
@@ -38,8 +39,5 @@ struct Move {
         this->endPos == other.endPos && this->captured == other.captured);
     }
 };
-
-// if a player resigns, return this move
-const extern Move RESIGNATION_MOVE = Move{{-1, -1}, {-1, -1}, false};
 
 #endif
