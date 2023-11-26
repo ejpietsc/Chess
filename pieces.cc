@@ -9,7 +9,7 @@ Piece::Piece(PieceType type, Colour colour, Position pos)
 
 vector<Position> Piece::getMoves() const
 {
-    return this->doGetMoves(p);
+    return this->doGetMoves();
 }
 
 void Piece::setPosition(int r, int c) 
