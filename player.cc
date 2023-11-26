@@ -39,12 +39,12 @@ Move Human::getHumanMove() const
     // handle read fail
     if (ss.fail())
     {
-        return Move{{-1, -1}, {-1, -1}, false}; // return a trash move that getValidMoves will not contain
+        return Move{{-1, -1}, {-1, -1}}; // return a trash move that getValidMoves will not contain
     }
 
     Position startPos{start};
     Position endPos{end};
-    // ! bool captured???
+
     return Move{startPos, endPos};
 }
 

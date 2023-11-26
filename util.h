@@ -57,11 +57,9 @@ struct Position {
 
 struct Move {
     Position startPos, endPos;
-    bool captured;
 
     bool operator==(const Move &other) {
-        return (this->startPos == other.startPos && 
-        this->endPos == other.endPos && this->captured == other.captured);
+        return (this->startPos == other.startPos && this->endPos == other.endPos);
     }
 };
 
