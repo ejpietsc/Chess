@@ -47,16 +47,20 @@ class Human final : public Player
     Move doGetNextMove() const override;
 };
 
+//! ADDED LVL FIELD
 class Computer : public Player
 {
-    Computer(Colour team, PlayerType p);
-
+    protected:
+    int lvl;
     // generate a vector of valid moves to pass to generateMove
     virtual vector<Move> generateValidMoves() const = 0;
 
     // generate a Move object using algorithm depending on Computer level
     //  pass it generateValidMoves() rvalue
     virtual Move generateMove(vector<Move> &&moves) const = 0;
+    public:
+    Computer(Colour team, PlayerType p, int lvl);
+    int getLvl() const;
 
     // call generateMove()
     Move doGetNextMove() const override;

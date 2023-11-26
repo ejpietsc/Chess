@@ -25,8 +25,7 @@ public:
     // ctor
     Piece(PieceType type, Colour colour, Position pos);
 
-    /* checks:
-    1. conform to piece move  2. vacant or has enemy */
+    /* checks: conform to piece move*/
     vector<Position> getMoves() const; // NVI - call doGetMoves
 
     void makeMove(Position &landingPos);
@@ -39,7 +38,7 @@ public:
 
     void setType(PieceType pt);
     void setColour(Colour clr);
-    void setPosition(int r, int c);
+    void setPosition(int c, int r);
     // void setRow() const;
     // void setCol() const;
 
@@ -58,42 +57,42 @@ class King final : public Piece
 {
     vector<Position> doGetMoves() const override;
 public:
-    King(Colour colour, int x, int y) : Piece{PieceType::King, colour, Position{x, y}} {}
+    King(Colour colour, int c, int r) : Piece{PieceType::King, colour, Position{c, r}} {}
 };
 
 class Queen final : public Piece
 {
     vector<Position> doGetMoves() const override;
 public:
-    Queen(Colour colour, int x, int y) : Piece{PieceType::Queen, colour, Position{x, y}} {}
+    Queen(Colour colour, int c, int r) : Piece{PieceType::Queen, colour, Position{c, r}} {}
 };
 
 class Bishop final : public Piece
 {
     vector<Position> doGetMoves() const override;
 public:
-    Bishop(Colour colour, int x, int y) : Piece{PieceType::Bishop, colour, Position{x, y}} {}
+    Bishop(Colour colour, int c, int r) : Piece{PieceType::Bishop, colour, Position{c, r}} {}
 };
 
 class Rook final : public Piece
 {
     vector<Position> doGetMoves() const override;
 public:
-    Rook(Colour colour, int x, int y) : Piece{PieceType::Rook, colour, Position{x, y}} {}
+    Rook(Colour colour, int c, int r) : Piece{PieceType::Rook, colour, Position{c, r}} {}
 };
 
 class Knight final : public Piece
 {
     vector<Position> doGetMoves() const override;
 public:
-    Knight(Colour colour, int x, int y) : Piece{PieceType::Knight, colour, Position{x, y}} {}
+    Knight(Colour colour, int c, int r) : Piece{PieceType::Knight, colour, Position{c, r}} {}
 };
 
 class Pawn final : public Piece
 {
     vector<Position> doGetMoves() const override;
 public:
-    Pawn(Colour colour, int x, int y) : Piece{PieceType::Pawn, colour, Position{x, y}} {}
+    Pawn(Colour colour, int c, int r) : Piece{PieceType::Pawn, colour, Position{c, r}} {}
 };
 
 #endif

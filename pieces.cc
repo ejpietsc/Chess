@@ -2,7 +2,7 @@
 
 using namespace std;
 
-// TODO
+//! UPDATE LOGIC TO BE (COLUMN, ROW)
 
 Piece::Piece(PieceType type, Colour colour, Position pos)
 : type(type), colour{colour}, pos{pos} {}
@@ -79,7 +79,7 @@ vector<Position> Queen::doGetMoves() const {
 
     // entire row
     for (int i = 0 - row; i <= 7 - row; ++i) {
-        Position p{row + i, col};
+         p{row + i, col};
         addPosToVec(this->pos, p, vec);
     }
 

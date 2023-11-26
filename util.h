@@ -29,24 +29,25 @@ pair<int, int> strToCoords(const string &s)
 
     const int col = s[0] - 'a';
     const int row = s[1] - '1';
-    return make_pair(row, col);
+    return make_pair(col, row);
 }
 
 // 0 based coordinates ( eg. "a1" becomes (0, 0) )
+//! (column, row) not the opposite
 struct Position {
-    int row, col;
+    int col, row;
 
     Position() = default;
 
     // ctor with coord ints
-    Position(const int row, const int col)
-    : row{row}, col{col} {}
+    Position(const int col, const int row)
+    : col{col}, row{row} {}
 
     // ctor with a pos string (eg. "e4")
     Position(const string &pos) {
         pair<int, int> p = strToCoords(pos);
-        this->row = p.first;
-        this->col = p.second;
+        this->col = p.first;
+        this->row = p.second;
     }
 
     bool operator==(const Position &other) {

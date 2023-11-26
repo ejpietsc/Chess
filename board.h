@@ -6,16 +6,16 @@
 
 using namespace std;
 
-enum class GameState { Setup, Play, Check, Checkmate, Stalemate };
+enum class GameState { Setup, Play, Check, Checkmate, Stalemate, NA };
 
 // class for the game board
 //   ! Board now persists between games
 class Board {
-    vector<Observer *> observers; // textDisplay & GraphicsDisplay
+    vector<unique_ptr<Observer>> observers; // textDisplay & GraphicsDisplay
     vector<vector<unique_ptr<Piece>>> board; // 2D vector
     GameState state; // ! discuss
-    unique_ptr<Player> blackPlayer; // ! TO BE DISCUSSED
     unique_ptr<Player> whitePlayer;
+    unique_ptr<Player> blackPlayer; //* player is abstract - must be ptr
     Player* currPlayer; // non-ownership
     float whiteScore, blackScore = 0;
 
@@ -28,8 +28,8 @@ class Board {
     void clearBoard();
 
     public:
-    // ! [updated] Ctor
-    Board(PlayerType whitePt, const int whiteLevel, PlayerType blackPt, const int blackLevel);
+    Board();
+    Board(PlayerType whitePl, const int whiteLevel, PlayerType blackPl, const int blackLevel);
 
     // Copy ctor and assignment operator
     Board(const Board& other);
@@ -44,7 +44,7 @@ class Board {
 
     // Observer Pattern methods
     void notifyObservers() const;
-    void attach(Observer *o);
+    void attach(unique_ptr<Observer> o);
 
     // Change the pieces
     // ! note: initBoard needs to set its own GameState to ::Play
@@ -60,6 +60,8 @@ class Board {
     // setters
     void setState(GameState state);
 
+
+
     // ! [added] 1 new method (for switching between player turns in main, and for setup '= color' command)
     // TODO discuss - ideally board has a getMove() method that calls
     // TODO   the current player's getMove() method AND AFTERWARDS sets the next player's turn upon
@@ -72,7 +74,7 @@ class Board {
     void incrementScore(Colour clr, float addTo); // add addTo to player's score
 
     // General gameplay logic
-    bool move();
+    bool makeMove();
     // ! [added] 1 new method
     bool boardIsValid() const; // for setup mode, returns true if board has 
                                 // valid configuration (1 king, pawns not on 1st/8th rows)

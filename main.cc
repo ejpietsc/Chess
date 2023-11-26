@@ -52,7 +52,6 @@ static PlayerType strToPlayer(const string &s)
         {
             return PlayerType::NULL_PLR;
         }
-
         if (lowerS.substr(0, len - 1) == "computer")
         {
             return PlayerType::Computer;
@@ -108,7 +107,7 @@ static int strToComputerLvl(const string &s)
         return 0;
     }
 
-    const string levelStr = s.substr(len - 1, len);
+    const string levelStr = s.substr(len - 1);
 
     stringstream ss{levelStr};
     ss >> level;
@@ -162,7 +161,7 @@ static bool enterSetupMode(Board &gameBoard)
             }
             else
             {
-                cout << INVALID_COMMAND << endl;
+                cout << "Invalid board setup. Retry" << endl;
                 continue;
             }
         }
@@ -320,7 +319,7 @@ static void playGame(Board &gameBoard)
         { // this loop iterates each player to process their moves until the game ends
             Player &currPlr = *(gameBoard.getCurrPlayer());
             Colour currClr = currPlr.getColour();
-            Colour otherClr = currClr == Colour::White ? Colour::Black : Colour::White;
+            Colour otherClr = (currClr == Colour::White) ? Colour::Black : Colour::White;
 
             GameState state = gameBoard.getState();
 
@@ -344,7 +343,7 @@ static void playGame(Board &gameBoard)
                 else if (lowerCmdPrefix == "move")
                 {
                     try {
-                        const bool succ = gameBoard.move();
+                        const bool succ = gameBoard.makeMove();
                         if (!succ) 
                         {
                             cout << "Invalid move! Try again" << endl;
@@ -384,6 +383,7 @@ static void playGame(Board &gameBoard)
 }
 
 // output formatted score
+//todo maybe move to text display (View)
 static void outScore(const float whiteScore, const float blackScore) 
 {
     cout << "Final Score:\n";
@@ -442,6 +442,7 @@ int main()
             if (whitePt == PlayerType::NULL_PLR || blackPt == PlayerType::NULL_PLR)
             {
                 continue; // try again -> return to beginning of outer loop
+                //? add error msg maybe
             }
 
             // retrieve Player level

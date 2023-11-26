@@ -5,18 +5,17 @@ using namespace std;
 // TODO
 
 // === PLAYER ===
-Player::Player(Colour team, PlayerType p) 
-: team{team}, p{p} {}
+Player::Player(Colour team, PlayerType p)
+    : team{team}, p{p} {}
 
 Move Player::getNextMove() const
 {
     return this->doGetNextMove();
 }
 
-
 // === HUMAN ===
-Human::Human(Colour team, PlayerType p) 
-: Player{team, p} {}
+Human::Human(Colour team, PlayerType p)
+    : Player{team, p} {}
 
 Move Human::doGetNextMove() const
 {
@@ -29,11 +28,11 @@ Move Human::getHumanMove() const
     getline(cin, currLine);
 
     // handle fatal read error
-    if (cin.fail()) 
+    if (cin.fail())
     { // handler is in main
         throw ios_base::failure("Failure to read from cin");
     }
-    
+
     stringstream ss{currLine};
     ss >> start >> end;
 
@@ -50,11 +49,11 @@ Move Human::getHumanMove() const
 }
 
 // === COMPUTER ===
-Computer::Computer(Colour team, PlayerType p)
-: Player{team, p} {}
+//! ADDED LVL FIELD
+Computer::Computer(Colour team, PlayerType p, int lvl)
+    : Player{team, p}, lvl{lvl} {}
 
 Move Computer::doGetNextMove() const
 {
     return this->generateMove(this->generateValidMoves());
 }
-
