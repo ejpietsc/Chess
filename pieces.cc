@@ -7,7 +7,7 @@ using namespace std;
 Piece::Piece(PieceType type, Colour colour, Position pos)
 : type(type), colour{colour}, pos{pos} {}
 
-vector<Position> Piece::getMoves(Piece &p) const
+vector<Position> Piece::getMoves() const
 {
     return this->doGetMoves(p);
 }
@@ -54,7 +54,7 @@ static void addPosToVec(const Position &currP, const Position &newP, vector<Posi
     }
 }
 
-vector<Position> King::doGetMoves(Piece &p) const {
+vector<Position> King::doGetMoves() const {
     vector<Position> vec;
     const int row = this->pos.row;
     const int col = this->pos.col;
@@ -72,7 +72,7 @@ vector<Position> King::doGetMoves(Piece &p) const {
     return vec;
 }
 
-vector<Position> Queen::doGetMoves(Piece &p) const {
+vector<Position> Queen::doGetMoves() const {
     vector<Position> vec;
     const int row = this->pos.row;
     const int col = this->pos.col;
@@ -101,7 +101,7 @@ vector<Position> Queen::doGetMoves(Piece &p) const {
     return vec;
 }
 
-vector<Position> Rook::doGetMoves(Piece &p) const {
+vector<Position> Rook::doGetMoves() const {
     vector<Position> vec;
     const int row = this->pos.row;
     const int col = this->pos.col;
@@ -121,7 +121,7 @@ vector<Position> Rook::doGetMoves(Piece &p) const {
     return vec;
 }
 
-vector<Position> Knight::doGetMoves(Piece &p) const {
+vector<Position> Knight::doGetMoves() const {
     vector<Position> vec;
     const int row = this->pos.row;
     const int col = this->pos.col;
@@ -146,7 +146,7 @@ vector<Position> Knight::doGetMoves(Piece &p) const {
     return vec;
 }
 
-vector<Position> Bishop::doGetMoves(Piece &p) const {
+vector<Position> Bishop::doGetMoves() const {
     vector<Position> vec;
     const int row = this->pos.row;
     const int col = this->pos.col;
@@ -164,7 +164,7 @@ vector<Position> Bishop::doGetMoves(Piece &p) const {
 }
 
 // ! note: pawn generates moves as if it can capture and/or move 2 spaces
-vector<Position> Pawn::doGetMoves(Piece &p) const {
+vector<Position> Pawn::doGetMoves() const {
     vector<Position> vec;
     const int row = this->pos.row;
     const int col = this->pos.col;

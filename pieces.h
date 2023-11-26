@@ -14,7 +14,7 @@ enum class Colour { White, Black };
 // Abstract Subject
 class Piece
 {
-    virtual vector<Position> doGetMoves(Piece &p) const = 0;
+    virtual vector<Position> doGetMoves() const = 0;
 
 protected:
     PieceType type;
@@ -27,8 +27,7 @@ public:
 
     /* checks:
     1. conform to piece move  2. vacant or has enemy */
-    // ! why does getMoves take a Piece reference?
-    vector<Position> getMoves(Piece &p) const; // NVI - call doGetMoves
+    vector<Position> getMoves() const; // NVI - call doGetMoves
 
     void makeMove(Position &landingPos);
 
@@ -57,42 +56,42 @@ public:
 
 class King final : public Piece
 {
-    vector<Position> doGetMoves(Piece &p) const override;
+    vector<Position> doGetMoves() const override;
 public:
     King(Colour colour, int x, int y) : Piece{PieceType::King, colour, Position{x, y}} {}
 };
 
 class Queen final : public Piece
 {
-    vector<Position> doGetMoves(Piece &p) const override;
+    vector<Position> doGetMoves() const override;
 public:
     Queen(Colour colour, int x, int y) : Piece{PieceType::Queen, colour, Position{x, y}} {}
 };
 
 class Bishop final : public Piece
 {
-    vector<Position> doGetMoves(Piece &p) const override;
+    vector<Position> doGetMoves() const override;
 public:
     Bishop(Colour colour, int x, int y) : Piece{PieceType::Bishop, colour, Position{x, y}} {}
 };
 
 class Rook final : public Piece
 {
-    vector<Position> doGetMoves(Piece &p) const override;
+    vector<Position> doGetMoves() const override;
 public:
     Rook(Colour colour, int x, int y) : Piece{PieceType::Rook, colour, Position{x, y}} {}
 };
 
 class Knight final : public Piece
 {
-    vector<Position> doGetMoves(Piece &p) const override;
+    vector<Position> doGetMoves() const override;
 public:
     Knight(Colour colour, int x, int y) : Piece{PieceType::Knight, colour, Position{x, y}} {}
 };
 
 class Pawn final : public Piece
 {
-    vector<Position> doGetMoves(Piece &p) const override;
+    vector<Position> doGetMoves() const override;
 public:
     Pawn(Colour colour, int x, int y) : Piece{PieceType::Pawn, colour, Position{x, y}} {}
 };
