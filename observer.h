@@ -3,7 +3,10 @@
 
 #include "util.h"
 
+enum class SquareColor { Dark, Light };
+
 class Observer {
+  Board* subject; // ! NEWLY ADDED
   virtual void doNotify(Move& move, GameState state) = 0;
  public:
   // NVI - call doNotify

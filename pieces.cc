@@ -3,24 +3,27 @@
 using namespace std;
 
 Piece::Piece(PieceType type, Colour colour, Position pos)
-: type(type), colour{colour}, pos{pos} {}
+    : type(type), colour{colour}, pos{pos} {}
 
-std::unique_ptr<Piece> createPiece(PieceType type, Colour colour, Position pos) {
-    switch (type) {
-        case PieceType::King:
-            return std::make_unique<King>(colour, pos.col, pos.row);
-        case PieceType::Queen:
-            return std::make_unique<Queen>(colour, pos.col, pos.row);
-        case PieceType::Bishop:
-            return std::make_unique<Bishop>(colour, pos.col, pos.row);
-        case PieceType::Rook:
-            return std::make_unique<Rook>(colour, pos.col, pos.row);
-        case PieceType::Knight:
-            return std::make_unique<Knight>(colour, pos.col, pos.row);
-        case PieceType::Pawn:
-            return std::make_unique<Pawn>(colour, pos.col, pos.row);
-        default:
-            return nullptr; // Handle NULL_PIECE - empty tile
+// ! added
+std::unique_ptr<Piece> createPiece(PieceType type, Colour colour, Position pos)
+{
+    switch (type)
+    {
+    case PieceType::King:
+        return std::make_unique<King>(colour, pos.col, pos.row);
+    case PieceType::Queen:
+        return std::make_unique<Queen>(colour, pos.col, pos.row);
+    case PieceType::Bishop:
+        return std::make_unique<Bishop>(colour, pos.col, pos.row);
+    case PieceType::Rook:
+        return std::make_unique<Rook>(colour, pos.col, pos.row);
+    case PieceType::Knight:
+        return std::make_unique<Knight>(colour, pos.col, pos.row);
+    case PieceType::Pawn:
+        return std::make_unique<Pawn>(colour, pos.col, pos.row);
+    default:
+        return nullptr; // Handle NULL_PIECE - empty tile
     }
 }
 
@@ -29,18 +32,38 @@ vector<Position> Piece::getMoves() const
     return this->doGetMoves();
 }
 
-void Piece::setPosition(int c, int r) 
+void Piece::setPosition(int c, int r)
 {
     pos.col = c;
     pos.row = r;
 }
 
-int Piece::getRow() const 
+PieceType Piece::getType() const
+{
+    return type;
+}
+
+Colour Piece::getColour() const
+{
+    return colour;
+}
+
+int Piece::getRow() const
 {
     return pos.row;
 }
 
-int Piece::getCol() const 
+int Piece::getCol() const
+{
+    return pos.col;
+}
+
+int Piece::getRow() const
+{
+    return pos.row;
+}
+
+int Piece::getCol() const
 {
     return pos.col;
 }
@@ -48,7 +71,7 @@ int Piece::getCol() const
 // === PIECE SUBCLASSES ===
 
 // return true if newP is a valid move (given no other piece info)
-static bool isValidPos(const Position &currP, const Position &newP) 
+static bool isValidPos(const Position &currP, const Position &newP)
 {
     if (newP.row == currP.row && newP.col == currP.col)
     { // same position as curr position
@@ -71,13 +94,14 @@ static void addPosToVec(const Position &currP, const Position &newP, vector<Posi
     }
 }
 
-vector<Position> King::doGetMoves() const {
+vector<Position> King::doGetMoves() const
+{
     vector<Position> vec;
     const int col = this->pos.col;
     const int row = this->pos.row;
 
     // 1 around
-    for (int i = -1; i <= 1; ++i) 
+    for (int i = -1; i <= 1; ++i)
     {
         for (int j = -1; j <= 1; ++j)
         {
@@ -89,19 +113,22 @@ vector<Position> King::doGetMoves() const {
     return vec;
 }
 
-vector<Position> Queen::doGetMoves() const {
+vector<Position> Queen::doGetMoves() const
+{
     vector<Position> vec;
     const int col = this->pos.col;
     const int row = this->pos.row;
 
     // entire row
-    for (int i = 0 - row; i <= 7 - row; ++i) {
+    for (int i = 0 - row; i <= 7 - row; ++i)
+    {
         Position p{col, row + i};
         addPosToVec(this->pos, p, vec);
     }
 
     // entire col
-    for (int i = 0 - col; i <= 7 - col; ++i) {
+    for (int i = 0 - col; i <= 7 - col; ++i)
+    {
         Position p{col + i, row};
         addPosToVec(this->pos, p, vec);
     }
@@ -114,23 +141,25 @@ vector<Position> Queen::doGetMoves() const {
         addPosToVec(this->pos, p1, vec);
         addPosToVec(this->pos, p2, vec);
     }
-
     return vec;
 }
 
-vector<Position> Rook::doGetMoves() const {
+vector<Position> Rook::doGetMoves() const
+{
     vector<Position> vec;
     const int col = this->pos.col;
     const int row = this->pos.row;
 
     // entire row
-    for (int i = 0 - row; i <= 7 - row; ++i) {
+    for (int i = 0 - row; i <= 7 - row; ++i)
+    {
         Position p{col, row + i};
         addPosToVec(this->pos, p, vec);
     }
 
     // entire col
-    for (int i = 0 - col; i <= 7 - col; ++i) {
+    for (int i = 0 - col; i <= 7 - col; ++i)
+    {
         Position p{col + i, row};
         addPosToVec(this->pos, p, vec);
     }
@@ -138,7 +167,8 @@ vector<Position> Rook::doGetMoves() const {
     return vec;
 }
 
-vector<Position> Knight::doGetMoves() const {
+vector<Position> Knight::doGetMoves() const
+{
     vector<Position> vec;
     const int col = this->pos.col;
     const int row = this->pos.row;
@@ -156,18 +186,20 @@ vector<Position> Knight::doGetMoves() const {
         {col - 1, row - 2},
     };
 
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 8; ++i)
+    {
         addPosToVec(this->pos, arr[i], vec);
     }
 
     return vec;
 }
 
-vector<Position> Bishop::doGetMoves() const {
+vector<Position> Bishop::doGetMoves() const
+{
     vector<Position> vec;
     const int col = this->pos.col;
     const int row = this->pos.row;
-    
+
     // diagonals
     for (int i = 0 - col; i <= 7 - col; ++i)
     {
@@ -181,7 +213,8 @@ vector<Position> Bishop::doGetMoves() const {
 }
 
 // ! note: pawn generates moves as if it can capture and/or move 2 spaces
-vector<Position> Pawn::doGetMoves() const {
+vector<Position> Pawn::doGetMoves() const
+{
     vector<Position> vec;
     const int col = this->pos.col;
     const int row = this->pos.row;
@@ -195,12 +228,13 @@ vector<Position> Pawn::doGetMoves() const {
 
     Position arr[4] = {
         {col, row + (1 * directionMult)},
-        {col, row + (2 * directionMult)}, // 2 infront
+        {col, row + (2 * directionMult)},     // 2 infront
         {col + 1, row + (1 * directionMult)}, // right capture
         {col - 1, row + (1 * directionMult)}, // left capture
     };
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i)
+    {
         addPosToVec(this->pos, arr[i], vec);
     }
 

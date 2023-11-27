@@ -43,10 +43,10 @@ public:
     void makeMove(Position &landingPos);
 
     // Getters and setters
-    PieceType getType() const;
-    Colour getColour() const;
-    int getRow() const;
-    int getCol() const;
+    PieceType getType() const; // done
+    Colour getColour() const; // done
+    int getRow() const; // done
+    int getCol() const; // done
 
     void setType(PieceType pt);
     void setColour(Colour clr);

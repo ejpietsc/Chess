@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+# include <cstdlib> // ! added for abs()
 #include "board.h"
 #include "observer.h"
 #include "pieces.h"

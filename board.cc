@@ -76,10 +76,6 @@ void Board::initBoard()
     {
         clearBoard();
     }
-    unique_ptr<Observer> td = make_unique<Observer>(); // todo update when td ctor is done
-    unique_ptr<Observer> gd = make_unique<Observer>(); // todo update when gd ctor is done
-    attach(move(td));
-    attach(move(gd));
 
     currPlayer = whitePlayer.get();
     // SETUP BOARD
@@ -124,7 +120,11 @@ void Board::initBoard()
             board[i][0] = createPiece(PieceType::King, Colour::Black, Position{i, 0});
             board[i][7] = createPiece(PieceType::King, Colour::White, Position{i, 7});
         }
-    }
+    }                                                  // board setup loop
+    unique_ptr<Observer> td = make_unique<Observer>(); // todo update when td ctor is done
+    unique_ptr<Observer> gd = make_unique<Observer>(); // todo update when gd ctor is done
+    attach(move(td));
+    attach(move(gd));
 }
 
 //* SETUP mode methods
@@ -219,6 +219,11 @@ Player *Board::getCurrPlayer() const
 Piece *Board::getPiece(Position pos)
 {
     return board[pos.col][pos.row].get();
+}
+
+Piece *Board::getPieceByCoords(int c, int r)
+{
+    return board[c][r].get();
 }
 
 float Board::getScore(Colour clr)
