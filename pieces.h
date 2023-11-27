@@ -7,9 +7,21 @@
 
 using namespace std;
 
-// ! added NULL_PIECE for return purposes in strToPieceType() function in main.cc
-enum class PieceType { King, Queen, Bishop, Rook, Knight, Pawn, NULL_PIECE };
-enum class Colour { White, Black };
+enum class PieceType
+{
+    King,
+    Queen,
+    Bishop,
+    Rook,
+    Knight,
+    Pawn,
+    NULL_PIECE
+};
+enum class Colour
+{
+    White,
+    Black
+};
 
 // Abstract Subject
 class Piece
@@ -39,23 +51,15 @@ public:
     void setType(PieceType pt);
     void setColour(Colour clr);
     void setPosition(int c, int r);
-    // void setRow() const;
-    // void setCol() const;
 
     // Dtor
     virtual ~Piece();
-
-    /* BIG 5 - Not needed given current implementation _______________________
-    !IF NEEDED LATER MAKE PROTECTED
-    Piece(const Piece& other);
-    Piece& operator=(const Piece& other);
-    Piece(Piece&& other);
-    Piece& operator=(Piece&& other); */
 };
 
 class King final : public Piece
 {
     vector<Position> doGetMoves() const override;
+
 public:
     King(Colour colour, int c, int r) : Piece{PieceType::King, colour, Position{c, r}} {}
 };
@@ -63,6 +67,7 @@ public:
 class Queen final : public Piece
 {
     vector<Position> doGetMoves() const override;
+
 public:
     Queen(Colour colour, int c, int r) : Piece{PieceType::Queen, colour, Position{c, r}} {}
 };
@@ -70,6 +75,7 @@ public:
 class Bishop final : public Piece
 {
     vector<Position> doGetMoves() const override;
+
 public:
     Bishop(Colour colour, int c, int r) : Piece{PieceType::Bishop, colour, Position{c, r}} {}
 };
@@ -77,6 +83,7 @@ public:
 class Rook final : public Piece
 {
     vector<Position> doGetMoves() const override;
+
 public:
     Rook(Colour colour, int c, int r) : Piece{PieceType::Rook, colour, Position{c, r}} {}
 };
@@ -84,6 +91,7 @@ public:
 class Knight final : public Piece
 {
     vector<Position> doGetMoves() const override;
+
 public:
     Knight(Colour colour, int c, int r) : Piece{PieceType::Knight, colour, Position{c, r}} {}
 };
@@ -91,8 +99,18 @@ public:
 class Pawn final : public Piece
 {
     vector<Position> doGetMoves() const override;
+
 public:
     Pawn(Colour colour, int c, int r) : Piece{PieceType::Pawn, colour, Position{c, r}} {}
 };
+
+std::unique_ptr<Piece> createPiece(PieceType type, Colour colour, Position pos);
+
+/* BIG 5 - Not needed given current implementation _______________________
+!IF NEEDED LATER MAKE PROTECTED
+Piece(const Piece& other);
+Piece& operator=(const Piece& other);
+Piece(Piece&& other);
+Piece& operator=(Piece&& other); */
 
 #endif

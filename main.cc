@@ -181,14 +181,7 @@ static bool enterSetupMode(Board &gameBoard)
 
             // determine piece colour to add
             Colour pieceColour;
-            if (isLowerCaseString(option1))
-            {
-                pieceColour = Colour::Black;
-            }
-            else
-            {
-                pieceColour = Colour::White;
-            }
+            pieceColour = isLowerCaseString(option1) ? Colour::Black : Colour::White;
 
             // determine piece type to add
             const string lowerOption1 = toLowerString(option1);
@@ -207,7 +200,7 @@ static bool enterSetupMode(Board &gameBoard)
                 cout << "Invalid position input! Try again" << endl;
                 continue;
             }
-            gameBoard.addPiece(piecePosition, pieceType, pieceColour);
+            gameBoard.addPiece(pieceType, pieceColour, piecePosition);
         }
 
         if (lowerCmd == "-")
@@ -255,7 +248,7 @@ static bool enterSetupMode(Board &gameBoard)
             }
         }
     }
-}
+} // end of enterSetupMode
 
 // run the general game loop to play a chess game given the Board to play on
 static void playGame(Board &gameBoard)
@@ -380,7 +373,7 @@ static void playGame(Board &gameBoard)
             }
         }
     }
-}
+} // end of playGame()
 
 // output formatted score
 //todo maybe move to text display (View)

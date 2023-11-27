@@ -5,6 +5,7 @@ need to observe pieces
 - Move may need to store capture info - TBD
 - does notify take state or does the controller (main) communicate it
 - return Move or Move&
+- keep each player score field in player objects instead of board?
 
 
 # Ideas

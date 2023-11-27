@@ -5,6 +5,25 @@ using namespace std;
 Piece::Piece(PieceType type, Colour colour, Position pos)
 : type(type), colour{colour}, pos{pos} {}
 
+std::unique_ptr<Piece> createPiece(PieceType type, Colour colour, Position pos) {
+    switch (type) {
+        case PieceType::King:
+            return std::make_unique<King>(colour, pos.col, pos.row);
+        case PieceType::Queen:
+            return std::make_unique<Queen>(colour, pos.col, pos.row);
+        case PieceType::Bishop:
+            return std::make_unique<Bishop>(colour, pos.col, pos.row);
+        case PieceType::Rook:
+            return std::make_unique<Rook>(colour, pos.col, pos.row);
+        case PieceType::Knight:
+            return std::make_unique<Knight>(colour, pos.col, pos.row);
+        case PieceType::Pawn:
+            return std::make_unique<Pawn>(colour, pos.col, pos.row);
+        default:
+            return nullptr; // Handle NULL_PIECE - empty tile
+    }
+}
+
 vector<Position> Piece::getMoves() const
 {
     return this->doGetMoves();
