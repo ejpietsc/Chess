@@ -61,10 +61,24 @@ TextDisplay::TextDisplay(Board *subject)
             case PieceType::Pawn:
                 theDisplay[c][r] = (colour == Colour::White) ? 'P' : 'p';
                 break;
+            default:
+                cout << "ERROR : Attempt to set up NULL_PIECE";
+                break;
             }
+
         }
     }
 }
+
+// TODO vvv
+void TextDisplay::doNotify(Move& move, GameState state) {
+    cout << "-Incomplete method-" << endl;
+    return;
+}
+
+TextDisplay::~TextDisplay() {}
+
+// TODO ^^^
 
 ostream &operator<<(ostream &out, const TextDisplay &td)
 {

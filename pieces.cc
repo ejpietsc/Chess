@@ -5,6 +5,16 @@ using namespace std;
 Piece::Piece(PieceType type, Colour colour, Position pos)
     : type(type), colour{colour}, pos{pos} {}
 
+Piece::~Piece() {}
+
+// TODO vvv ------------------
+void Piece::makeMove(Position &landingPos) {
+    cout << "-Incomplete method-" << endl;
+    return;
+}
+
+// TODO ^^^ ------------------
+
 // ! added
 std::unique_ptr<Piece> createPiece(PieceType type, Colour colour, Position pos)
 {
@@ -48,11 +58,6 @@ Colour Piece::getColour() const
     return colour;
 }
 
-int Piece::getRow() const
-{
-    return pos.row;
-}
-
 int Piece::getCol() const
 {
     return pos.col;
@@ -61,11 +66,6 @@ int Piece::getCol() const
 int Piece::getRow() const
 {
     return pos.row;
-}
-
-int Piece::getCol() const
-{
-    return pos.col;
 }
 
 // === PIECE SUBCLASSES ===

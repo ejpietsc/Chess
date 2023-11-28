@@ -20,7 +20,7 @@
 
 using namespace std;
 
-pair<int, int> strToCoords(const string &s)
+static pair<int, int> strToCoords(const string &s)
 {
     const int len = s.length();
     if (len != 2)

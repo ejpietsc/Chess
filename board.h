@@ -41,7 +41,7 @@ class Board
 
 public:
     Board();                                                                                   // done
-    Board(PlayerType whitePl, const int whiteLevel, PlayerType blackPl, const int blackLevel); // done
+    Board(const PlayerType whitePl, const int whiteLevel, const PlayerType blackPl, const int blackLevel); // done
 
     // Copy ctor and assignment operator
     Board(const Board &other);

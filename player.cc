@@ -5,8 +5,16 @@ using namespace std;
 // TODO
 
 // === PLAYER ===
-Player::Player(Colour team, PlayerType p)
+Player::Player(const Colour team, const PlayerType p)
     : team{team}, p{p} {}
+
+Colour Player::getColour() const {
+    return this->team;
+}
+
+PlayerType Player::getPlayerType() const {
+    return this->p;
+}
 
 Move Player::getNextMove() const
 {
@@ -14,7 +22,7 @@ Move Player::getNextMove() const
 }
 
 // === HUMAN ===
-Human::Human(Colour team, PlayerType p)
+Human::Human(const Colour team, const PlayerType p)
     : Player{team, p} {}
 
 Move Human::doGetNextMove() const
@@ -50,10 +58,69 @@ Move Human::getHumanMove() const
 
 // === COMPUTER ===
 //! ADDED LVL FIELD
-Computer::Computer(Colour team, PlayerType p, int lvl)
+Computer::Computer(const Colour team, const PlayerType p, const int lvl)
     : Player{team, p}, lvl{lvl} {}
 
 Move Computer::doGetNextMove() const
 {
     return this->generateMove(this->generateValidMoves());
+}
+
+LevelOne::LevelOne(const Colour team, const PlayerType p, const int lvl) : Computer{team, p, lvl} {}
+LevelTwo::LevelTwo(const Colour team, const PlayerType p, const int lvl) : Computer{team, p, lvl} {}
+LevelThree::LevelThree(const Colour team, const PlayerType p, const int lvl) : Computer{team, p, lvl} {}
+LevelFour::LevelFour(const Colour team, const PlayerType p, const int lvl) : Computer{team, p, lvl} {}
+
+LevelOne::~LevelOne() {}
+LevelTwo::~LevelTwo() {}
+LevelThree::~LevelThree() {}
+LevelFour::~LevelFour() {}
+
+// TODO !!!!! vvvv
+Move LevelOne::generateMove(vector<Move> &&moves) const {
+    cout << "-Incomplete method-" << endl;
+    Move m{};
+    return m;
+}
+
+Move LevelTwo::generateMove(vector<Move> &&moves) const {
+    cout << "-Incomplete method-" << endl;
+    Move m{};
+    return m;
+}
+
+Move LevelThree::generateMove(vector<Move> &&moves) const {
+    cout << "-Incomplete method-" << endl;
+    Move m{};
+    return m;
+}
+
+Move LevelFour::generateMove(vector<Move> &&moves) const {
+    cout << "-Incomplete method-" << endl;
+    Move m{};
+    return m;
+}
+
+vector<Move> LevelOne::generateValidMoves() const {
+    cout << "-Incomplete method-" << endl;
+    vector<Move> v;
+    return v;
+}
+
+vector<Move> LevelTwo::generateValidMoves() const {
+    cout << "-Incomplete method-" << endl;
+    vector<Move> v;
+    return v;
+}
+
+vector<Move> LevelThree::generateValidMoves() const {
+    cout << "-Incomplete method-" << endl;
+    vector<Move> v;
+    return v;
+}
+
+vector<Move> LevelFour::generateValidMoves() const {
+    cout << "-Incomplete method-" << endl;
+    vector<Move> v;
+    return v;
 }
