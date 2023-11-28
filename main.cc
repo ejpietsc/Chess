@@ -392,7 +392,7 @@ int main()
 {
     string curLine; // current line from input
     string cmd;     // game - resign - player - setup - done
-    string whitePlayer, blackPlayer = 0;
+    string whitePlayer, blackPlayer;
     int whiteLevel, blackLevel; // 0 - 4 (0 for humans)
 
     // create new board after [game] cmd
