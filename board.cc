@@ -106,7 +106,7 @@ void Board::attach(unique_ptr<Observer> o)
 
 void Board::initBoard()
 {
-    // ! [changed] set state AFTER clearBoard, because clearBoard invokes the default ctor which creates a board white state GameState::NA
+    // ! [changed] set state AFTER clearBoard, because clearBoard invokes the default ctor which creates a board with state GameState::NA
     if (!observers.empty())
     {
         clearBoard();
