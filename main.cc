@@ -328,7 +328,7 @@ static void playGame(Board &gameBoard)
             { // normal game operations, the player can move
                 const string out = (currClr == Colour::White ? "White's turn:" : "Black's turn:");
                 cout << out << endl;
-                
+
                 string cmdPrefix;
                 cin >> cmdPrefix;
 
@@ -399,7 +399,7 @@ int main()
 {
     string curLine; // current line from input
     string cmd;     // game - resign - player - setup - done
-    string whitePlayer, blackPlayer;
+    string whitePlayer, blackPlayer = 0;
     int whiteLevel, blackLevel; // 0 - 4 (0 for humans)
 
     // create new board after [game] cmd
