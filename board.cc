@@ -4,6 +4,7 @@
 
 using namespace std;
 
+// ! renamed globals for clarity - col/row are also board class members
 static const int NUM_ROWS = 8;
 static const int NUM_COLS = 8;
 
