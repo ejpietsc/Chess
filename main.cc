@@ -168,7 +168,7 @@ static bool enterSetupMode(Board &gameBoard)
             }
         }
 
-        if (lowerCmd == "+")
+        else if (lowerCmd == "+")
         { // + K e1 command
             ss >> option1 >> option2;
 
@@ -205,7 +205,7 @@ static bool enterSetupMode(Board &gameBoard)
             gameBoard.addPiece(pieceType, pieceColour, piecePosition);
         }
 
-        if (lowerCmd == "-")
+        else if (lowerCmd == "-")
         { // - e1 command
             ss >> option1;
 
@@ -227,7 +227,7 @@ static bool enterSetupMode(Board &gameBoard)
             gameBoard.delPiece(pos);
         }
 
-        if (lowerCmd == "=")
+        else if (lowerCmd == "=")
         { // = colour command
             ss >> option1;
 
@@ -249,6 +249,12 @@ static bool enterSetupMode(Board &gameBoard)
                 gameBoard.setTurn(Colour::Black);
             }
         }
+
+        else {
+            cout << INVALID_COMMAND << endl;
+        }
+
+    
     }
 } // end of enterSetupMode
 
@@ -320,6 +326,9 @@ static void playGame(Board &gameBoard)
 
             if (state == GameState::Play || state == GameState::Check)
             { // normal game operations, the player can move
+                const string out = (currClr == Colour::White ? "White's turn:" : "Black's turn:");
+                cout << out << endl;
+                
                 string cmdPrefix;
                 cin >> cmdPrefix;
 

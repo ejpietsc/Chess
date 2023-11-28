@@ -4,8 +4,8 @@
 
 using namespace std;
 
-static const int row = 8;
-static const int col = 8;
+static const int NUM_ROWS = 8;
+static const int NUM_COLS = 8;
 
 // Static helpers
 static unique_ptr<Player> getPlayerPtr(const PlayerType pt, const int level) {
@@ -26,18 +26,28 @@ static unique_ptr<Player> getPlayerPtr(const PlayerType pt, const int level) {
 // ____________________________________________
 
 // Private Helpers
+// ! updated to handle nullptr. consider if this is desired for isWhite()
 bool isKing(Piece *p)
 {
+    if (p == nullptr) {
+        return false;
+    }
     return (p->getType() == PieceType::King);
 }
 
 bool isPawn(Piece *p)
 {
+    if (p == nullptr) {
+        return false;
+    }
     return (p->getType() == PieceType::Pawn);
 }
 
 bool isWhite(Piece *p)
 {
+    if (p == nullptr) {
+        return false;
+    }
     return (p->getColour() == Colour::White);
 }
 
@@ -113,14 +123,14 @@ void Board::initBoard()
 
     currPlayer = whitePlayer.get();
     // SETUP BOARD
-    board.resize(col);
-    for (int i = 0; i < row; ++i)
+    board.resize(NUM_COLS);
+    for (int i = 0; i < NUM_ROWS; ++i)
     {
-        board[i].resize(row);
+        board[i].resize(NUM_ROWS);
     }
 
     // ? need move ?
-    for (int i = 0; i < row; ++i)
+    for (int i = 0; i < NUM_ROWS; ++i)
     {
         // pawns
         board[i][1] = createPiece(PieceType::Pawn, Colour::Black, Position{i, 1});
@@ -167,12 +177,32 @@ bool Board::boardIsValid() const
     int blackKing = 0;
     int whiteKing = 0;
     // exactly one w/b king
-    for (const auto &col : board)
+
+    for (int i = 0; i < NUM_COLS; ++i) {
+        for (int j = 0; j < NUM_ROWS; ++j) {
+            Piece *p = (board[i][j]).get();
+            if (p == nullptr) {
+                continue;
+            }
+
+            blackKing += (!isWhite(p) && isKing(p)) ? 1 : 0;
+            whiteKing += (isWhite(p) && isKing(p)) ? 1 : 0;
+        }
+    } 
+
+    if (blackKing != 1 || whiteKing != 1)
+    {
+        return false;
+    }
+
+    // ! this doesn't iterate all of the pieces properly
+   /* for (const auto &col : board)
     {
         for (const auto &piece : col)
         {
-            if (!piece)
+            if (piece && piece.get() != nullptr)
             {
+                cout << piece->getCol() << " " << piece->getRow() << endl;
                 Piece *p = piece.get();
                 blackKing += (!isWhite(p) && isKing(p)) ? 1 : 0;
                 whiteKing += (isWhite(p) && isKing(p)) ? 1 : 0;
@@ -180,13 +210,15 @@ bool Board::boardIsValid() const
         }
         if (blackKing != 1 || whiteKing != 1)
         {
+            cout << "KING";
             return false;
         }
-    }
+    }*/
+
     // 2. no pawn on first or last row
-    for (int i = 0; i < col; ++i)
+    for (int i = 0; i < NUM_COLS; ++i)
     {
-        for (int j = 0; j < row; ++j)
+        for (int j = 0; j < NUM_ROWS; ++j)
         {
             Piece *p1 = board[i][0].get(); // first row
             Piece *p2 = board[i][7].get(); // last row
