@@ -40,6 +40,7 @@ TextDisplay::TextDisplay(Board *subject)
     {
         for (int r = 0; r < row; ++r)
         {
+            // ! added check to ensure Piece methods aren't called on nullptr
             Piece *p = subject->getPieceByCoords(c, r);
             if (p == nullptr) {
                 continue;
