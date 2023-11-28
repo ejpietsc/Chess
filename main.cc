@@ -88,6 +88,13 @@ static int strToComputerLvl(const string &s)
 // enable Board setup mode
 static bool enterSetupMode(Board &gameBoard)
 {
+    cout << "Entered setup mode" << endl;
+    cout << "Commands:\n" << "---------" << endl;
+    cout << "• '+ K e1' places the piece K (i.e., white king in this case) on the square e1. If a piece is already on that square, it is replaced" << endl;
+    cout << "• '- e1' removes the piece from the square e1. If there is no piece at that square, take no action" << endl;
+    cout << "• '= colour' makes it colour's turn to go next" << endl;
+    cout << "• 'done' leaves setup mode\n" << endl;
+
     gameBoard.setState(GameState::Setup);
     string curLine;
     string cmd, option1, option2;
@@ -225,6 +232,11 @@ static void playGame(Board &gameBoard)
     while (true)
     { // this loop is for every INDIVIDUAL GAME
         gameBoard.initBoard();
+
+        cout << "A new game has started" << endl;
+        cout << "Commands:\n" << "---------" << endl;
+        cout << "• 'setup' will enter setup mode" << endl;
+        cout << "• 'start' will start the game\n" << endl;
 
         // we need the user to explicitly call a "start" command
         //  otherwise, say they first run 'game computer1 human'
@@ -370,6 +382,10 @@ static void outScore(const float whiteScore, const float blackScore)
 
 int main()
 {
+    cout << "Welcome to Chess!\n" << endl;
+    cout << "Commands:\n" << "---------" << endl;
+    cout << "• 'game white-player black-player' starts a game with designated player types. The parameters white-player and black-player can be either human or computer[1-4]\n" << endl;
+
     string curLine; // current line from input
     string cmd;     // game - resign - player - setup - done
     string whitePlayer, blackPlayer;
