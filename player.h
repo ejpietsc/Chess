@@ -25,7 +25,7 @@ class Player
     virtual Move doGetNextMove() const = 0;
 
 public:
-    Player(Colour team, PlayerType p);
+    Player(const Colour team, const PlayerType p);
 
     virtual ~Player() = default;
 
@@ -37,14 +37,15 @@ public:
 
 class Human final : public Player
 {
-    Human(Colour team, PlayerType p);
-
     // get next move from input and return it as a Move object
     //  this will throw if it fails to read from cin - handled in main
     Move getHumanMove() const;
 
     // call getHumanMove()
     Move doGetNextMove() const override;
+
+  public:
+    Human(const Colour team, const PlayerType p);
 };
 
 //! ADDED LVL FIELD
@@ -59,7 +60,7 @@ class Computer : public Player
     //  pass it generateValidMoves() rvalue
     virtual Move generateMove(vector<Move> &&moves) const = 0;
     public:
-    Computer(Colour team, PlayerType p, int lvl);
+    Computer(const Colour team, const PlayerType p, const int lvl);
     int getLvl() const;
 
     // call generateMove()
@@ -68,22 +69,42 @@ class Computer : public Player
 
 class LevelOne final : public Computer
 {
+    vector<Move> generateValidMoves() const;
     Move generateMove(vector<Move> &&moves) const override; // random pick
+
+  public:
+    LevelOne(const Colour team, const PlayerType p, const int lvl);
+    ~LevelOne();
 };
 
 class LevelTwo final : public Computer
 {
+    vector<Move> generateValidMoves() const;
     Move generateMove(vector<Move> &&moves) const override; // prefers capture & checks
+
+  public:
+    LevelTwo(const Colour team, const PlayerType p, const int lvl);
+    ~LevelTwo();
 };
 
 class LevelThree final : public Computer
 {
+    vector<Move> generateValidMoves() const;
     Move generateMove(vector<Move> &&moves) const override; // prefers avoiding capture, capture & checks
+
+  public:
+    LevelThree(const Colour team, const PlayerType p, const int lvl);
+    ~LevelThree();
 };
 
 class LevelFour final : public Computer
 {
+    vector<Move> generateValidMoves() const;
     Move generateMove(vector<Move> &&moves) const override; // something sophisticated
+    
+  public:
+    LevelFour(const Colour team, const PlayerType p, const int lvl);
+    ~LevelFour();
 };
 
 /* BIG 5 - Not needed given current implementation _____________________

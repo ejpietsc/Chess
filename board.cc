@@ -1,9 +1,29 @@
 #include "board.h"
+#include "textdisplay.h"
+#include "graphicsdisplay.h"
 
 using namespace std;
 
 static const int row = 8;
 static const int col = 8;
+
+// Static helpers
+static unique_ptr<Player> getPlayerPtr(const PlayerType pt, const int level) {
+    switch(level) {
+        case (4):
+            return move(make_unique<LevelFour>(Colour::White, pt, level));
+        case (3):
+            return move(make_unique<LevelThree>(Colour::White, pt, level));
+        case (2):
+            return move(make_unique<LevelTwo>(Colour::White, pt, level));
+        case (1):
+            return move(make_unique<LevelOne>(Colour::White, pt, level));
+        default:
+            return move(make_unique<Human>(Colour::White, pt));
+    }
+}
+
+// ____________________________________________
 
 // Private Helpers
 bool isKing(Piece *p)
@@ -25,33 +45,46 @@ Colour getOtherColour(Colour clr)
 {
     return (clr == Colour::White ? Colour::Black : Colour::White);
 }
+
 // ____________________________________________
 
 // for the sake of swap only
 Board::Board() : state{GameState::NA} {}
 
+
+// TODO vvv ------------------
+bool Board::isPlayerInCheck(Player *plr) const {
+    cout << "-Incomplete method-" << endl;
+    return true;
+}
+
+bool Board::isPlayerCheckmated(Player *plr) const {
+    cout << "-Incomplete method-" << endl;
+    return true;
+}
+
+bool Board::isPlayerStalemated(Player *plr) const {
+    cout << "-Incomplete method-" << endl;
+    return true;
+}
+
+vector<Move> Board::getValidMoves(Player *plr) {
+    cout << "-Incomplete method-" << endl;
+    vector<Move> v;
+    return v;
+}
+
+// TODO ^^^ ------------------
+
+
 // Default board, you are white
 // ! row indices are flipped to match board layout
-Board::Board(PlayerType whitePl, const int whiteLevel, PlayerType blackPl, const int blackLevel) : state{GameState::NA}
+Board::Board(const PlayerType whitePl, const int whiteLevel, const PlayerType blackPl, const int blackLevel) : state{GameState::NA}
 {
     // set up players
-    // ! Player is an ABC - can't instatiate - make_unique creates a Player object
-    if (whiteLevel)
-    {
-        whitePlayer = move(make_unique<Player>(Colour::White, whitePl, whiteLevel));
-    }
-    else
-    {
-        whitePlayer = move(make_unique<Player>(Colour::White, whitePl));
-    }
-    if (blackLevel)
-    {
-        blackPlayer = move(make_unique<Player>(Colour::Black, blackPl, blackLevel));
-    }
-    else
-    {
-        blackPlayer = move(make_unique<Player>(Colour::Black, blackPl));
-    }
+    // ! Player/Computer is an ABC - can't instatiate directly
+    whitePlayer = getPlayerPtr(whitePl, whiteLevel);
+    blackPlayer = getPlayerPtr(blackPl, blackLevel);
     currPlayer = whitePlayer.get();
 }
 
@@ -122,8 +155,8 @@ void Board::initBoard()
             board[i][7] = createPiece(PieceType::King, Colour::White, Position{i, 7});
         }
     }                                                  // board setup loop
-    unique_ptr<Observer> td = make_unique<Observer>(); // todo update when td ctor is done
-    unique_ptr<Observer> gd = make_unique<Observer>(); // todo update when gd ctor is done
+    unique_ptr<Observer> td = make_unique<TextDisplay>(this); // todo update when td ctor is done
+    unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(); // todo update when gd ctor is done
     attach(move(td));
     attach(move(gd));
 }

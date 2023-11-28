@@ -3,17 +3,16 @@
 
 #include "util.h"
 #include "window.h"
+#include "board.h"
 
 class GraphicsDisplay : public Observer
 {
     Xwindow window;
-    void doNotify(Move& move, GameState state) override;
+    virtual void doNotify(Move& move, GameState state) override;
 
 public:
     GraphicsDisplay();
     ~GraphicsDisplay();
-
-    friend std::ostream &operator<<(std::ostream &out, const GraphicsDisplay &td);
 };
 
 #endif

@@ -404,7 +404,7 @@ int main()
         if (cin.fail())
         {
             outScore(0, 0); // we don't have enough info to create a gameBoard, output dummy values
-            return;
+            return 0;
         }
 
         stringstream ss{curLine};
@@ -436,8 +436,8 @@ int main()
             // handle invalid input
             if (whitePt == PlayerType::NULL_PLR || blackPt == PlayerType::NULL_PLR)
             {
+                cout << INVALID_COMMAND << endl;
                 continue; // try again -> return to beginning of outer loop
-                //? add error msg maybe
             }
 
             // retrieve Player level
