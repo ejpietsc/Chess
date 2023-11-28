@@ -23,6 +23,7 @@ char squareCharDisplay(int c, int r)
     return (sum % 2 == 0) ? '_' : ' ';
 }
 
+// ! updated to handle the fact that getPieceByCoords can return nullptr 
 TextDisplay::TextDisplay(Board *subject)
 {
     for (int c = 0; c < col; ++c)
@@ -39,8 +40,13 @@ TextDisplay::TextDisplay(Board *subject)
     {
         for (int r = 0; r < row; ++r)
         {
-            PieceType type = subject->getPieceByCoords(c, r)->getType();
-            Colour colour = subject->getPieceByCoords(c, r)->getColour();
+            Piece *p = subject->getPieceByCoords(c, r);
+            if (p == nullptr) {
+                continue;
+            }
+            PieceType type = p->getType();
+            Colour colour = p->getColour();
+            
             switch (type)
             {
             case PieceType::King:
