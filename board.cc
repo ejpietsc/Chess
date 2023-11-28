@@ -9,7 +9,7 @@ static const int NUM_ROWS = 8;
 static const int NUM_COLS = 8;
 
 // ! [added] Static helper
-static unique_ptr<Player> getPlayerPtr(const PlayerType pt, const int level) {
+static unique_ptr<Player> createPlayer(const PlayerType pt, const int level) {
     switch(level) {
         case (4):
             return move(make_unique<LevelFour>(Colour::White, pt, level));
@@ -85,8 +85,8 @@ Board::Board(const PlayerType whitePl, const int whiteLevel, const PlayerType bl
 {
     // set up players
     // ! [changed] Player/Computer is an ABC - can't instatiate directly
-    whitePlayer = getPlayerPtr(whitePl, whiteLevel);
-    blackPlayer = getPlayerPtr(blackPl, blackLevel);
+    whitePlayer = createPlayer(whitePl, whiteLevel);
+    blackPlayer = createPlayer(blackPl, blackLevel);
     currPlayer = whitePlayer.get();
 }
 
