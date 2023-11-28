@@ -166,9 +166,9 @@ void Board::initBoard()
         }
     }                                                  // board setup loop
     unique_ptr<Observer> td = make_unique<TextDisplay>(this); // todo update when td ctor is done
-    unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(); // todo update when gd ctor is done
+    // unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(); // todo update when gd ctor is done
     attach(move(td));
-    attach(move(gd));
+    // attach(move(gd));
 }
 
 //* SETUP mode methods
