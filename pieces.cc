@@ -11,17 +11,17 @@ std::unique_ptr<Piece> createPiece(PieceType type, Colour colour, Position pos)
     switch (type)
     {
     case PieceType::King:
-        return std::make_unique<King>(colour, pos.col, pos.row);
+        return std::make_unique<King>(colour, pos);
     case PieceType::Queen:
-        return std::make_unique<Queen>(colour, pos.col, pos.row);
+        return std::make_unique<Queen>(colour, pos);
     case PieceType::Bishop:
-        return std::make_unique<Bishop>(colour, pos.col, pos.row);
+        return std::make_unique<Bishop>(colour, pos);
     case PieceType::Rook:
-        return std::make_unique<Rook>(colour, pos.col, pos.row);
+        return std::make_unique<Rook>(colour, pos);
     case PieceType::Knight:
-        return std::make_unique<Knight>(colour, pos.col, pos.row);
+        return std::make_unique<Knight>(colour, pos);
     case PieceType::Pawn:
-        return std::make_unique<Pawn>(colour, pos.col, pos.row);
+        return std::make_unique<Pawn>(colour, pos);
     default:
         return nullptr; // Handle NULL_PIECE - empty tile
     }

@@ -10,15 +10,15 @@
 #include <string>
 #include <memory>
 # include <cstdlib> // ! added for abs()
+/*
 #include "board.h"
 #include "observer.h"
 #include "pieces.h"
 #include "player.h"
 #include "TextDisplay.h"
+*/
 
 using namespace std;
-
-enum class Colour { White, Black };
 
 pair<int, int> strToCoords(const string &s)
 {

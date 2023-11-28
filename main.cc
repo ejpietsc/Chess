@@ -1,4 +1,6 @@
-#include "util.h"
+#include "player.h"
+#include "pieces.h"
+#include "board.h"
 
 using namespace std;
 

@@ -3,6 +3,9 @@
 #define BOARD_H
 
 #include "util.h"
+#include "player.h"
+#include "observer.h"
+#include "pieces.h"
 
 using namespace std;
 

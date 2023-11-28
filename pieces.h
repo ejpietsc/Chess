@@ -61,7 +61,7 @@ class King final : public Piece
     vector<Position> doGetMoves() const override;
 
 public:
-    King(Colour colour, int c, int r) : Piece{PieceType::King, colour, Position{c, r}} {}
+    King(Colour colour, Position pos) : Piece{PieceType::King, colour, pos} {}
 };
 
 class Queen final : public Piece
@@ -69,7 +69,7 @@ class Queen final : public Piece
     vector<Position> doGetMoves() const override;
 
 public:
-    Queen(Colour colour, int c, int r) : Piece{PieceType::Queen, colour, Position{c, r}} {}
+    Queen(Colour colour, Position pos) : Piece{PieceType::Queen, colour, pos} {}
 };
 
 class Bishop final : public Piece
@@ -77,7 +77,7 @@ class Bishop final : public Piece
     vector<Position> doGetMoves() const override;
 
 public:
-    Bishop(Colour colour, int c, int r) : Piece{PieceType::Bishop, colour, Position{c, r}} {}
+    Bishop(Colour colour, Position pos) : Piece{PieceType::Bishop, colour, pos} {}
 };
 
 class Rook final : public Piece
@@ -85,7 +85,7 @@ class Rook final : public Piece
     vector<Position> doGetMoves() const override;
 
 public:
-    Rook(Colour colour, int c, int r) : Piece{PieceType::Rook, colour, Position{c, r}} {}
+    Rook(Colour colour, Position pos) : Piece{PieceType::Rook, colour, pos} {}
 };
 
 class Knight final : public Piece
@@ -93,7 +93,7 @@ class Knight final : public Piece
     vector<Position> doGetMoves() const override;
 
 public:
-    Knight(Colour colour, int c, int r) : Piece{PieceType::Knight, colour, Position{c, r}} {}
+    Knight(Colour colour, Position pos) : Piece{PieceType::Knight, colour, pos} {}
 };
 
 class Pawn final : public Piece
@@ -101,7 +101,7 @@ class Pawn final : public Piece
     vector<Position> doGetMoves() const override;
 
 public:
-    Pawn(Colour colour, int c, int r) : Piece{PieceType::Pawn, colour, Position{c, r}} {}
+    Pawn(Colour colour, Position pos) : Piece{PieceType::Pawn, colour, pos} {}
 };
 
 std::unique_ptr<Piece> createPiece(PieceType type, Colour colour, Position pos);

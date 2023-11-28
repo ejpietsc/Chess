@@ -2,6 +2,7 @@
 #define OBSERVER_H
 
 #include "util.h"
+#include "board.h"
 
 enum class SquareColor { Dark, Light };
 

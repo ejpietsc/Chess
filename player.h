@@ -4,7 +4,7 @@
 #define PLAYER_H
 
 #include "util.h"
-#include <string>
+#include "pieces.h"
 
 using namespace std;
 
