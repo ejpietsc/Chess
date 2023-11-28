@@ -1,3 +1,4 @@
+#include "util.h"
 #include "player.h"
 #include "pieces.h"
 #include "board.h"
@@ -7,6 +8,7 @@ using namespace std;
 static const float WIN_POINTS = 1;
 static const float STALEMATE_POINTS = 0.5;
 static const string INVALID_COMMAND = "Invalid command read! Try again";
+
 
 // convert string to be fully lowercase (eg. "HElLo" -> "hello")
 static string toLowerString(const string &s)
@@ -29,10 +31,7 @@ static bool isLowerCaseString(const string &s)
 
     for (int i = 0; i < len; ++i)
     {
-        if (tolower(s[i]) != s[i])
-        {
-            return false;
-        }
+        if (tolower(s[i]) != s[i]) return false;
     }
     return true;
 }
@@ -44,14 +43,9 @@ static PlayerType strToPlayer(const string &s)
     const string lowerS = toLowerString(s);
     const int len = s.length();
 
-    if (lowerS == "human")
-    {
-        return PlayerType::Human;
-    }
+    if (lowerS == "human") return PlayerType::Human;
     else if (len >= 1 && lowerS.substr(0, len - 1) == "computer")
-    {
         return PlayerType::Computer;
-    }
 
     return PlayerType::NULL_PLR;
 }
@@ -62,30 +56,12 @@ static PieceType strToPieceType(const string &s)
 {
     const string lowerS = toLowerString(s);
 
-    if (lowerS == "k")
-    {
-        return PieceType::King;
-    }
-    else if (lowerS == "q")
-    {
-        return PieceType::Queen;
-    }
-    else if (lowerS == "r")
-    {
-        return PieceType::Rook;
-    }
-    else if (lowerS == "n")
-    {
-        return PieceType::Knight;
-    }
-    else if (lowerS == "b")
-    {
-        return PieceType::Bishop;
-    }
-    else if (lowerS == "p")
-    {
-        return PieceType::Pawn;
-    }
+    if (lowerS =="k") return PieceType::King;
+    else if (lowerS =="q") return PieceType::Queen;
+    else if (lowerS =="r") return PieceType::Rook;
+    else if (lowerS =="n") return PieceType::Knight;
+    else if (lowerS =="b") return PieceType::Bishop;
+    else if (lowerS =="p") return PieceType::Pawn;
 
     return PieceType::NULL_PIECE;
 }
@@ -97,24 +73,16 @@ static int strToComputerLvl(const string &s)
     int level;
     const int len = s.length();
 
-    if (len < 1)
-    { // prevent bad input from throwing on s.substr
-        return 0;
-    }
+    // prevent bad input from throwing on s.substr
+    if (len < 1) return 0;
 
     const string levelStr = s.substr(len - 1);
 
     stringstream ss{levelStr};
     ss >> level;
 
-    if (ss.fail())
-    {
-        return 0;
-    }
-    else
-    {
-        return level;
-    }
+    if (ss.fail()) return 0;
+    return level;
 }
 
 // enable Board setup mode

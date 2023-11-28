@@ -8,11 +8,13 @@ using namespace std;
 Player::Player(const Colour team, const PlayerType p)
     : team{team}, p{p} {}
 
-Colour Player::getColour() const {
+Colour Player::getColour() const
+{
     return this->team;
 }
 
-PlayerType Player::getPlayerType() const {
+PlayerType Player::getPlayerType() const
+{
     return this->p;
 }
 

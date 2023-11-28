@@ -1,4 +1,4 @@
-CXX = g++-11 -std=c++20
+CXX = g++ -std=c++20
 CXXFLAGS = -Wall -g -MMD  # use -MMD to generate dependencies
 SOURCES = $(wildcard *.cc)   # list of all .cc files in the current directory
 OBJECTS = ${SOURCES:.cc=.o}  # .o files depend upon .cc files with same names
