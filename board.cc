@@ -115,11 +115,11 @@ void Board::attach(unique_ptr<Observer> o)
 
 void Board::initBoard()
 {
-    state = GameState::Play;
     if (!observers.empty())
     {
         clearBoard();
     }
+    state = GameState::Play;
 
     currPlayer = whitePlayer.get();
     // SETUP BOARD

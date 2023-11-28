@@ -319,8 +319,15 @@ static void playGame(Board &gameBoard)
 
             if (state == GameState::Play || state == GameState::Check)
             { // normal game operations, the player can move
-                const string out = (currClr == Colour::White ? "White's turn:" : "Black's turn:");
-                cout << out << endl;
+
+                // ! handle computer move
+                if (currPlr.getPlayerType() == PlayerType::Computer) {
+                    gameBoard.makeMove();
+                    continue;
+                }
+
+                const string clrStr = (currClr == Colour::White ? "White" : "Black");
+                cout << clrStr << "'s turn:" << endl;
 
                 string cmdPrefix;
                 cin >> cmdPrefix;
@@ -334,6 +341,9 @@ static void playGame(Board &gameBoard)
                 const string lowerCmdPrefix = toLowerString(cmdPrefix);
                 if (lowerCmdPrefix == "resign")
                 {
+                    string trash;
+                    getline(cin, trash); // flush current line
+                    cout << clrStr << " has resigned! Ending game..." << endl;
                     gameBoard.incrementScore(otherClr, WIN_POINTS);
                     break;
                 }
@@ -345,6 +355,8 @@ static void playGame(Board &gameBoard)
                         {
                             cout << "Invalid move! Try again" << endl;
                         }
+                        string trash;
+                        getline(cin, trash); // flush current line
                     }
                     catch(...) // handle fatal read error
                     {

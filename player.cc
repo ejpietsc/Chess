@@ -33,21 +33,12 @@ Move Human::doGetNextMove() const
 Move Human::getHumanMove() const
 {
     string currLine, start, end;
-    getline(cin, currLine);
+    cin >> start >> end;
 
     // handle fatal read error
     if (cin.fail())
     { // handler is in main
         throw ios_base::failure("Failure to read from cin");
-    }
-
-    stringstream ss{currLine};
-    ss >> start >> end;
-
-    // handle read fail
-    if (ss.fail())
-    {
-        return Move{{-1, -1}, {-1, -1}}; // return a trash move that getValidMoves will not contain
     }
 
     Position startPos{start};
