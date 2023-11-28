@@ -43,9 +43,11 @@ static PlayerType strToPlayer(const string &s)
     const string lowerS = toLowerString(s);
     const int len = s.length();
 
-    if (lowerS == "human") return PlayerType::Human;
-    else if (len >= 1 && lowerS.substr(0, len - 1) == "computer")
+    if (lowerS == "human") {
+        return PlayerType::Human;
+    } else if (len >= 1 && lowerS.substr(0, len - 1) == "computer") {
         return PlayerType::Computer;
+    }
 
     return PlayerType::NULL_PLR;
 }
@@ -56,12 +58,19 @@ static PieceType strToPieceType(const string &s)
 {
     const string lowerS = toLowerString(s);
 
-    if (lowerS =="k") return PieceType::King;
-    else if (lowerS =="q") return PieceType::Queen;
-    else if (lowerS =="r") return PieceType::Rook;
-    else if (lowerS =="n") return PieceType::Knight;
-    else if (lowerS =="b") return PieceType::Bishop;
-    else if (lowerS =="p") return PieceType::Pawn;
+    if (lowerS =="k") {
+        return PieceType::King;
+    } else if (lowerS =="q") {
+        return PieceType::Queen;
+    } else if (lowerS =="r") { 
+        return PieceType::Rook;
+    } else if (lowerS =="n") {
+        return PieceType::Knight;
+    } else if (lowerS =="b") {
+        return PieceType::Bishop;
+    } else if (lowerS =="p") {
+        return PieceType::Pawn;
+    }
 
     return PieceType::NULL_PIECE;
 }
@@ -74,14 +83,19 @@ static int strToComputerLvl(const string &s)
     const int len = s.length();
 
     // prevent bad input from throwing on s.substr
-    if (len < 1) return 0;
+    if (len < 1) {
+        return 0;
+    }
 
     const string levelStr = s.substr(len - 1);
 
     stringstream ss{levelStr};
     ss >> level;
 
-    if (ss.fail()) return 0;
+    if (ss.fail()) {
+        return 0;
+    }
+
     return level;
 }
 

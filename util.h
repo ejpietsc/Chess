@@ -64,8 +64,11 @@ struct Move {
 static pair<int, int> strToCoords(const string &s)
 {
     const int len = s.length();
-    if (len != 2) return make_pair(-1, -1);
-    return make_pair(s[0] - 'a', s[1] - '1');
+    if (len != 2) {
+        return make_pair(-1, -1);
+    } else {
+        return make_pair(s[0] - 'a', s[1] - '1');
+    }
 }
 
 #endif
