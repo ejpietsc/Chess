@@ -7,7 +7,7 @@ using namespace std;
 static const int NUM_ROWS = 8;
 static const int NUM_COLS = 8;
 
-// Static helpers
+// ! [added] Static helper
 static unique_ptr<Player> getPlayerPtr(const PlayerType pt, const int level) {
     switch(level) {
         case (4):
@@ -26,7 +26,7 @@ static unique_ptr<Player> getPlayerPtr(const PlayerType pt, const int level) {
 // ____________________________________________
 
 // Private Helpers
-// ! updated to handle nullptr. consider if this is desired for isWhite()
+// ! [changed] updated to handle nullptr because p->getType is undefined for nullptr. consider if this is desired for isWhite()
 bool isKing(Piece *p)
 {
     return p == nullptr ? false : p->getType() == PieceType::King;
@@ -83,7 +83,7 @@ vector<Move> Board::getValidMoves(Player *plr) {
 Board::Board(const PlayerType whitePl, const int whiteLevel, const PlayerType blackPl, const int blackLevel) : state{GameState::NA}
 {
     // set up players
-    // ! Player/Computer is an ABC - can't instatiate directly
+    // ! [changed] Player/Computer is an ABC - can't instatiate directly
     whitePlayer = getPlayerPtr(whitePl, whiteLevel);
     blackPlayer = getPlayerPtr(blackPl, blackLevel);
     currPlayer = whitePlayer.get();
@@ -106,6 +106,7 @@ void Board::attach(unique_ptr<Observer> o)
 
 void Board::initBoard()
 {
+    // ! [changed] set state AFTER clearBoard, because clearBoard invokes the default ctor which creates a board white state GameState::NA
     if (!observers.empty())
     {
         clearBoard();
@@ -168,7 +169,7 @@ bool Board::boardIsValid() const
     int blackKing = 0;
     int whiteKing = 0;
     // exactly one w/b king
-
+    // ! [changed] check # of kings loop
     for (int i = 0; i < NUM_COLS; ++i) {
         for (int j = 0; j < NUM_ROWS; ++j) {
             Piece *p = (board[i][j]).get();
