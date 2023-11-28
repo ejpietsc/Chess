@@ -6,6 +6,11 @@
 
 enum class SquareColor { Dark, Light };
 
+// forward declarations, observers includes board, board includes observer
+class Board;
+class Move;
+enum class GameState;
+
 class Observer {
   Board* subject; // ! NEWLY ADDED
   virtual void doNotify(Move& move, GameState state) = 0;

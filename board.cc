@@ -35,6 +35,7 @@ Board::Board() : state{GameState::NA} {}
 Board::Board(PlayerType whitePl, const int whiteLevel, PlayerType blackPl, const int blackLevel) : state{GameState::NA}
 {
     // set up players
+    // ! Player is an ABC - can't instatiate - make_unique creates a Player object
     if (whiteLevel)
     {
         whitePlayer = move(make_unique<Player>(Colour::White, whitePl, whiteLevel));
