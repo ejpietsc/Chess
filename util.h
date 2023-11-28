@@ -20,18 +20,12 @@
 
 using namespace std;
 
-static pair<int, int> strToCoords(const string &s)
-{
-    const int len = s.length();
-    if (len != 2)
-    {
-        return make_pair(-1, -1);
-    }
 
-    const int col = s[0] - 'a';
-    const int row = s[1] - '1';
-    return make_pair(col, row);
-}
+// Forward declarations
+static pair<int, int> strToCoords(const string &s);
+
+
+// Structures and custom objects:
 
 // 0 based coordinates ( eg. "a1" becomes (0, 0) )
 //! (column, row) not the opposite
@@ -63,5 +57,15 @@ struct Move {
         return (this->startPos == other.startPos && this->endPos == other.endPos);
     }
 };
+
+
+// Helper functions
+
+static pair<int, int> strToCoords(const string &s)
+{
+    const int len = s.length();
+    if (len != 2) return make_pair(-1, -1);
+    return make_pair(s[0] - 'a', s[1] - '1');
+}
 
 #endif

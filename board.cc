@@ -29,26 +29,17 @@ static unique_ptr<Player> getPlayerPtr(const PlayerType pt, const int level) {
 // ! updated to handle nullptr. consider if this is desired for isWhite()
 bool isKing(Piece *p)
 {
-    if (p == nullptr) {
-        return false;
-    }
-    return (p->getType() == PieceType::King);
+    return p == nullptr ? false : p->getType() == PieceType::King;
 }
 
 bool isPawn(Piece *p)
 {
-    if (p == nullptr) {
-        return false;
-    }
-    return (p->getType() == PieceType::Pawn);
+    return p == nullptr ? false : p->getType() == PieceType::Pawn;
 }
 
 bool isWhite(Piece *p)
 {
-    if (p == nullptr) {
-        return false;
-    }
-    return (p->getColour() == Colour::White);
+    return p == nullptr ? false : p->getColour() == Colour::White;
 }
 
 Colour getOtherColour(Colour clr)
@@ -304,14 +295,8 @@ void Board::setState(GameState state)
 
 void Board::incrementScore(Colour clr, float addTo)
 {
-    if (clr == Colour::Black)
-    {
-        blackScore += addTo;
-    }
-    else
-    {
-        whiteScore += addTo;
-    }
+    if (clr == Colour::Black) blackScore += addTo;
+    else whiteScore += addTo;
 }
 
 // determine if move is within the validMoves vector
@@ -319,10 +304,7 @@ static bool moveIsValid(Move &move, vector<Move> &validMoves)
 {
     for (const auto &childMove : validMoves)
     {
-        if (move == childMove)
-        {
-            return true;
-        }
+        if (move == childMove) return true;
     }
     return false;
 }
