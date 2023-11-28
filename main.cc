@@ -42,22 +42,15 @@ static bool isLowerCaseString(const string &s)
 static PlayerType strToPlayer(const string &s)
 {
     const string lowerS = toLowerString(s);
+    const int len = s.length();
 
     if (lowerS == "human")
     {
         return PlayerType::Human;
     }
-    else
+    else if (len >= 1 && lowerS.substr(0, len - 1) == "computer")
     {
-        const int len = s.length();
-        if (len < 1)
-        {
-            return PlayerType::NULL_PLR;
-        }
-        if (lowerS.substr(0, len - 1) == "computer")
-        {
-            return PlayerType::Computer;
-        }
+        return PlayerType::Computer;
     }
 
     return PlayerType::NULL_PLR;
