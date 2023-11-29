@@ -19,9 +19,6 @@ class TextDisplay : public Observer
         friend std::ostream &operator<<(std::ostream &out, const TextDisplay &td);
 };
 
-char squareCharDisplay(int c, int r);
-char getPieceChar(Piece *p);
-
 std::ostream &operator<<(std::ostream &out, const TextDisplay &td); 
 
 #endif
