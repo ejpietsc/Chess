@@ -10,7 +10,17 @@ Piece::~Piece() {}
 // TODO vvv ------------------
 void Piece::makeMove(Position &landingPos) {
     cout << "-Incomplete method-" << endl;
-    return;
+    
+    if (this->getType() == PieceType::Pawn) {
+        Pawn *p = dynamic_cast<Pawn*>(this);
+        if (p != nullptr) {
+            p->setHasMoved(true);
+        }
+    }
+
+    this->setPosition(landingPos.col, landingPos.row);
+
+    // ! there may be more things needed here
 }
 
 // TODO ^^^ ------------------
@@ -69,6 +79,10 @@ int Piece::getRow() const
 }
 
 // === PIECE SUBCLASSES ===
+
+void Pawn::setHasMoved(const bool b) {
+    this->hasMoved = b;
+}
 
 // return true if newP is a valid move (given no other piece info)
 static bool isValidPos(const Position &currP, const Position &newP)
@@ -212,7 +226,7 @@ vector<Position> Bishop::doGetMoves() const
     return vec;
 }
 
-// ! note: pawn generates moves as if it can capture and/or move 2 spaces
+// ! note: pawn generates moves as if it can capture (moving 2 spaces is checked)
 vector<Position> Pawn::doGetMoves() const
 {
     vector<Position> vec;
@@ -225,16 +239,19 @@ vector<Position> Pawn::doGetMoves() const
     { // change dir for black
         directionMult = -1;
     }
-
+    
     Position arr[4] = {
         {col, row + (1 * directionMult)},
-        {col, row + (2 * directionMult)},     // 2 infront
         {col + 1, row + (1 * directionMult)}, // right capture
         {col - 1, row + (1 * directionMult)}, // left capture
+        {col, row + (2 * directionMult)},     // 2 infront
     };
 
     for (int i = 0; i < 4; ++i)
     {
+        if (this->hasMoved && i == 3) {
+            continue; // ignore 2 infront move
+        }
         addPosToVec(this->pos, arr[i], vec);
     }
 
