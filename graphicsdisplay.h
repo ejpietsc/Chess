@@ -8,7 +8,7 @@
 class GraphicsDisplay : public Observer
 {
     Xwindow window;
-    virtual void doNotify(Move& move, GameState state) override;
+    void doNotify(pair<int, int> pos, Piece *p) override;
 
 public:
     GraphicsDisplay();

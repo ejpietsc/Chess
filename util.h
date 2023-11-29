@@ -60,7 +60,6 @@ struct Move {
 
 
 // Helper functions
-
 static pair<int, int> strToCoords(const string &s)
 {
     const int len = s.length();

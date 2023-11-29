@@ -6,7 +6,7 @@ GraphicsDisplay::GraphicsDisplay() {}
 
 GraphicsDisplay::~GraphicsDisplay() {}
 
-void GraphicsDisplay::doNotify(Move& move, GameState state) {
+void GraphicsDisplay::doNotify(pair<int, int> pos, Piece *p) {
     cout << "-Incomplete method-" << endl;
     return;
 }

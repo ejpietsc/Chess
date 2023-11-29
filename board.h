@@ -19,6 +19,8 @@ enum class GameState
     NA
 };
 
+enum class SquareColor { Dark, Light };
+
 // class for the game board
 //   ! Board now persists between games
 class Board

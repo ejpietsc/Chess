@@ -8,19 +8,20 @@
 class TextDisplay : public Observer
 {
     std::vector<std::vector<char>> theDisplay;
-    void doNotify(Move &move, GameState state) override;
+    void doNotify(pair<int, int> pos, Piece *p) override;
 
-public:
-    TextDisplay(Board *subject); // done
-    void updateMsg(ostream &out, string msg);
-    void displayScoreBoard(ostream &out);
-    ~TextDisplay();
+    public:
+        TextDisplay(Board *subject);
+        // void updateMsg(ostream &out, string msg);
+        // void displayScoreBoard(ostream &out);
+        ~TextDisplay();
 
-    friend std::ostream &operator<<(std::ostream &out, const TextDisplay &td); // done
+        friend std::ostream &operator<<(std::ostream &out, const TextDisplay &td);
 };
 
-SquareColor getSquareColor(int c, int r); //? maybe move somewhere more appropriate - done
-char squareCharDisplay(int c, int r);     //! added - done
+SquareColor getSquareColor(int c, int r);
+char squareCharDisplay(int c, int r);
+char getPieceChar(Piece *p);
 
 std::ostream &operator<<(std::ostream &out, const TextDisplay &td); 
 

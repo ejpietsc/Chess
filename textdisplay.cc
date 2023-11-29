@@ -1,9 +1,10 @@
 #include "textdisplay.h"
+#include <iostream>
 
 using namespace std;
 
-static const int col = 8;
-static const int row = 8;
+static const int NUM_COLS = 8;
+static const int NUM_ROWS = 8;
 
 // Priv
 int abs(int a)
@@ -23,90 +24,73 @@ char squareCharDisplay(int c, int r)
     return (sum % 2 == 0) ? '_' : ' ';
 }
 
+char getPieceChar(Piece *p) {
+    char ans = ' ';
+
+    switch (p->getType())
+    {
+        case PieceType::King:
+            ans = 'K';
+            break;
+        case PieceType::Queen:
+            ans = 'Q';
+            break;
+        case PieceType::Bishop:
+            ans = 'B';
+            break;
+        case PieceType::Rook:
+            ans = 'R';
+            break;
+        case PieceType::Knight:
+            ans = 'N';
+            break;
+        case PieceType::Pawn:
+            ans = 'P';
+            break;
+
+        default:
+            cout << "ERROR : Attempt to set up NULL_PIECE";
+            break;
+    }
+
+    ans = p->getColour() == Colour::White ? ans : tolower(ans);
+
+    return ans;
+}
+
 // ! updated to handle the fact that getPieceByCoords can return nullptr 
 TextDisplay::TextDisplay(Board *subject)
 {
-    for (int c = 0; c < col; ++c)
-    {
-        theDisplay.push_back(vector<char>(col, ' '));
-        // set up board squares
-        for (int r = 0; r < row; ++r)
-        {
-            theDisplay[c][r] = squareCharDisplay(c, r);
-        }
-    }
-    // set up pieces
-    for (int c = 0; c < col; ++c)
-    {
-        for (int r = 0; r < row; ++r)
-        {
-            // ! added check to ensure Piece methods aren't called on nullptr
+    for (int c = 0; c < NUM_COLS; ++c) {
+        theDisplay.push_back(vector<char>(NUM_COLS, ' '));
+        for (int r = 0; r < NUM_ROWS; ++r) {
             Piece *p = subject->getPieceByCoords(c, r);
-            if (p == nullptr) {
-                continue;
-            }
-            PieceType type = p->getType();
-            Colour colour = p->getColour();
-            
-            switch (type)
-            {
-            case PieceType::King:
-                theDisplay[c][r] = (colour == Colour::White) ? 'K' : 'k';
-                break;
-            case PieceType::Queen:
-                theDisplay[c][r] = (colour == Colour::White) ? 'Q' : 'q';
-                break;
-            case PieceType::Bishop:
-                theDisplay[c][r] = (colour == Colour::White) ? 'B' : 'b';
-                break;
-            case PieceType::Rook:
-                theDisplay[c][r] = (colour == Colour::White) ? 'R' : 'r';
-                break;
-            case PieceType::Knight:
-                theDisplay[c][r] = (colour == Colour::White) ? 'N' : 'n';
-                break;
-            case PieceType::Pawn:
-                theDisplay[c][r] = (colour == Colour::White) ? 'P' : 'p';
-                break;
-            default:
-                cout << "ERROR : Attempt to set up NULL_PIECE";
-                break;
-            }
-
+            theDisplay[c][r] = p == nullptr ? squareCharDisplay(c, r) : getPieceChar(p);
         }
     }
+
+    cout << *this << endl;
 }
 
-// TODO vvv
-void TextDisplay::doNotify(Move& move, GameState state) {
-    cout << "-Incomplete method-" << endl;
-    return;
+void TextDisplay::doNotify(pair<int, int> pos, Piece *p)
+{
+    theDisplay[pos.first][pos.second] = p == nullptr ? squareCharDisplay(pos.first, pos.second) : getPieceChar(p);
 }
 
 TextDisplay::~TextDisplay() {}
-
-// TODO ^^^
 
 ostream &operator<<(ostream &out, const TextDisplay &td)
 {
     char rowDigit = '8';
 
-    for (int r = 0; r < row; ++r)
+    for (int r = 0; r < NUM_ROWS; ++r)
     {
         out << rowDigit-- << " ";
-        for (const auto &col : td.theDisplay)
-        { // for each column
-            out << col[r];
-        }
+        for (const auto &col : td.theDisplay) out << col[r];
         out << endl;
     }
-    out << endl;
-    out << "  ";
-    for (char c = 'a'; c <= 'h'; ++c)
-    {
-        out << c;
-    }
+    out << endl << "  ";
+    for (char c = 'a'; c <= 'h'; ++c) out << c;
     out << endl;
     return out;
 }
-
