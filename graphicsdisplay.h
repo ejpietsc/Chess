@@ -10,9 +10,9 @@ class GraphicsDisplay : public Observer
     Xwindow window;
     void doNotify(pair<int, int> pos, Piece *p) override;
 
-public:
-    GraphicsDisplay();
-    ~GraphicsDisplay();
+    public:
+        GraphicsDisplay();
+        ~GraphicsDisplay();
 };
 
 #endif
