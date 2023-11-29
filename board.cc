@@ -9,25 +9,28 @@ static const int NUM_ROWS = 8;
 static const int NUM_COLS = 8;
 
 // ! [added] Static helper
-static unique_ptr<Player> createPlayer(const PlayerType pt, const int level) {
-    switch(level) {
-        case (4):
-            return move(make_unique<LevelFour>(Colour::White, pt, level));
-        case (3):
-            return move(make_unique<LevelThree>(Colour::White, pt, level));
-        case (2):
-            return move(make_unique<LevelTwo>(Colour::White, pt, level));
-        case (1):
-            return move(make_unique<LevelOne>(Colour::White, pt, level));
-        default:
-            return move(make_unique<Human>(Colour::White, pt));
+static unique_ptr<Player> createPlayer(const PlayerType pt, const int level)
+{
+    switch (level)
+    {
+    case (4):
+        return move(make_unique<LevelFour>(Colour::White, pt, level));
+    case (3):
+        return move(make_unique<LevelThree>(Colour::White, pt, level));
+    case (2):
+        return move(make_unique<LevelTwo>(Colour::White, pt, level));
+    case (1):
+        return move(make_unique<LevelOne>(Colour::White, pt, level));
+    default:
+        return move(make_unique<Human>(Colour::White, pt));
     }
 }
 
 // ____________________________________________
 
 // Private Helpers
-// ! [changed] updated to handle nullptr because p->getType is undefined for nullptr. consider if this is desired for isWhite()
+// ! [changed] updated to handle nullptr because p->getType is undefined for nullptr.
+// ! consider if this is desired for isWhite()
 bool isKing(Piece *p)
 {
     return p == nullptr ? false : p->getType() == PieceType::King;
@@ -120,26 +123,34 @@ bool Board::isPlayerInCheck(Player *plr) const {
     return true;
 }
 
-bool Board::isPlayerCheckmated(Player *plr) const {
+bool Board::isPlayerCheckmated(Player *plr) const
+{
     cout << "-Incomplete method-" << endl;
     return true;
 }
 
-bool Board::isPlayerStalemated(Player *plr) const {
+bool Board::isPlayerStalemated(Player *plr) const
+{
     cout << "-Incomplete method-" << endl;
     return true;
+}
+
+vector<Move> Board::getValidMoves(Player *plr)
+{
+    cout << "-Incomplete method-" << endl;
+    vector<Move> v;
+    return v;
 }
 
 // TODO ^^^ ------------------
-
 
 // Default board, you are white
 // ! row indices are flipped to match board layout
 Board::Board(const PlayerType whitePl, const int whiteLevel, const PlayerType blackPl, const int blackLevel) : state{GameState::NA}
 {
     // set up players
-    // ! [changed] Player/Computer is an ABC - can't instatiate directly
-    whitePlayer = createPlayer(whitePl, whiteLevel);
+    // ! [changed] Player/Computer is an ABC - can't instantiate directly
+    whitePlayer = createPlayer(whitePl, whiteLevel); //? need move
     blackPlayer = createPlayer(blackPl, blackLevel);
     currPlayer = whitePlayer.get();
 }
@@ -167,7 +178,6 @@ void Board::attach(unique_ptr<Observer> o)
 
 void Board::initBoard()
 {
-    // ! [changed] set state AFTER clearBoard, because clearBoard invokes the default ctor which creates a board with state GameState::NA
     if (!observers.empty())
     {
         clearBoard();
@@ -217,7 +227,7 @@ void Board::initBoard()
             board[i][0] = createPiece(PieceType::King, Colour::Black, Position{i, 0});
             board[i][7] = createPiece(PieceType::King, Colour::White, Position{i, 7});
         }
-    }                                                  // board setup loop
+    }                                                         // board setup loop
     unique_ptr<Observer> td = make_unique<TextDisplay>(this); // todo update when td ctor is done
     // unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(); // todo update when gd ctor is done
     attach(move(td));
@@ -231,42 +241,25 @@ bool Board::boardIsValid() const
     int whiteKing = 0;
     // exactly one w/b king
     // ! [changed] check # of kings loop
-    for (int i = 0; i < NUM_COLS; ++i) {
-        for (int j = 0; j < NUM_ROWS; ++j) {
+    for (int i = 0; i < NUM_COLS; ++i)
+    {
+        for (int j = 0; j < NUM_ROWS; ++j)
+        {
             Piece *p = (board[i][j]).get();
-            if (p == nullptr) {
+            if (p == nullptr)
+            {
                 continue;
             }
 
             blackKing += (!isWhite(p) && isKing(p)) ? 1 : 0;
             whiteKing += (isWhite(p) && isKing(p)) ? 1 : 0;
         }
-    } 
+    }
 
     if (blackKing != 1 || whiteKing != 1)
     {
         return false;
     }
-
-    // ! this doesn't iterate all of the pieces properly
-   /* for (const auto &col : board)
-    {
-        for (const auto &piece : col)
-        {
-            if (piece && piece.get() != nullptr)
-            {
-                cout << piece->getCol() << " " << piece->getRow() << endl;
-                Piece *p = piece.get();
-                blackKing += (!isWhite(p) && isKing(p)) ? 1 : 0;
-                whiteKing += (isWhite(p) && isKing(p)) ? 1 : 0;
-            }
-        }
-        if (blackKing != 1 || whiteKing != 1)
-        {
-            cout << "KING";
-            return false;
-        }
-    }*/
 
     // 2. no pawn on first or last row
     for (int i = 0; i < NUM_COLS; ++i)
@@ -357,8 +350,14 @@ void Board::setState(GameState state)
 
 void Board::incrementScore(Colour clr, float addTo)
 {
-    if (clr == Colour::Black) blackScore += addTo;
-    else whiteScore += addTo;
+    if (clr == Colour::Black)
+    {
+        blackScore += addTo;
+    }
+    else
+    {
+        whiteScore += addTo;
+    }
 }
 
 // determine if move is within the validMoves vector
@@ -366,7 +365,10 @@ static bool moveIsValid(Move &move, vector<Move> &validMoves)
 {
     for (const auto &childMove : validMoves)
     {
-        if (move == childMove) return true;
+        if (move == childMove)
+        {
+            return true;
+        }
     }
     return false;
 }

@@ -29,17 +29,19 @@ static pair<int, int> strToCoords(const string &s);
 
 // 0 based coordinates ( eg. "a1" becomes (0, 0) )
 //! (column, row) not the opposite
-struct Position {
+struct Position
+{
     int col, row;
 
     Position() = default;
 
     // ctor with coord ints
     Position(const int col, const int row)
-    : col{col}, row{row} {}
+        : col{col}, row{row} {}
 
     // ctor with a pos string (eg. "e4")
-    Position(const string &pos) {
+    Position(const string &pos)
+    {
         pair<int, int> p = strToCoords(pos);
         this->col = p.first;
         this->row = p.second;
@@ -50,7 +52,8 @@ struct Position {
     }
 };
 
-struct Move {
+struct Move
+{
     Position startPos, endPos;
 
     bool operator==(const Move &other) const {

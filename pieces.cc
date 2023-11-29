@@ -8,7 +8,8 @@ Piece::Piece(PieceType type, Colour colour, Position pos)
 Piece::~Piece() {}
 
 // TODO vvv ------------------
-void Piece::makeMove(Position &landingPos) {
+void Piece::makeMove(Position &landingPos)
+{
     cout << "-Incomplete method-" << endl;
     
     if (this->getType() == PieceType::Pawn) {

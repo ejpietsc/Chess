@@ -9,7 +9,6 @@ static const float WIN_POINTS = 1;
 static const float STALEMATE_POINTS = 0.5;
 static const string INVALID_COMMAND = "Invalid command read! Try again";
 
-
 // convert string to be fully lowercase (eg. "HElLo" -> "hello")
 static string toLowerString(const string &s)
 {
@@ -31,7 +30,10 @@ static bool isLowerCaseString(const string &s)
 
     for (int i = 0; i < len; ++i)
     {
-        if (tolower(s[i]) != s[i]) return false;
+        if (tolower(s[i]) != s[i])
+        {
+            return false;
+        }
     }
     return true;
 }
@@ -43,9 +45,12 @@ static PlayerType strToPlayer(const string &s)
     const string lowerS = toLowerString(s);
     const int len = s.length();
 
-    if (lowerS == "human") {
+    if (lowerS == "human")
+    {
         return PlayerType::Human;
-    } else if (len >= 1 && lowerS.substr(0, len - 1) == "computer") {
+    }
+    else if (len >= 1 && lowerS.substr(0, len - 1) == "computer")
+    {
         return PlayerType::Computer;
     }
 
@@ -58,17 +63,28 @@ static PieceType strToPieceType(const string &s)
 {
     const string lowerS = toLowerString(s);
 
-    if (lowerS =="k") {
+    if (lowerS == "k")
+    {
         return PieceType::King;
-    } else if (lowerS =="q") {
+    }
+    else if (lowerS == "q")
+    {
         return PieceType::Queen;
-    } else if (lowerS =="r") { 
+    }
+    else if (lowerS == "r")
+    {
         return PieceType::Rook;
-    } else if (lowerS =="n") {
+    }
+    else if (lowerS == "n")
+    {
         return PieceType::Knight;
-    } else if (lowerS =="b") {
+    }
+    else if (lowerS == "b")
+    {
         return PieceType::Bishop;
-    } else if (lowerS =="p") {
+    }
+    else if (lowerS == "p")
+    {
         return PieceType::Pawn;
     }
 
@@ -83,7 +99,8 @@ static int strToComputerLvl(const string &s)
     const int len = s.length();
 
     // prevent bad input from throwing on s.substr
-    if (len < 1) {
+    if (len < 1)
+    {
         return 0;
     }
 
@@ -92,7 +109,8 @@ static int strToComputerLvl(const string &s)
     stringstream ss{levelStr};
     ss >> level;
 
-    if (ss.fail()) {
+    if (ss.fail())
+    {
         return 0;
     }
 
@@ -103,11 +121,13 @@ static int strToComputerLvl(const string &s)
 static bool enterSetupMode(Board &gameBoard)
 {
     cout << "Entered setup mode" << endl;
-    cout << "Commands:\n" << "---------" << endl;
+    cout << "Commands:\n"
+         << "---------" << endl;
     cout << "• '+ K e1' places the piece K (i.e., white king in this case) on the square e1. If a piece is already on that square, it is replaced" << endl;
     cout << "• '- e1' removes the piece from the square e1. If there is no piece at that square, take no action" << endl;
     cout << "• '= colour' makes it colour's turn to go next" << endl;
-    cout << "• 'done' leaves setup mode\n" << endl;
+    cout << "• 'done' leaves setup mode\n"
+         << endl;
 
     gameBoard.setState(GameState::Setup);
     string curLine;
@@ -232,11 +252,10 @@ static bool enterSetupMode(Board &gameBoard)
             }
         }
 
-        else {
+        else
+        {
             cout << INVALID_COMMAND << endl;
         }
-
-    
     }
 } // end of enterSetupMode
 
@@ -248,9 +267,11 @@ static void playGame(Board &gameBoard)
         gameBoard.initBoard();
 
         cout << "A new game has started" << endl;
-        cout << "Commands:\n" << "---------" << endl;
+        cout << "Commands:\n"
+             << "---------" << endl;
         cout << "• 'setup' will enter setup mode" << endl;
-        cout << "• 'start' will start the game\n" << endl;
+        cout << "• 'start' will start the game\n"
+             << endl;
 
         // we need the user to explicitly call a "start" command
         //  otherwise, say they first run 'game computer1 human'
@@ -297,7 +318,7 @@ static void playGame(Board &gameBoard)
                     return;
                 }
             }
-            else 
+            else
             {
                 cout << INVALID_COMMAND << endl;
             }
@@ -315,7 +336,8 @@ static void playGame(Board &gameBoard)
             { // normal game operations, the player can move
 
                 // ! handle computer move
-                if (currPlr.getPlayerType() == PlayerType::Computer) {
+                if (currPlr.getPlayerType() == PlayerType::Computer)
+                {
                     gameBoard.makeMove();
                     continue;
                 }
@@ -343,16 +365,17 @@ static void playGame(Board &gameBoard)
                 }
                 else if (lowerCmdPrefix == "move")
                 {
-                    try {
+                    try
+                    {
                         const bool succ = gameBoard.makeMove();
-                        if (!succ) 
+                        if (!succ)
                         {
                             cout << "Invalid move! Try again" << endl;
                         }
                         string trash;
                         getline(cin, trash); // flush current line
                     }
-                    catch(...) // handle fatal read error
+                    catch (...) // handle fatal read error
                     {
                         return;
                     }
@@ -377,7 +400,8 @@ static void playGame(Board &gameBoard)
                 gameBoard.incrementScore(otherClr, STALEMATE_POINTS);
                 break;
             }
-            else {
+            else
+            {
                 cout << "Invalid GameState! Restarting..." << endl;
                 break;
             }
@@ -386,8 +410,8 @@ static void playGame(Board &gameBoard)
 } // end of playGame()
 
 // output formatted score
-//todo maybe move to text display (View)
-static void outScore(const float whiteScore, const float blackScore) 
+// todo maybe move to text display (View)
+static void outScore(const float whiteScore, const float blackScore)
 {
     cout << "Final Score:\n";
     cout << "White: " << whiteScore << "\n";
@@ -396,9 +420,12 @@ static void outScore(const float whiteScore, const float blackScore)
 
 int main()
 {
-    cout << "Welcome to Chess!\n" << endl;
-    cout << "Commands:\n" << "---------" << endl;
-    cout << "• 'game white-player black-player' starts a game with designated player types. The parameters white-player and black-player can be either human or computer[1-4]\n" << endl;
+    cout << "Welcome to Chess!\n"
+         << endl;
+    cout << "Commands:\n"
+         << "---------" << endl;
+    cout << "• 'game white-player black-player' starts a game with designated player types. The parameters white-player and black-player can be either human or computer[1-4]\n"
+         << endl;
 
     string curLine; // current line from input
     string cmd;     // game - resign - player - setup - done
@@ -460,7 +487,7 @@ int main()
             //  therefore break the loop and start the main game loop
             break;
         }
-        else 
+        else
         {
             cout << INVALID_COMMAND << endl;
         }

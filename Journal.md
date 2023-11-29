@@ -1,19 +1,14 @@
 # Questions
-- I think Board should be the subject - RESOLVED
-- or at the very least if we have piece subjects, the board doesn't
-need to observe pieces 
 - Move may need to store capture info - TBD
 - does notify take state or does the controller (main) communicate it
 - return Move or Move&
-- keep each player score field in player objects instead of board?
-
+- keep each player score field in player objects instead of board? - doesn't matter
 
 # Ideas
 - Template & Factory Method for Pieces
 - may need pieces to have a ptr to Board
-- Move stores all move info and it get passed to computer to determine which move 
+- Move stores all move info and it gets passed to computer to determine which move 
 it prefers based on lvl
-
 
 # Thoughts
 - piece doesn't need to have a ptr to board of know anything abt board
@@ -27,3 +22,11 @@ vector indexing
 - Added PlayerType::NULL_PLR to return from the playerStringToPlayerType method in main.cc when invalid input is given (same reasoning for adding NULL_PIECE)
 - Made Board persist between games instead of being destroyed and recreated. This allowed us to keep track of score in the Board instead of in main
     - with this, we had to add whiteScore and blackScore private fields to Board, in addition to public setters/getters
+
+# THINGS TO CONSIDER (POST TALK WITH ROSS):
+- remove static from non-helper fns that are on .h
+- createPiece is useless and getPiecePtr
+- fine to keep same players
+- GET RIDE OF STATE field
+- get rid of the ton on imports in util.h
+- std::array takes size (no resizing)
