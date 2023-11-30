@@ -53,8 +53,13 @@ Colour getNextColour(Colour clr)
 // for the sake of swap only
 Board::Board() : state{GameState::NA} {}
 
-
 // TODO vvv ------------------
+vector<Move> Board::getValidMoves(Player *plr) {
+    cout << "-Incomplete method-" << endl;
+    vector<Move> v;
+    return v;
+}
+
 bool Board::isPlayerInCheck(Player *plr) const {
     cout << "-Incomplete method-" << endl;
     return true;
@@ -68,12 +73,6 @@ bool Board::isPlayerCheckmated(Player *plr) const {
 bool Board::isPlayerStalemated(Player *plr) const {
     cout << "-Incomplete method-" << endl;
     return true;
-}
-
-vector<Move> Board::getValidMoves(Player *plr) {
-    cout << "-Incomplete method-" << endl;
-    vector<Move> v;
-    return v;
 }
 
 // TODO ^^^ ------------------
