@@ -30,3 +30,6 @@ vector indexing
 - GET RIDE OF STATE field
 - get rid of the ton on imports in util.h
 - std::array takes size (no resizing)
+
+# Move Logic:
+-1. makeMove
