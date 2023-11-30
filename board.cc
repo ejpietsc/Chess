@@ -53,11 +53,34 @@ Colour getNextColour(Colour clr)
 // for the sake of swap only
 Board::Board() : state{GameState::NA} {}
 
-// TODO vvv ------------------
+// WORK IN PROGRESS vvv ------------------
 vector<Move> Board::getValidMoves(Player *plr) {
-    cout << "-Incomplete method-" << endl;
-    vector<Move> v;
-    return v;
+    vector<Move> moves; // List of possible moves
+    vector<Piece *> pieces; // List of pieces owned by the current player
+
+    // Iterate through the board and populate pieces
+    for (vector<unique_ptr<Piece>>& col : board) {
+        for (unique_ptr<Piece>& loc : col) {
+            Piece *p = loc.get();
+            // Add to pieces only if colour matches
+            if (p->getColour() == plr->getColour()) pieces.emplace_back(p);
+        }
+    }
+
+    for (Piece *p : pieces) {
+        vector<Position> pmoves = p->getMoves();
+        for (Position m : pmoves) {
+            if (
+                m.col >= 0 &&
+                m.col < NUM_COLS &&
+                m.row >= 0 &&
+                m.row < NUM_ROWS &&
+                board[m.col][m.row]->getColour() != plr->getColour()
+            ) { moves.emplace_back(Move{p->getPosition(), m}); }
+        }
+    }
+
+    return moves;
 }
 
 bool Board::isPlayerInCheck(Player *plr) const {
