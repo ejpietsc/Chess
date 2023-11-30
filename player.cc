@@ -32,6 +32,7 @@ Move Human::doGetNextMove() const
     return this->getHumanMove();
 }
 
+//! check start and end are proper format
 Move Human::getHumanMove() const
 {
     string currLine, start, end;

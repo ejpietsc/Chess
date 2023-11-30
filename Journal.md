@@ -4,6 +4,12 @@
 - return Move or Move&
 - keep each player score field in player objects instead of board? - doesn't matter
 
+# Improvements
+- invalid moves error reporting
+- controller
+
+
+
 # Ideas
 - Template & Factory Method for Pieces
 - may need pieces to have a ptr to Board
@@ -32,4 +38,8 @@ vector indexing
 - std::array takes size (no resizing)
 
 # Move Logic:
--1. makeMove
+- board fetches from piece (based on piece type)
+- board filter the returned vec of moves:
+    - landing spot is not occupied by same color piece
+    - doesn't put king in check
+    - if curr player in check
