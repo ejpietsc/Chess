@@ -56,7 +56,7 @@ Computer::Computer(const Colour team, const PlayerType p, const int lvl)
 
 Move Computer::doGetNextMove() const
 {
-    return this->generateMove(this->generateValidMoves());
+    return Move{Position{0. 0}, Position{0, 0}}; // TODO TODO TODO - Incorrect code - PLEASE REPLACE EVENTUALLY
 }
 
 LevelOne::LevelOne(const Colour team, const PlayerType p, const int lvl) : Computer{team, p, lvl} {}
