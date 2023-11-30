@@ -93,27 +93,3 @@ Move LevelFour::generateMove(vector<Move> &&moves) const {
     Move m{};
     return m;
 }
-
-vector<Move> LevelOne::generateValidMoves() const {
-    cout << "-Incomplete method-" << endl;
-    vector<Move> v;
-    return v;
-}
-
-vector<Move> LevelTwo::generateValidMoves() const {
-    cout << "-Incomplete method-" << endl;
-    vector<Move> v;
-    return v;
-}
-
-vector<Move> LevelThree::generateValidMoves() const {
-    cout << "-Incomplete method-" << endl;
-    vector<Move> v;
-    return v;
-}
-
-vector<Move> LevelFour::generateValidMoves() const {
-    cout << "-Incomplete method-" << endl;
-    vector<Move> v;
-    return v;
-}

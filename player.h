@@ -54,7 +54,6 @@ class Computer : public Player
     protected:
     int lvl;
     // generate a vector of valid moves to pass to generateMove
-    virtual vector<Move> generateValidMoves() const = 0;
 
     // generate a Move object using algorithm depending on Computer level
     //  pass it generateValidMoves() rvalue
@@ -69,7 +68,6 @@ class Computer : public Player
 
 class LevelOne final : public Computer
 {
-    vector<Move> generateValidMoves() const;
     Move generateMove(vector<Move> &&moves) const override; // random pick
 
   public:
@@ -79,7 +77,6 @@ class LevelOne final : public Computer
 
 class LevelTwo final : public Computer
 {
-    vector<Move> generateValidMoves() const;
     Move generateMove(vector<Move> &&moves) const override; // prefers capture & checks
 
   public:
@@ -89,7 +86,6 @@ class LevelTwo final : public Computer
 
 class LevelThree final : public Computer
 {
-    vector<Move> generateValidMoves() const;
     Move generateMove(vector<Move> &&moves) const override; // prefers avoiding capture, capture & checks
 
   public:
@@ -99,7 +95,6 @@ class LevelThree final : public Computer
 
 class LevelFour final : public Computer
 {
-    vector<Move> generateValidMoves() const;
     Move generateMove(vector<Move> &&moves) const override; // something sophisticated
     
   public:
