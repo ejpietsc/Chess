@@ -59,7 +59,7 @@ public:
     void initBoard(); // done
 
     // Observer Pattern methods
-    void notifyObservers() const;
+    void notifyObservers(Position pos, Piece *p) const;
     void attach(unique_ptr<Observer> o); // done
 
     // SetUp mode

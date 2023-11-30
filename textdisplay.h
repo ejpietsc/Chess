@@ -8,7 +8,7 @@
 class TextDisplay : public Observer
 {
     std::vector<std::vector<char>> theDisplay;
-    void doNotify(pair<int, int> pos, Piece *p) override;
+    void doNotify(Position pos, Piece *p) override;
 
     public:
         TextDisplay(Board *subject);
@@ -16,7 +16,7 @@ class TextDisplay : public Observer
         // void displayScoreBoard(ostream &out);
         ~TextDisplay();
 
-        friend std::ostream &operator<<(std::ostream &out, const TextDisplay &td);
+    friend std::ostream &operator<<(std::ostream &out, const TextDisplay &td);
 };
 
 std::ostream &operator<<(std::ostream &out, const TextDisplay &td); 

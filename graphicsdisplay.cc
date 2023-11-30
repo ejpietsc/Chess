@@ -6,7 +6,7 @@ GraphicsDisplay::GraphicsDisplay() {}
 
 GraphicsDisplay::~GraphicsDisplay() {}
 
-void GraphicsDisplay::doNotify(pair<int, int> pos, Piece *p) {
+void GraphicsDisplay::doNotify(Position pos, Piece *p) {
     cout << "-Incomplete method-" << endl;
     return;
 }

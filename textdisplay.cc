@@ -77,10 +77,10 @@ TextDisplay::TextDisplay(Board *subject)
 }
 
 // doNotify(pair, Piece *) - Overriden function to update and print the grid
-void TextDisplay::doNotify(pair<int, int> pos, Piece *p)
+void TextDisplay::doNotify(Position pos, Piece *p)
 {
     // Call getPieceChar() to get the appropriate character and update the grid
-    theDisplay[pos.first][pos.second] = p == nullptr ? squareCharDisplay(pos.first, pos.second) : getPieceChar(p);
+    theDisplay[pos.col][pos.row] = p == nullptr ? squareCharDisplay(pos.col, pos.row) : getPieceChar(p);
 
     // Print out the updated TextDisplay
     cout << *this << endl;
