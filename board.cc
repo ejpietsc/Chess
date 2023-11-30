@@ -100,6 +100,12 @@ void Board::clearBoard()
     swap(state, tmp.state);
 }
 
+void Board::notifyObservers(Position pos, Piece *p) const {
+    for (const unique_ptr<Observer>& obs : observers) {
+        obs.get()->notify(pos, p);
+    }
+}
+
 void Board::attach(unique_ptr<Observer> o)
 {
     observers.push_back(move(o)); //? does this work? move needed!
@@ -233,13 +239,13 @@ void Board::addPiece(PieceType pt, Colour clr, Position pos)
 {
     auto newPiece = createPiece(pt, clr, pos);
     board[pos.col][pos.row].reset(newPiece.get());
-    // todo NOTIFY_OBSERVERS
+    notifyObservers(pos, newPiece.get()); // NEW!
 }
 
 void Board::delPiece(Position pos)
 {
     board[pos.col][pos.row].reset(nullptr);
-    // todo NOTIFY_OBSERVERS
+    notifyObservers(pos, nullptr); // NEW!
 }
 
 void Board::flipTurn()
