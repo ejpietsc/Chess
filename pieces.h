@@ -45,6 +45,7 @@ public:
     // Getters and setters
     PieceType getType() const; // done
     Colour getColour() const; // done
+    Position getPosition() const; // done
     int getRow() const; // done
     int getCol() const; // done
 

@@ -68,6 +68,10 @@ Colour Piece::getColour() const
     return colour;
 }
 
+Position Piece::getPosition() const {
+    return pos;
+}
+
 int Piece::getCol() const
 {
     return pos.col;
