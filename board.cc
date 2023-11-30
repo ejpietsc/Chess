@@ -43,7 +43,7 @@ bool isWhite(Piece *p)
     return p == nullptr ? false : p->getColour() == Colour::White;
 }
 
-Colour getOtherColour(Colour clr)
+Colour getNextColour(Colour clr)
 {
     return (clr == Colour::White ? Colour::Black : Colour::White);
 }
@@ -331,7 +331,7 @@ bool Board::makeMove()
         if (pieceToMove != nullptr)
         { // a valid move has occurred!
             pieceToMove->makeMove(move.endPos);
-            setTurn(getOtherColour(currPlayer->getColour()));
+            setTurn(getNextColour(currPlayer->getColour()));
             return true;
         }
     } // else do ntg here

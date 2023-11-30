@@ -99,6 +99,6 @@ public:
 bool isKing(Piece *p);
 bool isPawn(Piece *p);
 bool isWhite(Piece *p);
-Colour getOtherColour(Colour clr);
+Colour getNextColour(Colour clr);
 
 #endif
