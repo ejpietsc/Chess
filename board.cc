@@ -75,7 +75,9 @@ vector<Move> Board::getValidMoves(Player *plr) {
                 m.col < NUM_COLS &&
                 m.row >= 0 &&
                 m.row < NUM_ROWS &&
-                board[m.col][m.row]->getColour() != plr->getColour()
+                (board[m.col][m.row] == nullptr ||
+                board[m.col][m.row]->getColour() != plr->getColour())
+                
             ) { moves.emplace_back(Move{p->getPosition(), m}); }
         }
     }
