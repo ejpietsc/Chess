@@ -45,7 +45,7 @@ struct Position {
         this->row = p.second;
     }
 
-    bool operator==(const Position &other) {
+    bool operator==(const Position &other) const {
         return (this->row == other.row && this->col == other.col);
     }
 };
@@ -53,7 +53,7 @@ struct Position {
 struct Move {
     Position startPos, endPos;
 
-    bool operator==(const Move &other) {
+    bool operator==(const Move &other) const {
         return (this->startPos == other.startPos && this->endPos == other.endPos);
     }
 };
