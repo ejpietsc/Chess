@@ -55,21 +55,24 @@ Board::Board() : state{GameState::NA} {}
 
 // WORK IN PROGRESS vvv ------------------
 bool Board::checkMovePiece(Move m) const {
+    // Get possible moves for piece
     vector<Position> mvs = getPiece(m.startPos)->getMoves();
+    // Return true if the provided move is one of these moves, false otherwise
     for (Position& p : mvs) {
         if (m.endPos == p) return true;
     }
     return false;
 }
 
+// TODO - Add advanced logic (Double move, en passant, castling)
 bool Board::checkMoveEndPos(Move m) const {
     return (
-        getPiece(m.startPos) &&
-        m.endPos.col >= 0 &&
+        getPiece(m.startPos) && // There is a piece to move
+        m.endPos.col >= 0 && // The end position is within bounds
         m.endPos.col < NUM_COLS &&
         m.endPos.row >= 0 &&
         m.endPos.row < NUM_ROWS &&
-        (getPiece(m.endPos) == nullptr ||
+        (getPiece(m.endPos) == nullptr || // The destination square is occupiable
         getPiece(m.endPos)->getColour() != getPiece(m.startPos)->getColour())
     );
 }
@@ -92,8 +95,11 @@ vector<Move> Board::getValidMoves(Player *plr) const {
         }
     }
 
+    // Iterate throufh player's pieces
     for (Piece *p : pieces) {
+        // Get possible moves for piece
         vector<Position> pmoves = p->getMoves();
+        // If the move is valid, add it to the result vector
         for (Position ep : pmoves) {
             Move m{p->getPosition(), ep};
             if (checkMoveEndPos(m)) { moves.emplace_back(m); }
@@ -109,6 +115,7 @@ vector<Move> Board::getLegalMoves(Player *plr) const {
 }
 
 bool Board::isPlayerInCheck(Player *plr) const {
+    
     cout << "-Incomplete method-" << endl;
     return true;
 }
