@@ -71,8 +71,8 @@ public:
     GameState getState() const;                  // done
     Player *getPlayerByColour(Colour clr) const; // done
     Player *getCurrPlayer() const;               // done
-    Piece *getPiece(Position pos);               // done
-    Piece *getPieceByCoords(int c, int r);       // done
+    Piece *getPiece(Position pos) const;         // done
+    Piece *getPieceByCoords(int c, int r) const; // done
     float getScore(Colour clr);                  // done
 
     // setters
@@ -85,8 +85,9 @@ public:
 
     // Move logic
     bool makeMove();
-    vector<Move> getValidMoves(Player *plr);
-    bool isPlayerMoveValid();
+    bool isValidMove(Move m) const;
+    bool isLegalMove(Move m) const;
+    vector<Move> getValidMoves(Player *plr) const;
 
     // Check if plr is checkmated or stalemated,
     //  if this returns true, main can then call getState() to determine what to do

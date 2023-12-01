@@ -54,13 +54,30 @@ Colour getNextColour(Colour clr)
 Board::Board() : state{GameState::NA} {}
 
 // WORK IN PROGRESS vvv ------------------
-vector<Move> Board::getValidMoves(Player *plr) {
+bool Board::isValidMove(Move m) const {
+    return (
+        getPiece(m.startPos) &&
+        m.endPos.col >= 0 &&
+        m.endPos.col < NUM_COLS &&
+        m.endPos.row >= 0 &&
+        m.endPos.row < NUM_ROWS &&
+        (getPiece(m.endPos) == nullptr ||
+        getPiece(m.endPos)->getColour() != getPiece(m.startPos)->getColour())
+    );
+}
+
+// TODO TODO TODO
+bool Board::isLegalMove(Move m) const {
+    return false;
+}
+
+vector<Move> Board::getValidMoves(Player *plr) const {
     vector<Move> moves; // List of possible moves
     vector<Piece *> pieces; // List of pieces owned by the current player
 
     // Iterate through the board and populate pieces
-    for (vector<unique_ptr<Piece>>& col : board) {
-        for (unique_ptr<Piece>& loc : col) {
+    for (const vector<unique_ptr<Piece>>& col : board) {
+        for (const unique_ptr<Piece>& loc : col) {
             Piece *p = loc.get();
             // Add to pieces only if colour matches
             if (p->getColour() == plr->getColour()) pieces.emplace_back(p);
@@ -69,16 +86,9 @@ vector<Move> Board::getValidMoves(Player *plr) {
 
     for (Piece *p : pieces) {
         vector<Position> pmoves = p->getMoves();
-        for (Position m : pmoves) {
-            if (
-                m.col >= 0 &&
-                m.col < NUM_COLS &&
-                m.row >= 0 &&
-                m.row < NUM_ROWS &&
-                (board[m.col][m.row] == nullptr ||
-                board[m.col][m.row]->getColour() != plr->getColour())
-                
-            ) { moves.emplace_back(Move{p->getPosition(), m}); }
+        for (Position ep : pmoves) {
+            Move m{p->getPosition(), ep};
+            if (isValidMove(m)) { moves.emplace_back(m); }
         }
     }
 
@@ -305,12 +315,12 @@ Player *Board::getCurrPlayer() const
     return currPlayer;
 }
 
-Piece *Board::getPiece(Position pos)
+Piece *Board::getPiece(Position pos) const
 {
     return board[pos.col][pos.row].get();
 }
 
-Piece *Board::getPieceByCoords(int c, int r)
+Piece *Board::getPieceByCoords(int c, int r) const
 {
     return board[c][r].get();
 }
