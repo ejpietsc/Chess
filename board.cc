@@ -94,7 +94,8 @@ vector<Move> Board::getValidMoves(Player *plr) const {
         for (const unique_ptr<Piece>& loc : col) {
             Piece *p = loc.get();
             // Add to pieces only if colour matches
-            if (p->getColour() == plr->getColour()) pieces.emplace_back(p);
+            if (p->getColour() == plr->getColour())
+                pieces.emplace_back(p);
         }
     }
 
@@ -165,8 +166,10 @@ void Board::clearBoard()
     swap(state, tmp.state);
 }
 
-void Board::notifyObservers(Position pos, Piece *p) const {
-    for (const unique_ptr<Observer>& obs : observers) {
+void Board::notifyObservers(Position pos, Piece *p) const
+{
+    for (const unique_ptr<Observer> &obs : observers)
+    {
         obs.get()->notify(pos, p);
     }
 }
@@ -377,20 +380,20 @@ static bool moveIsValid(Move &move, vector<Move> &validMoves)
 bool Board::makeMove()
 {
     Move move = currPlayer->getNextMove();
-
-    vector<Move> validMoves = getValidMoves(currPlayer);
-
-    if (moveIsValid(move, validMoves))
+    if (currPlayer->getPlayerType == PlayerType::Human)
     {
-        Piece *pieceToMove = getPiece(move.startPos);
+        vector<Move> validMoves = getValidMoves(currPlayer);
+        if (!moveIsValid(move, validMoves))
+        {
+            return false
+        } // else do ntg here
+    }
+    Piece *pieceToMove = getPiece(move.startPos);
 
-        if (pieceToMove != nullptr)
-        { // a valid move has occurred!
-            pieceToMove->makeMove(move.endPos);
-            setTurn(getNextColour(currPlayer->getColour()));
-            return true;
-        }
-    } // else do ntg here
-
-    return false;
+    if (pieceToMove != nullptr)
+    { // a valid move has occurred!
+        pieceToMove->makeMove(move.endPos);
+        setTurn(getNextColour(currPlayer->getColour()));
+        return true;
+    }
 }

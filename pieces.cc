@@ -20,6 +20,7 @@ void Piece::makeMove(Position &landingPos)
     }
 
     this->setPosition(landingPos.col, landingPos.row);
+    //todo NOTIFY OBSERVERS
 
     // ! there may be more things needed here
 }

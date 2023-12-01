@@ -23,8 +23,6 @@ using namespace std;
 
 // Forward declarations
 static pair<int, int> strToCoords(const string &s);
-
-
 // Structures and custom objects:
 
 // 0 based coordinates ( eg. "a1" becomes (0, 0) )
@@ -61,12 +59,16 @@ struct Move
     }
 };
 
+bool isValidSyntax(char c1, char c2) {
+    return ('a' <= c1 && c1 <= 'h') && ('1' <= c2 && c2 <= '8')
+}
+
 
 // Helper functions
 static pair<int, int> strToCoords(const string &s)
 {
     const int len = s.length();
-    if (len != 2) {
+    if (len != 2 && isValidSyntax(s[0], s[1])) {
         return make_pair(-1, -1);
     } else {
         return make_pair(s[0] - 'a', s[1] - '1');

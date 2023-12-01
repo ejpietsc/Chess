@@ -370,7 +370,9 @@ static void playGame(Board &gameBoard)
                         const bool succ = gameBoard.makeMove();
                         if (!succ)
                         {
+                            //? notify user why invalid: syntax or incorrect move
                             cout << "Invalid move! Try again" << endl;
+                            // cout << "Invalid Input! Input format is: move [a-h,1-8] [a-h,1-8]"
                         }
                         string trash;
                         getline(cin, trash); // flush current line

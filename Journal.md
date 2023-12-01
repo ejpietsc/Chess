@@ -6,6 +6,7 @@
 
 # Improvements
 - invalid moves error reporting
+- getHuman Move() reports if invalid bc of syntax or cz not allowed
 - controller
 
 
