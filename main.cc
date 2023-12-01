@@ -8,9 +8,6 @@ using namespace std;
 static const float WIN_POINTS = 1;
 static const float STALEMATE_POINTS = 0.5;
 static const string INVALID_COMMAND = "Invalid command read! Try again";
-const Position illegal_move = Position{-2, -2};
-const Position invalid_input = Position{-1, -1};
-
 
 // convert string to be fully lowercase (eg. "HElLo" -> "hello")
 static string toLowerString(const string &s)
@@ -317,7 +314,7 @@ static void playGame(Board &gameBoard)
                     break;
                 }
                 else
-                { // fatal read fail occured in enterSetupMode
+                { // fatal read fail occurred in enterSetupMode
                     return;
                 }
             }
@@ -370,11 +367,11 @@ static void playGame(Board &gameBoard)
                 {
                     try
                     {
-                        Position landindPos = gameBoard.makeMove();
-                        if (landindPos == invalid_input)
+                        Position landingPos = gameBoard.makeMove();
+                        if (landingPos == invalid_input)
                         {
                             cout << "Invalid Input! Input format is: move [a-h,1-8] [a-h,1-8]" << endl;
-                        } else if (landindPos == illegal_move) {
+                        } else if (landingPos == illegal_move) {
                             // ? add more for more specific error messages
                             cout << "Illegal Move! Try again" << endl;
                         }

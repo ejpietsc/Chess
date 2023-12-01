@@ -7,16 +7,6 @@
 
 using namespace std;
 
-enum class PieceType
-{
-    King,
-    Queen,
-    Bishop,
-    Rook,
-    Knight,
-    Pawn,
-    NULL_PIECE
-};
 enum class Colour
 {
     White,

@@ -1,7 +1,7 @@
 #include "board.h"
 #include "util.h"
 #include "textdisplay.h"
-#include "graphicsdisplay.h"
+// #include "graphicsdisplay.h"
 
 using namespace std;
 
@@ -15,15 +15,15 @@ static unique_ptr<Player> createPlayer(const PlayerType pt, const int level)
     switch (level)
     {
     case (4):
-        return move(make_unique<LevelFour>(Colour::White, pt, level));
+        return make_unique<LevelFour>(Colour::White, pt, level);
     case (3):
-        return move(make_unique<LevelThree>(Colour::White, pt, level));
+        return make_unique<LevelThree>(Colour::White, pt, level);
     case (2):
-        return move(make_unique<LevelTwo>(Colour::White, pt, level));
+        return make_unique<LevelTwo>(Colour::White, pt, level);
     case (1):
-        return move(make_unique<LevelOne>(Colour::White, pt, level));
+        return make_unique<LevelOne>(Colour::White, pt, level);
     default:
-        return move(make_unique<Human>(Colour::White, pt));
+        return make_unique<Human>(Colour::White, pt);
     }
 }
 
@@ -32,9 +32,10 @@ static unique_ptr<Player> createPlayer(const PlayerType pt, const int level)
 //? if not used here, move to player.cc
 bool moveIsValid(Move &move, vector<Move> &validMoves)
 {
-    for (const auto &childMove : validMoves)
+    for (const auto &m : validMoves)
     {
-        if (move == childMove)
+        // ! [updated] since Move has more fields, we just cmp pos to check if same move
+        if (move.startPos == m.startPos && move.endPos == m.endPos)
         {
             return true;
         }
@@ -44,7 +45,7 @@ bool moveIsValid(Move &move, vector<Move> &validMoves)
 
 // ____________________________________________
 
-// Private Helpers
+// Helpers
 // ! [changed] updated to handle nullptr because p->getType is undefined for nullptr.
 // ! consider if this is desired for isWhite()
 bool isKing(Piece *p)
@@ -89,6 +90,7 @@ vector<Piece *> Board::getPlayerPieces(const Player *plr) const
             }
         }
     }
+    return pieces;
 }
 // WORK IN PROGRESS vvv ------------------
 //? what for vvv
@@ -135,6 +137,7 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
             // 2. check moves that land us on valid spot
             if (checkMoveEndPos(m))
             {
+                //! add capture info
                 if (getPiece(ep))
                 {
                     m.captured = true;
@@ -144,42 +147,75 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
             }
         }
     }
-    // 3. check king is not in check
-    if (!experiment && isPlayerInCheck(plr, experiment))
-    {
-        moves = getMovesToUncheck(moves);
-    }
-    // 4. check move doesn't put us in check
-    vector<Move> newMoves;
-    for (const Move &m : moves)
-    {
-        if (!putsPlayerInCheck(m, plr, experiment)) // todo add experiment field when implemented
+    //! when a player A has the opponent B in check, even A moves that put B the attacker
+    //! in check are moves that A can't make - we can't uncheck ourselves by checking the opponent
+    //! that's why the following checks should be omitted when in experiment
+    if (!experiment)
+    { // 3. are we in check
+        if (isPlayerInCheck(plr))
         {
-            newMoves.emplace_back(m);
+            moves = getMovesToUncheck(moves);
+        }
+        else
+        { // 4. will move put us in check
+            vector<Move> newMoves;
+            for (const Move &m : moves)
+            {
+                if (!putsPlayerInCheck(m, plr))
+                {
+                    newMoves.emplace_back(m);
+                }
+            }
+            moves = newMoves;
         }
     }
-    moves = newMoves;
 
     return moves;
 }
-// todo test if works with advanced moves
-//TODO FIX INFINITE RECURSION !!
-bool Board::putsPlayerInCheck(const Move &m, const Player *p, bool experiment) const
+
+//! [added]
+Player *Board::getNextPlayer() const
 {
-    // if we were to make the move, would we put our player in check
+    return (currPlayer == whitePlayer.get()) ? blackPlayer.get() : whitePlayer.get();
+}
+
+//* returns moves that uncheck us AND don't put us in some other check either
+vector<Move> Board::getMovesToUncheck(vector<Move> &moves) const
+{
+    // if we made the move, none of the opponent moves can put us in check
+    vector<Move> movesToUncheck;
+    for (const Move &m : moves)
+    {
+        if (!putsPlayerInCheck(m, currPlayer))
+        {
+            movesToUncheck.emplace_back(m);
+        }
+    }
+    return movesToUncheck;
+}
+
+// checks if making move m puts player p in check - makes move and calls isPlayerInCheck
+bool Board::putsPlayerInCheck(const Move &m, const Player *plr) const
+{
     Board tmp{*this};
-    tmp.setTurn(p->getColour());
     tmp.board[m.endPos.col][m.endPos.row].reset(getPiece(m.startPos));
     tmp.board[m.startPos.col][m.startPos.row].reset(nullptr);
-    return tmp.isPlayerInCheck(p, experiment);
+    return tmp.isPlayerInCheck(plr);
 }
-//TODO FIX INFINITE RECURSION !!
-bool Board::isPlayerInCheck(const Player *plr, bool experiment) const
+
+// checks in case it were the other player turn, if they could make a valid move that captures our king
+bool Board::isPlayerInCheck(const Player *plr) const
 {
-    // if it were the other player turn, they can make a valid move that can capture our king
     Board tmp{*this};
+    // 1. switch player turns
+    tmp.setTurn(plr->getColour());
     tmp.flipTurn();
+
+    //! getValidMoves in experiment=true will stop inf recursion
+    // 2. get valid moves
     vector<Move> moves = tmp.getValidMoves(tmp.getCurrPlayer(), true);
+
+    // 3. check if any move captures [plr] king
     for (const auto &m : moves)
     {
         if (m.captured && m.capturedPt == PieceType::King)
@@ -192,12 +228,21 @@ bool Board::isPlayerInCheck(const Player *plr, bool experiment) const
 
 bool Board::isPlayerCheckmated(const Player *plr) const
 {
-    return getValidMoves(plr).empty() && isPlayerInCheck(plr);
+    return isPlayerInCheck(plr) && getValidMoves(plr).empty();
 }
 
 bool Board::isPlayerStalemated(const Player *plr) const
 {
-    return getValidMoves(plr).empty() && !isPlayerInCheck(plr);
+    return !isPlayerInCheck(plr) && getValidMoves(plr).empty();
+}
+
+//! will prob not work with moves that are complex like en passant - UPDATE LATER
+void Board::doMove(const Move &m)
+{
+    delPiece(m.endPos);
+    Piece &p = *getPiece(m.startPos);
+    addPiece(p.getType(), p.getColour(), m.endPos);
+    delPiece(m.startPos);
 }
 
 //! [update] makeMove returns Position and leaves checking for getNextMove(validMoves)
@@ -208,28 +253,12 @@ Position Board::makeMove()
     // TODO add pawn capture moves to validMoves !!!!
     Move move = currPlayer->getNextMove(validMoves);
     // check if move valid
-    if (move.endPos.col < 0)
+    if (move.endPos.col >= 0)
     {
-        // todo MAKE MOVE AND NOTIFY
+        doMove(move);
     }
     return move.endPos;
 }
-
-bool Board::isPlayerCheckmated(const Player *plr) const
-{
-    // in check & no valid moves
-    cout << "-Incomplete method-" << endl;
-    return true;
-}
-
-bool Board::isPlayerStalemated(const Player *plr) const
-{
-    // not in check & no valid moves
-    cout << "-Incomplete method-" << endl;
-    return true;
-}
-
-// TODO ^^^ ------------------
 
 // Default board, you are white
 // ! row indices are flipped to match board layout
@@ -243,7 +272,9 @@ Board::Board(const PlayerType whitePl, const int whiteLevel, const PlayerType bl
 }
 
 //! does not copy observers since we will never have more than one active board at once
-Board::Board(const Board &other) : whitePlayer{isHuman(other.whitePlayer.get()) ? createPlayer(PlayerType::Human, 0) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.whitePlayer.get()))->getLvl())},
+//? are observers correctly set to empty vector (no deep copy! or will change displays as we experiment)
+Board::Board(const Board &other) : observers{},
+                                   whitePlayer{isHuman(other.whitePlayer.get()) ? createPlayer(PlayerType::Human, 0) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.whitePlayer.get()))->getLvl())},
                                    blackPlayer{isHuman(other.blackPlayer.get()) ? createPlayer(PlayerType::Human, 0) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.blackPlayer.get()))->getLvl())},
                                    currPlayer{isWhiteTeam(other.currPlayer) ? whitePlayer.get() : blackPlayer.get()},
                                    whiteScore{other.whiteScore}, blackScore{other.blackScore}
@@ -254,7 +285,7 @@ Board::Board(const Board &other) : whitePlayer{isHuman(other.whitePlayer.get()) 
         for (const auto &piece : col)
         {
             // Assuming Piece has a copy constructor
-            copyCol.push_back(std::make_unique<Piece>(*piece));
+            copyCol.emplace_back(createPiece(piece->getType(), piece->getColour(), piece->getPosition()));
         }
         board.push_back(std::move(copyCol));
     }
@@ -280,7 +311,7 @@ void Board::notifyObservers(Position pos, Piece *p) const
 
 void Board::attach(unique_ptr<Observer> o)
 {
-    observers.push_back(move(o)); //? does this work? move needed!
+    observers.emplace_back(std::move(o)); //? does this work? move needed!
 }
 
 void Board::initBoard()
@@ -337,7 +368,7 @@ void Board::initBoard()
     }                                                         // board setup loop
     unique_ptr<Observer> td = make_unique<TextDisplay>(this); // todo update when td ctor is done
     // unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(); // todo update when gd ctor is done
-    attach(move(td));
+    attach(std::move(td));
     // attach(move(gd));
 }
 
@@ -388,7 +419,7 @@ bool Board::boardIsValid() const
     return true;
 } // end of boardIsValid()
 
-void Board::addPiece(PieceType pt, Colour clr, Position pos)
+void Board::addPiece(const PieceType &pt, const Colour &clr, const Position &pos)
 {
     auto newPiece = createPiece(pt, clr, pos);
     board[pos.col][pos.row].reset(newPiece.get());
@@ -434,7 +465,7 @@ Player *Board::getCurrPlayer() const
     return currPlayer;
 }
 
-Piece *Board::getPiece(Position pos) const
+Piece *Board::getPiece(const Position &pos) const
 {
     return board[pos.col][pos.row].get();
 }
