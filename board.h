@@ -85,9 +85,13 @@ public:
 
     // Move logic
     bool makeMove();
-    bool isValidMove(Move m) const;
-    bool isLegalMove(Move m) const;
-    vector<Move> getValidMoves(Player *plr) const;
+    bool checkMovePiece(Move m) const; // Checks if the piece in the location can make the move
+    bool checkMoveEndPos(Move m) const; // Checks if the end location is within bounds and can be occupied
+    bool isLegalMove(Move m) const; // Checks if the move doesn't put the player in checkmate
+    vector<Move> getValidMoves(Player *plr) const; // Gets a list of valid moves that the player can make
+    vector<Move> getLegalMoves(Player *plr) const; // Gets a list of legal moves that the player can make
+    // NOTE: Valid move: Within bounds, acceptable end position
+    // Legal move: Valid move AND doesn't put player in check
 
     // Check if plr is checkmated or stalemated,
     //  if this returns true, main can then call getState() to determine what to do

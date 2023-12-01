@@ -54,7 +54,15 @@ Colour getNextColour(Colour clr)
 Board::Board() : state{GameState::NA} {}
 
 // WORK IN PROGRESS vvv ------------------
-bool Board::isValidMove(Move m) const {
+bool Board::checkMovePiece(Move m) const {
+    vector<Position> mvs = getPiece(m.startPos)->getMoves();
+    for (Position& p : mvs) {
+        if (m.endPos == p) return true;
+    }
+    return false;
+}
+
+bool Board::checkMoveEndPos(Move m) const {
     return (
         getPiece(m.startPos) &&
         m.endPos.col >= 0 &&
@@ -88,10 +96,15 @@ vector<Move> Board::getValidMoves(Player *plr) const {
         vector<Position> pmoves = p->getMoves();
         for (Position ep : pmoves) {
             Move m{p->getPosition(), ep};
-            if (isValidMove(m)) { moves.emplace_back(m); }
+            if (checkMoveEndPos(m)) { moves.emplace_back(m); }
         }
     }
 
+    return moves;
+}
+
+vector<Move> Board::getLegalMoves(Player *plr) const {
+    vector<Move> moves;
     return moves;
 }
 
