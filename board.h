@@ -19,7 +19,11 @@ enum class GameState
     NA
 };
 
-enum class SquareColor { Dark, Light };
+enum class SquareColor
+{
+    Dark,
+    Light
+};
 
 // class for the game board
 //   ! Board now persists between games
@@ -27,22 +31,22 @@ class Board
 {
     vector<vector<unique_ptr<Piece>>> board; // 2D vector
     vector<unique_ptr<Observer>> observers;  // textDisplay & GraphicsDisplay
-    GameState state;                         // ! discuss
+    GameState state;                         // ! GET RIDE OF THIS FIELD
     unique_ptr<Player> whitePlayer;
     unique_ptr<Player> blackPlayer; //* player is abstract - must be ptr
     Player *currPlayer;             // non-ownership
     float whiteScore, blackScore = 0;
 
     // Determine GameStates
-    bool isPlayerInCheck(Player *plr) const;
-    bool isPlayerCheckmated(Player *plr) const;
-    bool isPlayerStalemated(Player *plr) const;
+    bool isPlayerInCheck(const Player *plr, bool experiment=false) const;
+    bool isPlayerCheckmated(const Player *plr) const;
+    bool isPlayerStalemated(const Player *plr) const;
 
     // called by initBoard()
     void clearBoard(); // done
 
 public:
-    Board();                                                                                   // done
+    Board();                                                                                               // done
     Board(const PlayerType whitePl, const int whiteLevel, const PlayerType blackPl, const int blackLevel); // done
 
     // Copy ctor and assignment operator
@@ -64,7 +68,7 @@ public:
 
     // SetUp mode
     void addPiece(PieceType pt, Colour clr, Position pos); // done
-    void delPiece(Position pos);                           // done
+    void delPiece(const Position& pos);                           // done
     bool boardIsValid() const;                             // todo: finish once isInCheckmate done
 
     // getters
@@ -73,23 +77,28 @@ public:
     Player *getCurrPlayer() const;               // done
     Piece *getPiece(Position pos) const;         // done
     Piece *getPieceByCoords(int c, int r) const; // done
-    float getScore(Colour clr);                  // done
+    float getScore(Colour clr);
+    vector<Piece *> getPlayerPieces(const Player *plr) const;
+    // done
 
     // setters
     void setState(GameState state); // done
     void setTurn(Colour clr);       // done
 
-    void flipTurn();                              // done
+    void flipTurn();                           // done
     void incrementScore(Colour clr, float addTo); // done
     // add addTo to player's score
 
     // Move logic
-    bool makeMove();
-    bool checkMovePiece(Move m) const; // Checks if the piece in the location can make the move
-    bool checkMoveEndPos(Move m) const; // Checks if the end location is within bounds and can be occupied
-    bool isLegalMove(Move m) const; // Checks if the move doesn't put the player in checkmate
-    vector<Move> getValidMoves(Player *plr) const; // Gets a list of valid moves that the player can make
-    vector<Move> getLegalMoves(Player *plr) const; // Gets a list of legal moves that the player can make
+    vector<Move> getMovesToUncheck(vector<Move> &moves) const; //todo
+    bool putsPlayerInCheck(const Move& m, const Player* p, bool experiment=false) const;
+    //! [updated] returns position just for the sake of error reporting
+    Position makeMove();
+    bool checkMovePiece(const Move& m) const;             // Checks if the piece in the location can make the move
+    bool checkMoveEndPos(const Move& m) const;            // Checks if the end location is within bounds and can be occupied
+    bool isLegalMove(Move m) const;                // Checks if the move doesn't put the player in checkmate
+    vector<Move> getValidMoves(const Player *plr, bool =false) const; // Gets a list of valid moves that the player can make
+    // vector<Move> getLegalMoves(const Player *plr) const; // Gets a list of legal moves that the player can make
     // NOTE: Valid move: Within bounds, acceptable end position
     // Legal move: Valid move AND doesn't put player in check
 
@@ -105,5 +114,6 @@ bool isKing(Piece *p);
 bool isPawn(Piece *p);
 bool isWhite(Piece *p);
 Colour getNextColour(Colour clr);
+bool moveIsValid(Move &move, vector<Move> &validMoves);
 
 #endif

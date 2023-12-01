@@ -8,7 +8,7 @@ Piece::Piece(PieceType type, Colour colour, Position pos)
 Piece::~Piece() {}
 
 // TODO vvv ------------------
-void Piece::makeMove(Position &landingPos)
+void Piece::movePiece(Position &landingPos)
 {
     cout << "-Incomplete method-" << endl;
     

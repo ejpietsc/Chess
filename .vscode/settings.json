@@ -64,5 +64,10 @@
         "compare": "cpp",
         "concepts": "cpp",
         "algorithm": "cpp"
-    }
+    },
+    "cSpell.words": [
+        "landind",
+        "makemove",
+        "pmoves"
+    ]
 }

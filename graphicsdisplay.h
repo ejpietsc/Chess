@@ -11,7 +11,7 @@ class GraphicsDisplay : public Observer
     void doNotify(Position pos, Piece *p) override;
 
     public:
-        GraphicsDisplay();
+        GraphicsDisplay() = default; //! used in Board copy/move- don't delete
         ~GraphicsDisplay();
 };
 

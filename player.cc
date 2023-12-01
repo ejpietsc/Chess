@@ -1,8 +1,21 @@
 #include "player.h"
+#include "board.h"
 
 using namespace std;
 
 // TODO
+
+// PUBLIC HELPER
+//! DON'T MAKE STATIC - USED IN BOARD.cc
+bool isHuman(const Player* p) {
+    return (p->getPlayerType() == PlayerType::Human);
+}
+
+//! DON'T MAKE STATIC - USED IN BOARD.cc
+bool isWhiteTeam(const Player* p) {
+    return (p->getColour() == Colour::White);
+}
+
 
 // === PLAYER ===
 Player::Player(const Colour team, const PlayerType p)
@@ -18,22 +31,22 @@ PlayerType Player::getPlayerType() const
     return this->p;
 }
 
-Move Player::getNextMove() const
+Move Player::getNextMove(vector<Move>& validMoves) const
 {
-    return this->doGetNextMove();
+    return this->doGetNextMove(validMoves);
 }
 
 // === HUMAN ===
 Human::Human(const Colour team, const PlayerType p)
     : Player{team, p} {}
 
-Move Human::doGetNextMove() const
+Move Human::doGetNextMove(vector<Move>& validMoves) const
 {
-    return this->getHumanMove();
+    return this->getHumanMove(validMoves);
 }
 
 //! check start and end are proper format
-Move Human::getHumanMove() const
+Move Human::getHumanMove(vector<Move>& validMoves) const
 {
     string currLine, start, end;
     cin >> start >> end;
@@ -43,11 +56,11 @@ Move Human::getHumanMove() const
     { // handler is in main
         throw ios_base::failure("Failure to read from cin");
     }
-
-    Position startPos{start};
-    Position endPos{end};
-
-    return Move{startPos, endPos};
+    Move move = Move{start, end};
+    if (!moveIsValid(move, validMoves)) {
+        move.endPos = Position(illegal_move);
+    }
+    return move;
 }
 
 // === COMPUTER ===
@@ -55,8 +68,9 @@ Move Human::getHumanMove() const
 Computer::Computer(const Colour team, const PlayerType p, const int lvl)
     : Player{team, p}, lvl{lvl} {}
 
-Move Computer::doGetNextMove() const
+Move Computer::doGetNextMove(vector<Move>& validMoves) const
 {
+    //! pick from validMoves
     return Move{Position{0, 0}, Position{0, 0}}; // TODO TODO TODO - Incorrect code - PLEASE REPLACE EVENTUALLY
 }
 
@@ -71,25 +85,25 @@ LevelThree::~LevelThree() {}
 LevelFour::~LevelFour() {}
 
 // TODO !!!!! vvvv
-Move LevelOne::generateMove(vector<Move> &&moves) const {
+Move LevelOne::generateMove(vector<Move> &moves) const {
     cout << "-Incomplete method-" << endl;
     Move m{};
     return m;
 }
 
-Move LevelTwo::generateMove(vector<Move> &&moves) const {
+Move LevelTwo::generateMove(vector<Move> &moves) const {
     cout << "-Incomplete method-" << endl;
     Move m{};
     return m;
 }
 
-Move LevelThree::generateMove(vector<Move> &&moves) const {
+Move LevelThree::generateMove(vector<Move> &moves) const {
     cout << "-Incomplete method-" << endl;
     Move m{};
     return m;
 }
 
-Move LevelFour::generateMove(vector<Move> &&moves) const {
+Move LevelFour::generateMove(vector<Move> &moves) const {
     cout << "-Incomplete method-" << endl;
     Move m{};
     return m;

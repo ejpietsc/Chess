@@ -1,13 +1,14 @@
 #include "board.h"
+#include "util.h"
 #include "textdisplay.h"
 #include "graphicsdisplay.h"
 
 using namespace std;
 
-// ! renamed globals for clarity - col/row are also board class members
 static const int NUM_ROWS = 8;
 static const int NUM_COLS = 8;
 
+// independent fns and helpers
 // ! [added] Static helper
 static unique_ptr<Player> createPlayer(const PlayerType pt, const int level)
 {
@@ -24,6 +25,21 @@ static unique_ptr<Player> createPlayer(const PlayerType pt, const int level)
     default:
         return move(make_unique<Human>(Colour::White, pt));
     }
+}
+
+// determine if move is within the validMoves vector
+//! removed static - used in Player
+//? if not used here, move to player.cc
+bool moveIsValid(Move &move, vector<Move> &validMoves)
+{
+    for (const auto &childMove : validMoves)
+    {
+        if (move == childMove)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 // ____________________________________________
@@ -56,91 +72,161 @@ Colour getNextColour(Colour clr)
 // for the sake of swap only
 Board::Board() : state{GameState::NA} {}
 
+//! [added] getValidMoves getting too big and this can be reused
+vector<Piece *> Board::getPlayerPieces(const Player *plr) const
+{
+    vector<Piece *> pieces;
+    for (const vector<unique_ptr<Piece>> &col : board)
+    {
+        for (const unique_ptr<Piece> &loc : col)
+        {
+            Piece *p = loc.get();
+            // Add to pieces only if colour matches
+            //! [added] check p not null FIRST!
+            if (p && (p->getColour() == plr->getColour()))
+            {
+                pieces.emplace_back(p);
+            }
+        }
+    }
+}
 // WORK IN PROGRESS vvv ------------------
-bool Board::checkMovePiece(Move m) const {
+//? what for vvv
+bool Board::checkMovePiece(const Move &m) const
+{
     // Get possible moves for piece
     vector<Position> mvs = getPiece(m.startPos)->getMoves();
     // Return true if the provided move is one of these moves, false otherwise
-    for (Position& p : mvs) {
-        if (m.endPos == p) return true;
+    for (Position &p : mvs)
+    {
+        if (m.endPos == p)
+            return true;
     }
     return false;
 }
 
+//? repeated checks?
 // TODO - Add advanced logic (Double move, en passant, castling)
-bool Board::checkMoveEndPos(Move m) const {
+bool Board::checkMoveEndPos(const Move &m) const
+{
     return (
-        getPiece(m.startPos) && // There is a piece to move
+        //? checked in pieces already?
         m.endPos.col >= 0 && // The end position is within bounds
         m.endPos.col < NUM_COLS &&
         m.endPos.row >= 0 &&
         m.endPos.row < NUM_ROWS &&
         (getPiece(m.endPos) == nullptr || // The destination square is occupiable
-        getPiece(m.endPos)->getColour() != getPiece(m.startPos)->getColour())
-    );
+         getPiece(m.endPos)->getColour() != getPiece(m.startPos)->getColour()));
 }
 
-// TODO TODO TODO
-bool Board::isLegalMove(Move m) const {
+//! gets all moves for all pieces - even for human
+vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
+{
+    vector<Move> moves; // List of possible moves
+    vector<Piece *> pieces = getPlayerPieces(plr);
+
+    for (Piece *p : pieces)
+    {
+        // 1. get moves that conform to piece move & don't go out of bound
+        vector<Position> pmoves = p->getMoves();
+        for (Position ep : pmoves)
+        {
+            Move m{p->getPosition(), ep};
+            // 2. check moves that land us on valid spot
+            if (checkMoveEndPos(m))
+            {
+                if (getPiece(ep))
+                {
+                    m.captured = true;
+                    m.capturedPt = getPiece(ep)->getType();
+                }
+                moves.emplace_back(m);
+            }
+        }
+    }
+    // 3. check king is not in check
+    if (!experiment && isPlayerInCheck(plr, experiment))
+    {
+        moves = getMovesToUncheck(moves);
+    }
+    // 4. check move doesn't put us in check
+    vector<Move> newMoves;
+    for (const Move &m : moves)
+    {
+        if (!putsPlayerInCheck(m, plr, experiment)) // todo add experiment field when implemented
+        {
+            newMoves.emplace_back(m);
+        }
+    }
+    moves = newMoves;
+
+    return moves;
+}
+// todo test if works with advanced moves
+//TODO FIX INFINITE RECURSION !!
+bool Board::putsPlayerInCheck(const Move &m, const Player *p, bool experiment) const
+{
+    // if we were to make the move, would we put our player in check
+    Board tmp{*this};
+    tmp.setTurn(p->getColour());
+    tmp.board[m.endPos.col][m.endPos.row].reset(getPiece(m.startPos));
+    tmp.board[m.startPos.col][m.startPos.row].reset(nullptr);
+    return tmp.isPlayerInCheck(p, experiment);
+}
+//TODO FIX INFINITE RECURSION !!
+bool Board::isPlayerInCheck(const Player *plr, bool experiment) const
+{
+    // if it were the other player turn, they can make a valid move that can capture our king
+    Board tmp{*this};
+    tmp.flipTurn();
+    vector<Move> moves = tmp.getValidMoves(tmp.getCurrPlayer(), true);
+    for (const auto &m : moves)
+    {
+        if (m.captured && m.capturedPt == PieceType::King)
+        {
+            return true;
+        }
+    }
     return false;
 }
 
-vector<Move> Board::getValidMoves(Player *plr) const {
-    vector<Move> moves; // List of possible moves
-    vector<Piece *> pieces; // List of pieces owned by the current player
+bool Board::isPlayerCheckmated(const Player *plr) const
+{
+    return getValidMoves(plr).empty() && isPlayerInCheck(plr);
+}
 
-    // Iterate through the board and populate pieces
-    for (const vector<unique_ptr<Piece>>& col : board) {
-        for (const unique_ptr<Piece>& loc : col) {
-            Piece *p = loc.get();
-            // Add to pieces only if colour matches
-            if (p->getColour() == plr->getColour())
-                pieces.emplace_back(p);
-        }
+bool Board::isPlayerStalemated(const Player *plr) const
+{
+    return getValidMoves(plr).empty() && !isPlayerInCheck(plr);
+}
+
+//! [update] makeMove returns Position and leaves checking for getNextMove(validMoves)
+//? to be improved to return a move error object instead of Position
+Position Board::makeMove()
+{
+    vector<Move> validMoves = getValidMoves(currPlayer, false);
+    // TODO add pawn capture moves to validMoves !!!!
+    Move move = currPlayer->getNextMove(validMoves);
+    // check if move valid
+    if (move.endPos.col < 0)
+    {
+        // todo MAKE MOVE AND NOTIFY
     }
-
-    // Iterate throufh player's pieces
-    for (Piece *p : pieces) {
-        // Get possible moves for piece
-        vector<Position> pmoves = p->getMoves();
-        // If the move is valid, add it to the result vector
-        for (Position ep : pmoves) {
-            Move m{p->getPosition(), ep};
-            if (checkMoveEndPos(m)) { moves.emplace_back(m); }
-        }
-    }
-
-    return moves;
+    return move.endPos;
 }
 
-vector<Move> Board::getLegalMoves(Player *plr) const {
-    vector<Move> moves;
-    return moves;
-}
-
-bool Board::isPlayerInCheck(Player *plr) const {
-    
+bool Board::isPlayerCheckmated(const Player *plr) const
+{
+    // in check & no valid moves
     cout << "-Incomplete method-" << endl;
     return true;
 }
 
-bool Board::isPlayerCheckmated(Player *plr) const
+bool Board::isPlayerStalemated(const Player *plr) const
 {
+    // not in check & no valid moves
     cout << "-Incomplete method-" << endl;
     return true;
-}
-
-bool Board::isPlayerStalemated(Player *plr) const
-{
-    cout << "-Incomplete method-" << endl;
-    return true;
-}
-
-vector<Move> Board::getValidMoves(Player *plr)
-{
-    cout << "-Incomplete method-" << endl;
-    vector<Move> v;
-    return v;
 }
 
 // TODO ^^^ ------------------
@@ -154,6 +240,24 @@ Board::Board(const PlayerType whitePl, const int whiteLevel, const PlayerType bl
     whitePlayer = createPlayer(whitePl, whiteLevel); //? need move
     blackPlayer = createPlayer(blackPl, blackLevel);
     currPlayer = whitePlayer.get();
+}
+
+//! does not copy observers since we will never have more than one active board at once
+Board::Board(const Board &other) : whitePlayer{isHuman(other.whitePlayer.get()) ? createPlayer(PlayerType::Human, 0) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.whitePlayer.get()))->getLvl())},
+                                   blackPlayer{isHuman(other.blackPlayer.get()) ? createPlayer(PlayerType::Human, 0) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.blackPlayer.get()))->getLvl())},
+                                   currPlayer{isWhiteTeam(other.currPlayer) ? whitePlayer.get() : blackPlayer.get()},
+                                   whiteScore{other.whiteScore}, blackScore{other.blackScore}
+{
+    for (const auto &col : other.board)
+    {
+        std::vector<std::unique_ptr<Piece>> copyCol;
+        for (const auto &piece : col)
+        {
+            // Assuming Piece has a copy constructor
+            copyCol.push_back(std::make_unique<Piece>(*piece));
+        }
+        board.push_back(std::move(copyCol));
+    }
 }
 
 void Board::clearBoard()
@@ -243,7 +347,6 @@ bool Board::boardIsValid() const
     int blackKing = 0;
     int whiteKing = 0;
     // exactly one w/b king
-    // ! [changed] check # of kings loop
     for (int i = 0; i < NUM_COLS; ++i)
     {
         for (int j = 0; j < NUM_ROWS; ++j)
@@ -289,13 +392,13 @@ void Board::addPiece(PieceType pt, Colour clr, Position pos)
 {
     auto newPiece = createPiece(pt, clr, pos);
     board[pos.col][pos.row].reset(newPiece.get());
-    notifyObservers(pos, newPiece.get()); // NEW!
+    notifyObservers(pos, newPiece.get()); //! NEW!
 }
 
-void Board::delPiece(Position pos)
+void Board::delPiece(const Position &pos)
 {
     board[pos.col][pos.row].reset(nullptr);
-    notifyObservers(pos, nullptr); // NEW!
+    notifyObservers(pos, nullptr); //! NEW!
 }
 
 void Board::flipTurn()
@@ -363,37 +466,23 @@ void Board::incrementScore(Colour clr, float addTo)
     }
 }
 
-// determine if move is within the validMoves vector
-static bool moveIsValid(Move &move, vector<Move> &validMoves)
-{
-    for (const auto &childMove : validMoves)
-    {
-        if (move == childMove)
-        {
-            return true;
-        }
-    }
-    return false;
-}
+// bool Board::makeMove()
+// {
+//     Move move = currPlayer->getNextMove();
+//     if (currPlayer->getPlayerType == PlayerType::Human)
+//     {
+//         vector<Move> validMoves = getValidMoves(currPlayer);
+//         if (!moveIsValid(move, validMoves))
+//         {
+//             return false
+//         } // else do ntg here
+//     }
+//     Piece *pieceToMove = getPiece(move.startPos);
 
-// todo update: called right after move cmd is read
-bool Board::makeMove()
-{
-    Move move = currPlayer->getNextMove();
-    if (currPlayer->getPlayerType == PlayerType::Human)
-    {
-        vector<Move> validMoves = getValidMoves(currPlayer);
-        if (!moveIsValid(move, validMoves))
-        {
-            return false
-        } // else do ntg here
-    }
-    Piece *pieceToMove = getPiece(move.startPos);
-
-    if (pieceToMove != nullptr)
-    { // a valid move has occurred!
-        pieceToMove->makeMove(move.endPos);
-        setTurn(getNextColour(currPlayer->getColour()));
-        return true;
-    }
-}
+//     if (pieceToMove != nullptr)
+//     { // a valid move has occurred!
+//         pieceToMove->makeMove(move.endPos);
+//         setTurn(getNextColour(currPlayer->getColour()));
+//         return true;
+//     }
+// }

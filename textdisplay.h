@@ -11,6 +11,7 @@ class TextDisplay : public Observer
     void doNotify(Position pos, Piece *p) override;
 
     public:
+        TextDisplay() = default; //! used in Board copy/move- don't delete
         TextDisplay(Board *subject);
         // void updateMsg(ostream &out, string msg);
         // void displayScoreBoard(ostream &out);

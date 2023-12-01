@@ -40,7 +40,7 @@ public:
     /* checks: conform to piece move*/
     vector<Position> getMoves() const; // NVI - call doGetMoves
 
-    void makeMove(Position &landingPos);
+    void movePiece(Position &landingPos);
 
     // Getters and setters
     PieceType getType() const; // done
