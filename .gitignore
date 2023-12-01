@@ -1,6 +1,7 @@
 .vscode
 .vscode/*
 .json
+Makefile
 
 *.d
 *.o
