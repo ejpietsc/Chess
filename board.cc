@@ -68,6 +68,11 @@ Colour getNextColour(Colour clr)
     return (clr == Colour::White ? Colour::Black : Colour::White);
 }
 
+//! don't make static
+int getCorrectRow(int r) {
+    return abs(r - 7);
+}
+
 // ____________________________________________
 
 // for the sake of swap only

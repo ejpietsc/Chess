@@ -80,7 +80,8 @@ TextDisplay::TextDisplay(Board *subject)
 void TextDisplay::doNotify(Position pos, Piece *p)
 {
     // Call getPieceChar() to get the appropriate character and update the grid
-    theDisplay[pos.col][pos.row] = p == nullptr ? squareCharDisplay(pos.col, pos.row) : getPieceChar(p);
+    //! [fixed] make sure you convert row for display purposes
+    theDisplay[pos.col][getCorrectRow(pos.row)] = p == nullptr ? squareCharDisplay(pos.col, pos.row) : getPieceChar(p);
 
     // Print out the updated TextDisplay
     cout << *this << endl;

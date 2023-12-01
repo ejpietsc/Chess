@@ -423,11 +423,12 @@ static void outScore(const float whiteScore, const float blackScore)
 
 int main()
 {
-    cout << "Welcome to Chess!\n"
+    cout << "Welcome to Chess - By Imane, Amol & Evan with <3!\n"
          << endl;
     cout << "Commands:\n"
          << "---------" << endl;
-    cout << "• 'game white-player black-player' starts a game with designated player types. The parameters white-player and black-player can be either human or computer[1-4]\n"
+    cout << "• 'game white-player black-player' starts a game with designated player types." << endl;
+    cout << "The parameters white-player and black-player can be either [human] or [computer[1-4]]\n"
          << endl;
 
     string curLine; // current line from input
