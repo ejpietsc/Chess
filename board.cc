@@ -122,6 +122,7 @@ bool Board::checkMoveEndPos(const Move &m) const
     // {
     //     p->getColour();
     // }
+    cout << (!p) << endl;
     return (
         //? checked in pieces already?
         m.endPos.col >= 0 && // The end position is within bounds
