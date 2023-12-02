@@ -260,7 +260,6 @@ void Board::doMove(const Move &m)
 //? to be improved to return a move error object instead of Position
 Position Board::makeMove()
 {
-    cout << "inside makeMove" << endl;
     vector<Move> validMoves = getValidMoves(currPlayer, false);
     // TODO add pawn capture moves to validMoves !!!!
     Move move = currPlayer->getNextMove(validMoves);
@@ -302,25 +301,12 @@ Board::Board(const Board &other) : observers{},
     {
         for (int j = 0; j < NUM_ROWS; ++j)
         {
-            Piece *p = other.board[i][j].get();
-            if (!p)
+            Piece *p = (other.board[i][j]).get();
+            if (p)
             {
                 board[i][j] = createPiece(p->getType(), p->getColour(), p->getPosition());
             }
         }
-        // for (const auto &col : other.board)
-        // {
-        //     std::vector<std::unique_ptr<Piece>> copyCol;
-        //     for (const auto &piece : col)
-        //     {
-        //         // Assuming Piece has a copy constructor
-        //         if (piece)
-        //         {
-        //             copyCol.emplace_back(createPiece(piece->getType(), piece->getColour(), piece->getPosition()));
-        //         }
-        //     }
-        //     board.push_back(std::move(copyCol));
-        // }
     }
 }
 

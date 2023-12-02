@@ -367,7 +367,6 @@ static void playGame(Board &gameBoard)
                 {
                     try
                     {
-                        cout << "i m here" << endl;
                         Position landingPos = gameBoard.makeMove();
                         if (landingPos == invalid_input)
                         {
