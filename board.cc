@@ -296,9 +296,10 @@ Board::Board(const Board &other) : observers{},
     {
         for (int j = 0; j < NUM_ROWS; ++j)
         {
-            if (other.board[i][j])
+            Piece* p = other.board[i][j].get();
+            if (p)
             {
-                board[i][j] = createPiece((other.board[i][j])->getType(), (other.board[i][j])->getColour(), (other.board[i][j])->getPosition());
+                board[i][j] = createPiece(p->getType(), p->getColour(), p->getPosition());
             }
         }
         // for (const auto &col : other.board)
