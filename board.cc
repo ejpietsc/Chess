@@ -117,7 +117,9 @@ bool Board::checkMovePiece(const Move &m) const
 // TODO - Add advanced logic (Double move, en passant, castling)
 bool Board::checkMoveEndPos(const Move &m) const
 {
-    Piece* p = getPiece(m.endPos);
+    Piece *p = getPiece(m.endPos);
+    p->getColour();
+    getPiece(m.startPos)->getColour();
     return (
         //? checked in pieces already?
         m.endPos.col >= 0 && // The end position is within bounds
