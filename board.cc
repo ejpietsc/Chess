@@ -123,8 +123,7 @@ bool Board::checkMoveEndPos(const Move &m) const
         m.endPos.col < NUM_COLS &&
         m.endPos.row >= 0 &&
         m.endPos.row < NUM_ROWS &&
-        (getPiece(m.endPos) == nullptr || // The destination square is occupiable
-         getPiece(m.endPos)->getColour() != getPiece(m.startPos)->getColour()));
+        ((getPiece(m.endPos) == nullptr) || (getPiece(m.endPos)->getColour() != getPiece(m.startPos)->getColour())));
 }
 
 //! gets all moves for all pieces - even for human
@@ -135,9 +134,13 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
 
     for (Piece *p : pieces)
     {
+        if (!p)
+        {
+            continue;
+        }
         // 1. get moves that conform to piece move & don't go out of bound
         vector<Position> pmoves = p->getMoves();
-        for (Position ep : pmoves)
+        for (const Position &ep : pmoves)
         {
             Move m{p->getPosition(), ep};
             // 2. check moves that land us on valid spot
@@ -297,7 +300,7 @@ Board::Board(const Board &other) : observers{},
     {
         for (int j = 0; j < NUM_ROWS; ++j)
         {
-            Piece* p = other.board[i][j].get();
+            Piece *p = other.board[i][j].get();
             if (p)
             {
                 board[i][j] = createPiece(p->getType(), p->getColour(), p->getPosition());
