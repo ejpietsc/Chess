@@ -118,7 +118,7 @@ bool Board::checkMovePiece(const Move &m) const
 bool Board::checkMoveEndPos(const Move &m) const
 {
     Piece *p = getPiece(m.endPos);
-    if (!p)
+    if (p)
     {
         p->getColour();
     }
