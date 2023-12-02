@@ -81,10 +81,15 @@ void TextDisplay::doNotify(Position pos, Piece *p)
 {
     // Call getPieceChar() to get the appropriate character and update the grid
     //! [fixed] make sure you convert row for display purposes
-    theDisplay[pos.col][getCorrectRow(pos.row)] = p == nullptr ? squareCharDisplay(pos.col, pos.row) : getPieceChar(p);
+    char tmp = p == nullptr ? squareCharDisplay(pos.col, pos.row) : getPieceChar(p);
+    // If there is a change
+    if (tmp != theDisplay[pos.col][getCorrectRow(pos.row)]) {
+        // Update the grid
+        theDisplay[pos.col][getCorrectRow(pos.row)] = tmp;
 
-    // Print out the updated TextDisplay
-    cout << *this << endl;
+        // Print out the updated TextDisplay
+        cout << *this << endl;
+    }
 }
 
 // Destructor for TextDisplay - Doesn't need to do anything
