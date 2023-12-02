@@ -90,7 +90,7 @@ vector<Piece *> Board::getPlayerPieces(const Player *plr) const
             Piece *p = loc.get();
             // Add to pieces only if colour matches
             //! [added] check p not null FIRST!
-            if (p && (p->getColour() == plr->getColour()))
+            if ((p != nullptr) && (p->getType() != PieceType::NULL_PIECE) && (p->getColour() == plr->getColour()))
             {
                 pieces.emplace_back(p);
             }
