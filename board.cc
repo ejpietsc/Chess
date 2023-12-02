@@ -448,7 +448,7 @@ void Board::addPiece(const PieceType &pt, const Colour &clr, const Position &pos
 void Board::delPiece(const Position &pos)
 {
     Piece* p = board[pos.col][pos.row].get();
-    if (!p) { return; }
+    if (!p) { notifyObservers(pos, nullptr); return; }
     board[pos.col][pos.row].reset(nullptr);
     notifyObservers(pos, nullptr); //! NEW!
 }
