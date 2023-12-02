@@ -303,7 +303,7 @@ Board::Board(const Board &other) : observers{},
         for (int j = 0; j < NUM_ROWS; ++j)
         {
             Piece *p = other.board[i][j].get();
-            if (p)
+            if (!p)
             {
                 board[i][j] = createPiece(p->getType(), p->getColour(), p->getPosition());
             }
