@@ -126,7 +126,7 @@ bool Board::checkMoveEndPos(const Move &m) const
         m.endPos.col < NUM_COLS &&
         m.endPos.row >= 0 &&
         m.endPos.row < NUM_ROWS &&
-        (!p || (p->getType() == PieceType::NULL_PIECE) || (p->getColour() != getPiece(m.startPos)->getColour())));
+        (p || (p->getType() == PieceType::NULL_PIECE) || (p->getColour() != getPiece(m.startPos)->getColour())));
 }
 
 //! gets all moves for all pieces - even for human
