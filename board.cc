@@ -69,7 +69,8 @@ Colour getNextColour(Colour clr)
 }
 
 //! don't make static
-int getCorrectRow(int r) {
+int getCorrectRow(int r)
+{
     return abs(r - 7);
 }
 
@@ -289,8 +290,11 @@ Board::Board(const Board &other) : observers{},
         std::vector<std::unique_ptr<Piece>> copyCol;
         for (const auto &piece : col)
         {
-            // Assuming Piece has a copy constructor
-            copyCol.emplace_back(createPiece(piece->getType(), piece->getColour(), piece->getPosition()));
+            if (piece)
+            {
+                // Assuming Piece has a copy constructor
+                copyCol.emplace_back(createPiece(piece->getType(), piece->getColour(), piece->getPosition()));
+            }
         }
         board.push_back(std::move(copyCol));
     }
