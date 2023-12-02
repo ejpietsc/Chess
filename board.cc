@@ -290,11 +290,10 @@ Board::Board(const Board &other) : observers{},
         std::vector<std::unique_ptr<Piece>> copyCol;
         for (const auto &piece : col)
         {
-            if (piece)
-            {
                 // Assuming Piece has a copy constructor
-                copyCol.emplace_back(createPiece(piece->getType(), piece->getColour(), piece->getPosition()));
-            }
+                PieceType t = piece->getType();
+                Position pos = piece->getPosition();
+                copyCol.emplace_back(createPiece(piece->getType(), piece->getColour(), pos));
         }
         board.push_back(std::move(copyCol));
     }
