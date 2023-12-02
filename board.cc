@@ -285,17 +285,35 @@ Board::Board(const Board &other) : observers{},
                                    currPlayer{isWhiteTeam(other.currPlayer) ? whitePlayer.get() : blackPlayer.get()},
                                    whiteScore{other.whiteScore}, blackScore{other.blackScore}
 {
-    for (const auto &col : other.board)
+    // SETUP BOARD
+    board.resize(NUM_COLS);
+    for (int i = 0; i < NUM_COLS; ++i)
     {
-        std::vector<std::unique_ptr<Piece>> copyCol;
-        for (const auto &piece : col)
+        board[i].resize(NUM_ROWS);
+    }
+
+    for (int i = 0; i < NUM_COLS; ++i)
+    {
+        for (int j = 0; j < NUM_ROWS; ++j)
         {
-                // Assuming Piece has a copy constructor
-                PieceType t = piece->getType();
-                Position pos = piece->getPosition();
-                copyCol.emplace_back(createPiece(piece->getType(), piece->getColour(), pos));
+            if (other.board[i][j])
+            {
+                board[i][j] = createPiece((other.board[i][j])->getType(), (other.board[i][j])->getColour(), (other.board[i][j])->getPosition());
+            }
         }
-        board.push_back(std::move(copyCol));
+        // for (const auto &col : other.board)
+        // {
+        //     std::vector<std::unique_ptr<Piece>> copyCol;
+        //     for (const auto &piece : col)
+        //     {
+        //         // Assuming Piece has a copy constructor
+        //         if (piece)
+        //         {
+        //             copyCol.emplace_back(createPiece(piece->getType(), piece->getColour(), piece->getPosition()));
+        //         }
+        //     }
+        //     board.push_back(std::move(copyCol));
+        // }
     }
 }
 
