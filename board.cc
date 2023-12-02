@@ -118,7 +118,10 @@ bool Board::checkMovePiece(const Move &m) const
 bool Board::checkMoveEndPos(const Move &m) const
 {
     Piece *p = getPiece(m.endPos);
-    p->getColour();
+    if (!p)
+    {
+        p->getColour();
+    }
     getPiece(m.startPos)->getColour();
     return (
         //? checked in pieces already?
