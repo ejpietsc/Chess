@@ -118,18 +118,17 @@ bool Board::checkMovePiece(const Move &m) const
 bool Board::checkMoveEndPos(const Move &m) const
 {
     Piece *p = getPiece(m.endPos);
-    if (p)
-    {
-        p->getColour();
-    }
-    getPiece(m.startPos)->getColour();
+    // if (p) // evaluated to false
+    // {
+    //     p->getColour();
+    // }
     return (
         //? checked in pieces already?
         m.endPos.col >= 0 && // The end position is within bounds
         m.endPos.col < NUM_COLS &&
         m.endPos.row >= 0 &&
         m.endPos.row < NUM_ROWS &&
-        (p || (p->getType() == PieceType::NULL_PIECE) || (p->getColour() != getPiece(m.startPos)->getColour())));
+        (!p || (p->getType() == PieceType::NULL_PIECE) || (p->getColour() != getPiece(m.startPos)->getColour())));
 }
 
 //! gets all moves for all pieces - even for human
