@@ -255,6 +255,7 @@ void Board::doMove(const Move &m)
 //? to be improved to return a move error object instead of Position
 Position Board::makeMove()
 {
+    cout << "inside makeMove" << endl;
     vector<Move> validMoves = getValidMoves(currPlayer, false);
     // TODO add pawn capture moves to validMoves !!!!
     Move move = currPlayer->getNextMove(validMoves);
