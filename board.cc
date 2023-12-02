@@ -445,10 +445,11 @@ void Board::addPiece(const PieceType &pt, const Colour &clr, const Position &pos
     notifyObservers(pos, newPiece.get()); //! NEW!
 }
 
+//! TO AMOL!!!!! THIS DOESN'T UPDATE BOARD PROPERLY WHEN THERE'S NO PIECE AT POS 
+//! IT TOGGLES THE SQAURE DISPLAY WHEN IT SHOULDN'T CHANGE THE BOARD IN THAT CASE
+// ! AND JUST REDISPLAY IT!
 void Board::delPiece(const Position &pos)
 {
-    Piece* p = board[pos.col][pos.row].get();
-    if (!p) { notifyObservers(pos, nullptr); return; }
     board[pos.col][pos.row].reset(nullptr);
     notifyObservers(pos, nullptr); //! NEW!
 }
@@ -518,23 +519,3 @@ void Board::incrementScore(Colour clr, float addTo)
     }
 }
 
-// bool Board::makeMove()
-// {
-//     Move move = currPlayer->getNextMove();
-//     if (currPlayer->getPlayerType == PlayerType::Human)
-//     {
-//         vector<Move> validMoves = getValidMoves(currPlayer);
-//         if (!moveIsValid(move, validMoves))
-//         {
-//             return false
-//         } // else do ntg here
-//     }
-//     Piece *pieceToMove = getPiece(move.startPos);
-
-//     if (pieceToMove != nullptr)
-//     { // a valid move has occurred!
-//         pieceToMove->makeMove(move.endPos);
-//         setTurn(getNextColour(currPlayer->getColour()));
-//         return true;
-//     }
-// }
