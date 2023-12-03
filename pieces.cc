@@ -11,16 +11,18 @@ Piece::~Piece() {}
 void Piece::movePiece(Position &landingPos)
 {
     cout << "-Incomplete method-" << endl;
-    
-    if (this->getType() == PieceType::Pawn) {
-        Pawn *p = dynamic_cast<Pawn*>(this);
-        if (p != nullptr) {
+
+    if (this->getType() == PieceType::Pawn)
+    {
+        Pawn *p = dynamic_cast<Pawn *>(this);
+        if (p != nullptr)
+        {
             p->setHasMoved(true);
         }
     }
 
     this->setPosition(landingPos.col, landingPos.row);
-    //todo NOTIFY OBSERVERS
+    // todo NOTIFY OBSERVERS
 
     // ! there may be more things needed here
 }
@@ -70,7 +72,8 @@ Colour Piece::getColour() const
     return colour;
 }
 
-Position Piece::getPosition() const {
+Position Piece::getPosition() const
+{
     return pos;
 }
 
@@ -86,7 +89,8 @@ int Piece::getRow() const
 
 // === PIECE SUBCLASSES ===
 
-void Pawn::setHasMoved(const bool b) {
+void Pawn::setHasMoved(const bool b)
+{
     this->hasMoved = b;
 }
 
@@ -245,7 +249,7 @@ vector<Position> Pawn::doGetMoves() const
     { // change dir for black
         directionMult = -1;
     }
-    
+
     Position arr[4] = {
         {col, row + (1 * directionMult)},
         {col + 1, row + (1 * directionMult)}, // right capture
@@ -255,7 +259,8 @@ vector<Position> Pawn::doGetMoves() const
 
     for (int i = 0; i < 4; ++i)
     {
-        if (this->hasMoved && i == 3) {
+        if (this->hasMoved && i == 3)
+        {
             continue; // ignore 2 infront move
         }
         addPosToVec(this->pos, arr[i], vec);
