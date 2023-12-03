@@ -15,8 +15,8 @@ std::map<PieceType, std::vector<std::string>> PIECE_SHAPES{
     {
         PieceType::King,
         {
-            "...####...",
-            "....##....",
+            "...++++...",
+            "....++....",
             ".########.",
             "..######..",
             "...####...",
@@ -32,7 +32,7 @@ std::map<PieceType, std::vector<std::string>> PIECE_SHAPES{
         {
             "....##....",
             ".########.",
-            "..##..##..",
+            "..##++##..",
             "...####...",
             "....##....",
             "...####...",
@@ -143,13 +143,15 @@ void GraphicsDisplay::displayPiece(int c, int r, Piece *p) {
     std::vector<std::string> shape = PIECE_SHAPES[p->getType()];
     for (int i = 0; i < shape.size(); ++i) {
         for (int j = 0; j < shape[i].length(); ++j) {
-            if (shape[i][j] == '#') {
+            if (shape[i][j] == '#' || shape[i][j] == '+') {
                 window.fillRectangle(
                     ((c * TILE_SIZE) + TILE_PADDING + (j * PIXEL_SIZE)),
                     ((r * TILE_SIZE) + TILE_PADDING + (i * PIXEL_SIZE)),
                     PIXEL_SIZE,
                     PIXEL_SIZE,
-                    p->getColour() == Colour::White ? Xwindow::White : Xwindow::Black
+                    shape[i][j] == '+' ?
+                        Xwindow::Gold :
+                        (p->getColour() == Colour::White ? Xwindow::White : Xwindow::Black)
                 );
             }
         }

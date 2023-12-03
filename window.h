@@ -15,7 +15,7 @@ class Xwindow {
   Xwindow(int width=500, int height=500);  // Constructor; displays the window.
   ~Xwindow();                              // Destructor; destroys the window.
 
-  enum {White=0, Black, Red, Green, Blue, LightBrown, DarkBrown}; // Available colours.
+  enum {White=0, Black, Red, Green, Blue, LightBrown, DarkBrown, Gold}; // Available colours.
 
   // Draws a rectangle
   void fillRectangle(int x, int y, int width, int height, int colour);
