@@ -135,7 +135,7 @@ void GraphicsDisplay::displayTile(int c, int r) {
         r * TILE_SIZE,
         TILE_SIZE,
         TILE_SIZE,
-        squareColourDisplay(c, r) ? Xwindow::Blue : Xwindow::Green
+        squareColourDisplay(c, r) ? Xwindow::DarkBrown : Xwindow::LightBrown
     );
 }
 
