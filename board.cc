@@ -254,6 +254,7 @@ void Board::doMove(const Move &m)
     Piece &p = *getPiece(m.startPos);
     addPiece(p.getType(), p.getColour(), m.endPos);
     delPiece(m.startPos);
+    notifyObservers({m.startPos, m.endPos});
 }
 
 //! [update] makeMove returns Position and leaves checking for getNextMove(validMoves)
@@ -320,11 +321,33 @@ void Board::clearBoard()
     swap(state, tmp.state);
 }
 
-void Board::notifyObservers(Position pos, Piece *p) const
+void Board::notifyObservers(Position pos) const
 {
+    Piece *p = getPiece(pos);
     for (const unique_ptr<Observer> &obs : observers)
     {
         obs.get()->notify(pos, p);
+    }
+}
+
+void Board::notifyObservers(std::vector<Position> vec) const
+{
+    std::vector<std::pair<Position, Piece *>> vec1;
+    for (Position p : vec) {
+        vec1.push_back({p, getPiece(p)});
+    }
+
+    for (const unique_ptr<Observer> &obs : observers)
+    {
+        obs.get()->notify(vec1);
+    }
+}
+
+void Board::updateObservers() const
+{
+    for (const unique_ptr<Observer> &obs : observers)
+    {
+        obs.get()->update();
     }
 }
 
@@ -442,7 +465,6 @@ void Board::addPiece(const PieceType &pt, const Colour &clr, const Position &pos
 {
     auto newPiece = createPiece(pt, clr, pos);
     board[pos.col][pos.row].reset(newPiece.get());
-    notifyObservers(pos, newPiece.get()); //! NEW!
 }
 
 //! TO AMOL!!!!! THIS DOESN'T UPDATE BOARD PROPERLY WHEN THERE'S NO PIECE AT POS 
@@ -451,7 +473,6 @@ void Board::addPiece(const PieceType &pt, const Colour &clr, const Position &pos
 void Board::delPiece(const Position &pos)
 {
     board[pos.col][pos.row].reset(nullptr);
-    notifyObservers(pos, nullptr); //! NEW!
 }
 
 void Board::flipTurn()

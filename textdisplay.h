@@ -9,6 +9,7 @@ class TextDisplay : public Observer
 {
     std::vector<std::vector<char>> theDisplay;
     void doNotify(Position pos, Piece *p) override;
+    void doUpdate() override;
 
     public:
         TextDisplay() = default; //! used in Board copy/move- don't delete

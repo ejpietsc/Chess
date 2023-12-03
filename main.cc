@@ -126,6 +126,7 @@ static bool enterSetupMode(Board &gameBoard)
     cout << "• '+ K e1' places the piece K (i.e., white king in this case) on the square e1. If a piece is already on that square, it is replaced" << endl;
     cout << "• '- e1' removes the piece from the square e1. If there is no piece at that square, take no action" << endl;
     cout << "• '= colour' makes it colour's turn to go next" << endl;
+    cout << "• 'print' prints out the current board again" << endl;
     cout << "• 'done' leaves setup mode\n"
          << endl;
 
@@ -170,6 +171,11 @@ static bool enterSetupMode(Board &gameBoard)
             }
         }
 
+        else if (lowerCmd == "print")
+        {
+            gameBoard.updateObservers();
+        }
+
         else if (lowerCmd == "+")
         { // + K e1 command
             ss >> option1 >> option2;
@@ -205,6 +211,7 @@ static bool enterSetupMode(Board &gameBoard)
                 continue;
             }
             gameBoard.addPiece(pieceType, pieceColour, piecePosition);
+            gameBoard.notifyObservers(piecePosition);
         }
 
         else if (lowerCmd == "-")

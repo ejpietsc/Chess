@@ -86,10 +86,12 @@ void TextDisplay::doNotify(Position pos, Piece *p)
     if (tmp != theDisplay[pos.col][getCorrectRow(pos.row)]) {
         // Update the grid
         theDisplay[pos.col][getCorrectRow(pos.row)] = tmp;
-
-        // Print out the updated TextDisplay
-        cout << *this << endl;
     }
+}
+
+void TextDisplay::doUpdate() {
+    // Print out the updated TextDisplay
+    cout << *this << endl;
 }
 
 // Destructor for TextDisplay - Doesn't need to do anything
