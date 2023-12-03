@@ -132,6 +132,33 @@ bool squareColourDisplay(int c, int r)
     return (sum % 2 == 0);
 }
 
+void GraphicsDisplay::displayTile(int c, int r) {
+    window.fillRectangle(
+        c * TILE_SIZE,
+        r * TILE_SIZE,
+        TILE_SIZE,
+        TILE_SIZE,
+        squareColourDisplay(c, r) ? Xwindow::Blue : Xwindow::Green
+    );
+}
+
+void GraphicsDisplay::displayPiece(int c, int r, Piece *p) {
+    std::vector<std::string> shape = PIECE_SHAPES[p->getType()];
+    for (int i = 0; i < shape.size(); ++i) {
+        for (int j = 0; j < shape[i].length(); ++j) {
+            if (shape[i][j] == '#') {
+                window.fillRectangle(
+                    ((c * TILE_SIZE) + TILE_PADDING + (j * PIXEL_SIZE)),
+                    ((r * TILE_SIZE) + TILE_PADDING + (i * PIXEL_SIZE)),
+                    PIXEL_SIZE,
+                    PIXEL_SIZE,
+                    p->getColour() == Colour::White ? Xwindow::White : Xwindow::Black
+                );
+            }
+        }
+    }
+}
+
 GraphicsDisplay::GraphicsDisplay(): window{Xwindow{10, 10}} {}
 
 GraphicsDisplay::GraphicsDisplay(Board *subject): window{Xwindow{WINDOW_SIZE, WINDOW_SIZE}} {
@@ -144,13 +171,7 @@ GraphicsDisplay::GraphicsDisplay(Board *subject): window{Xwindow{WINDOW_SIZE, WI
     for (int c = 0; c < NUM_COLS; ++c) {
         // Iterate through the row
         for (int r = 0; r < NUM_ROWS; ++r) {
-            window.fillRectangle(
-                c * TILE_SIZE,
-                r * TILE_SIZE,
-                TILE_SIZE,
-                TILE_SIZE,
-                squareColourDisplay(c, r) ? Xwindow::Blue : Xwindow::Green
-            );
+            displayTile(c, r);
         }
     }
 
@@ -161,43 +182,18 @@ GraphicsDisplay::GraphicsDisplay(Board *subject): window{Xwindow{WINDOW_SIZE, WI
             window.fillRectangle(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE, squareColourDisplay(c, r) ? Xwindow::Blue : Xwindow::Green);
 
             Piece *p = subject->getPieceByCoords(c, r);
-            if (p) {
-                std::vector<std::string> shape = PIECE_SHAPES[p->getType()];
-                for (int i = 0; i < shape.size(); ++i) {
-                    for (int j = 0; j < shape[i].length(); ++j) {
-                        if (shape[i][j] == '#') {
-                            window.fillRectangle(
-                                ((c * TILE_SIZE) + TILE_PADDING + (j * PIXEL_SIZE)),
-                                ((r * TILE_SIZE) + TILE_PADDING + (i * PIXEL_SIZE)),
-                                PIXEL_SIZE,
-                                PIXEL_SIZE,
-                                p->getColour() == Colour::White ? Xwindow::White : Xwindow::Black
-                            );
-                        }
-                    }
-                }
-            }
+            if (p) displayPiece(c, r, p);
         }
     }
 }
 
 bool GraphicsDisplay::doNotify(Position pos, Piece *p) {
-    return false;
+    displayTile(pos.col, pos.row);
+    if (p) displayPiece(pos.col, pos.row, p);
+
+    return true;
 }
 
 void GraphicsDisplay::doUpdate() {}
 
 GraphicsDisplay::~GraphicsDisplay() {}
-
-// #include "graphicsdisplay.h"
-
-// // TODO - NONE OF THESE ARE IMPLEMENTED
-
-// GraphicsDisplay::GraphicsDisplay() {}
-
-// GraphicsDisplay::~GraphicsDisplay() {}
-
-// void GraphicsDisplay::doNotify(Position pos, Piece *p) {
-//     cout << "-Incomplete method-" << endl;
-//     return;
-// }

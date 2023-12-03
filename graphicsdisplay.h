@@ -9,6 +9,9 @@ class GraphicsDisplay : public Observer
 {
     Xwindow window;
 
+    void displayTile(int c, int r);
+    void displayPiece(int c, int r, Piece *p);
+
     bool doNotify(Position pos, Piece *p) override;
     void doUpdate() override;
 
