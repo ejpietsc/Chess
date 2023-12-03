@@ -274,6 +274,7 @@ Position Board::makeMove()
 Board::Board(const PlayerType whitePl, const int whiteLevel, const PlayerType blackPl, const int blackLevel) : state{GameState::NA}
 {
     // set up players
+    // ! [changed] Player/Computer is an ABC - can't instantiate directly
     whitePlayer = createPlayer(whitePl, whiteLevel); //? need move
     blackPlayer = createPlayer(blackPl, blackLevel);
     currPlayer = whitePlayer.get();
@@ -349,7 +350,7 @@ void Board::updateObservers() const
 
 void Board::attach(unique_ptr<Observer> o)
 {
-    observers.emplace_back(std::move(o));
+    observers.emplace_back(std::move(o)); //? does this work? move needed!
 }
 
 void Board::initBoard()
@@ -404,8 +405,8 @@ void Board::initBoard()
             board[i][7] = createPiece(PieceType::King, Colour::White, Position{i, 7});
         }
     }                                                         // board setup loop
-    unique_ptr<Observer> td = make_unique<TextDisplay>(this); 
-    unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(this);
+    unique_ptr<Observer> td = make_unique<TextDisplay>(this); // todo update when td ctor is done
+    unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(this); // todo update when gd ctor is done
     attach(std::move(td));
     attach(std::move(gd));
 }
@@ -456,8 +457,7 @@ bool Board::boardIsValid() const
 
 void Board::addPiece(const PieceType &pt, const Colour &clr, const Position &pos)
 {
-    auto newPiece = createPiece(pt, clr, pos);
-    board[pos.col][pos.row].reset(newPiece.get());
+    board[pos.col][pos.row] = createPiece(pt, clr, pos);
 }
 
 void Board::delPiece(const Position &pos)
