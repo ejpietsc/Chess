@@ -171,7 +171,7 @@ void GraphicsDisplay::displayGridLoc(int c, int r) {
     }
 
     if (c == 0) {
-        std::string val = std::to_string(r);
+        std::string val = std::to_string(NUM_ROWS - r);
         window.drawString(
             5,
             ((r * TILE_SIZE) + 50),
@@ -192,7 +192,7 @@ void GraphicsDisplay::displayGridLoc(int c, int r) {
     }
 
     if (c == NUM_COLS - 1) {
-        std::string val = std::to_string(r);
+        std::string val = std::to_string(NUM_ROWS - r);
         window.drawString(
             (((c + 1) * TILE_SIZE) - 10),
             ((r * TILE_SIZE) + 50),
