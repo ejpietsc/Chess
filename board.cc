@@ -208,7 +208,7 @@ bool Board::putsPlayerInCheck(const Move &m, const Player *plr) const
     Board tmp{*this};
     tmp.board[m.endPos.col][m.endPos.row] = unique_ptr<Piece>{getPiece(m.startPos)};
 
-    tmp.board[m.startPos.col][m.startPos.row] = nullptr;
+    tmp.board[m.startPos.col][m.startPos.row] = unique_ptr<Piece>(nullptr);
     return tmp.isPlayerInCheck(plr);
 }
 
