@@ -11,6 +11,7 @@ class GraphicsDisplay : public Observer
 
     void displayTile(int c, int r);
     void displayPiece(int c, int r, Piece *p);
+    void displayGridLoc(int c, int r);
 
     bool doNotify(Position pos, Piece *p) override;
     void doUpdate() override;

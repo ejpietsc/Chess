@@ -158,6 +158,50 @@ void GraphicsDisplay::displayPiece(int c, int r, Piece *p) {
     }
 }
 
+void GraphicsDisplay::displayGridLoc(int c, int r) {
+    if (r == 0) {
+        std::string val;
+        val += static_cast<char>('A' + c);
+        window.drawString(
+            ((c * TILE_SIZE) + 5),
+            12,
+            val,
+            Xwindow::Black
+        );
+    }
+
+    if (c == 0) {
+        std::string val = std::to_string(r);
+        window.drawString(
+            5,
+            ((r * TILE_SIZE) + 50),
+            val,
+            Xwindow::Black
+        );
+    }
+
+    if (r == NUM_ROWS - 1) {
+        std::string val;
+        val += static_cast<char>('A' + c);
+        window.drawString(
+            ((c * TILE_SIZE) + 5),
+            (((r + 1) * TILE_SIZE) - 5),
+            val,
+            Xwindow::Black
+        );
+    }
+
+    if (c == NUM_COLS - 1) {
+        std::string val = std::to_string(r);
+        window.drawString(
+            (((c + 1) * TILE_SIZE) - 10),
+            ((r * TILE_SIZE) + 50),
+            val,
+            Xwindow::Black
+        );
+    }
+}
+
 GraphicsDisplay::GraphicsDisplay(): window{Xwindow{10, 10}} {}
 
 GraphicsDisplay::GraphicsDisplay(Board *subject): window{Xwindow{WINDOW_SIZE, WINDOW_SIZE}} {
@@ -182,6 +226,7 @@ GraphicsDisplay::GraphicsDisplay(Board *subject): window{Xwindow{WINDOW_SIZE, WI
 
             Piece *p = subject->getPieceByCoords(c, getCorrectRow(r));
             if (p) displayPiece(c, getCorrectRow(r), p);
+            displayGridLoc(c, getCorrectRow(r));
         }
     }
 }
@@ -189,8 +234,9 @@ GraphicsDisplay::GraphicsDisplay(Board *subject): window{Xwindow{WINDOW_SIZE, WI
 bool GraphicsDisplay::doNotify(Position pos, Piece *p) {
     displayTile(pos.col, getCorrectRow(pos.row));
     if (p) displayPiece(pos.col, getCorrectRow(pos.row), p);
+    displayGridLoc(pos.col, getCorrectRow(pos.row));
 
-    return true;
+    return false; // We never need to call update() for the GraphicsDisplay
 }
 
 void GraphicsDisplay::doUpdate() {}
