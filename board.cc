@@ -467,9 +467,6 @@ void Board::addPiece(const PieceType &pt, const Colour &clr, const Position &pos
     board[pos.col][pos.row].reset(newPiece.get());
 }
 
-//! TO AMOL!!!!! THIS DOESN'T UPDATE BOARD PROPERLY WHEN THERE'S NO PIECE AT POS 
-//! IT TOGGLES THE SQAURE DISPLAY WHEN IT SHOULDN'T CHANGE THE BOARD IN THAT CASE
-// ! AND JUST REDISPLAY IT!
 void Board::delPiece(const Position &pos)
 {
     board[pos.col][pos.row].reset(nullptr);

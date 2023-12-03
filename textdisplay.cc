@@ -10,7 +10,7 @@ static const int NUM_ROWS = 8;
 // abs(int) - Returns the absolute value of a number
 int abs(int a)
 {
-    return (a > 0) ? a : -a;
+    return (a >= 0) ? a : -a;
 }
 
 // squareCharDisplay(int, int) - Gets the character to print for an empty square
@@ -72,8 +72,7 @@ TextDisplay::TextDisplay(Board *subject)
         }
     }
 
-    // Print out the updated TextDisplay
-    cout << *this << endl;
+    doUpdate();
 }
 
 // doNotify(pair, Piece *) - Overriden function to update and print the grid
