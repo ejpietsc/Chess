@@ -8,6 +8,7 @@
 class TextDisplay : public Observer
 {
     std::vector<std::vector<char>> theDisplay;
+
     bool doNotify(Position pos, Piece *p) override;
     void doUpdate() override;
 

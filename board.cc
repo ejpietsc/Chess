@@ -1,7 +1,7 @@
 #include "board.h"
 #include "util.h"
 #include "textdisplay.h"
-// #include "graphicsdisplay.h"
+#include "graphicsdisplay.h"
 
 using namespace std;
 
@@ -409,9 +409,11 @@ void Board::initBoard()
         }
     }                                                         // board setup loop
     unique_ptr<Observer> td = make_unique<TextDisplay>(this); // todo update when td ctor is done
-    // unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(); // todo update when gd ctor is done
+    unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(this); // todo update when gd ctor is done
+    Observer *gd1 = gd.get();
     attach(std::move(td));
-    // attach(move(gd));
+    attach(std::move(gd));
+    gd1->update(); // I have no idea why but running update again is the only way I managed to get it to work
 }
 
 //* SETUP mode methods

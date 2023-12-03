@@ -8,11 +8,13 @@
 class GraphicsDisplay : public Observer
 {
     Xwindow window;
+
     bool doNotify(Position pos, Piece *p) override;
-    void doUpdate() override
+    void doUpdate() override;
 
     public:
-        GraphicsDisplay() = default; //! used in Board copy/move- don't delete
+        GraphicsDisplay(); //! used in Board copy/move- don't delete
+        GraphicsDisplay(Board *subject);
         ~GraphicsDisplay();
 };
 
