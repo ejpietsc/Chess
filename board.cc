@@ -68,7 +68,7 @@ Colour getNextColour(Colour clr)
 //! don't make static
 int getCorrectRow(int r)
 {
-    return abs(r - 7);
+    return abs(r - NUM_ROWS + 1);
 }
 
 // ____________________________________________
