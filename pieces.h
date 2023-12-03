@@ -23,8 +23,6 @@ protected:
     Colour colour;
     Position pos;
 
-    static char[10][10] 
-
 public:
     // ctor
     Piece(PieceType type, Colour colour, Position pos);
@@ -53,7 +51,7 @@ class King final : public Piece
 {
     vector<Position> doGetMoves() const override;
 
-  public:
+public:
     King(Colour colour, Position pos) : Piece{PieceType::King, colour, pos} {}
 };
 
@@ -61,7 +59,7 @@ class Queen final : public Piece
 {
     vector<Position> doGetMoves() const override;
 
-  public:
+public:
     Queen(Colour colour, Position pos) : Piece{PieceType::Queen, colour, pos} {}
 };
 
@@ -69,7 +67,7 @@ class Bishop final : public Piece
 {
     vector<Position> doGetMoves() const override;
 
-  public:
+public:
     Bishop(Colour colour, Position pos) : Piece{PieceType::Bishop, colour, pos} {}
 };
 
@@ -77,7 +75,7 @@ class Rook final : public Piece
 {
     vector<Position> doGetMoves() const override;
 
-  public:
+public:
     Rook(Colour colour, Position pos) : Piece{PieceType::Rook, colour, pos} {}
 };
 
@@ -85,7 +83,7 @@ class Knight final : public Piece
 {
     vector<Position> doGetMoves() const override;
 
-  public:
+public:
     Knight(Colour colour, Position pos) : Piece{PieceType::Knight, colour, pos} {}
 };
 
@@ -93,7 +91,7 @@ class Pawn final : public Piece
 {
     bool hasMoved = false; // used to see if double move is allowed
     vector<Position> doGetMoves() const override;
-  public:
+public:
     Pawn(Colour colour, Position pos) : Piece{PieceType::Pawn, colour, pos} {}
     void setHasMoved(const bool b);
 };
