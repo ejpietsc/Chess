@@ -188,8 +188,8 @@ GraphicsDisplay::GraphicsDisplay(Board *subject): window{Xwindow{WINDOW_SIZE, WI
 }
 
 bool GraphicsDisplay::doNotify(Position pos, Piece *p) {
-    displayTile(pos.col, pos.row);
-    if (p) displayPiece(pos.col, pos.row, p);
+    displayTile(pos.col, getCorrectRow(pos.row));
+    if (p) displayPiece(pos.col, getCorrectRow(pos.row), p);
 
     return true;
 }
