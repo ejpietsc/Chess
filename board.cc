@@ -206,8 +206,9 @@ vector<Move> Board::getMovesToUncheck(vector<Move> &moves) const
 bool Board::putsPlayerInCheck(const Move &m, const Player *plr) const
 {
     Board tmp{*this};
-    tmp.board[m.endPos.col][m.endPos.row].reset(getPiece(m.startPos));
-    tmp.board[m.startPos.col][m.startPos.row].reset(nullptr);
+    tmp.board[m.endPos.col][m.endPos.row] = unique_ptr<Piece>{getPiece(m.startPos)};
+
+    tmp.board[m.startPos.col][m.startPos.row] = nullptr;
     return tmp.isPlayerInCheck(plr);
 }
 
@@ -260,13 +261,15 @@ Position Board::makeMove()
 {
     vector<Move> validMoves = getValidMoves(currPlayer, false);
     // TODO add pawn capture moves to validMoves !!!!
-    Move move = currPlayer->getNextMove(validMoves);
+    // ! uncomment
+    /*Move move = currPlayer->getNextMove(validMoves);
     // check if move valid
     if (move.endPos.col >= 0)
     {
         doMove(move);
     }
-    return move.endPos;
+    return move.endPos;*/
+    return Position{"e2"};
 }
 
 // Default board, you are white
@@ -462,7 +465,7 @@ void Board::addPiece(const PieceType &pt, const Colour &clr, const Position &pos
 
 void Board::delPiece(const Position &pos)
 {
-    board[pos.col][pos.row].reset(nullptr);
+    board[pos.col][pos.row] = nullptr;
 }
 
 void Board::flipTurn()
