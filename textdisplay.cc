@@ -3,10 +3,6 @@
 
 using namespace std;
 
-// Constants to store the size of the grid
-static const int NUM_COLS = 8;
-static const int NUM_ROWS = 8;
-
 // abs(int) - Returns the absolute value of a number
 int abs(int a)
 {
@@ -68,8 +64,8 @@ TextDisplay::TextDisplay(Board *subject)
         // Iterate through the row
         for (int r = 0; r < NUM_ROWS; ++r) {
             // Call getPieceChar() to get the appropriate character and update the grid
-            Piece *p = subject->getPieceByCoords(c, r);
-            theDisplay[c][r] = p == nullptr ? squareCharDisplay(c, r) : getPieceChar(p);
+            Piece *p = subject->getPieceByCoords(c, getCorrectRow(r));
+            theDisplay[c][getCorrectRow(r)] = p == nullptr ? squareCharDisplay(c, getCorrectRow(r)) : getPieceChar(p);
         }
     }
 

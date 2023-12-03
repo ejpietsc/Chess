@@ -1,11 +1,9 @@
 #include "graphicsdisplay.h"
 #include "window.h"
 #include "board.h"
+#include "util.h"
 
 using namespace std;
-
-static const int NUM_COLS = 8;
-static const int NUM_ROWS = 8;
 
 const int WINDOW_SIZE = 800;
 const int TILE_SIZE = 100;
@@ -170,7 +168,7 @@ GraphicsDisplay::GraphicsDisplay(Board *subject): window{Xwindow{WINDOW_SIZE, WI
     for (int c = 0; c < NUM_COLS; ++c) {
         // Iterate through the row
         for (int r = 0; r < NUM_ROWS; ++r) {
-            displayTile(c, r);
+            displayTile(c, getCorrectRow(r));
         }
     }
 
@@ -178,10 +176,10 @@ GraphicsDisplay::GraphicsDisplay(Board *subject): window{Xwindow{WINDOW_SIZE, WI
     for (int c = 0; c < NUM_COLS; ++c) {
         // Iterate through the row
         for (int r = 0; r < NUM_ROWS; ++r) {
-            window.fillRectangle(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE, squareColourDisplay(c, r) ? Xwindow::Blue : Xwindow::Green);
+            displayTile(c, getCorrectRow(r));
 
-            Piece *p = subject->getPieceByCoords(c, r);
-            if (p) displayPiece(c, r, p);
+            Piece *p = subject->getPieceByCoords(c, getCorrectRow(r));
+            if (p) displayPiece(c, getCorrectRow(r), p);
         }
     }
 }

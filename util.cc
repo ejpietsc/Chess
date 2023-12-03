@@ -6,6 +6,11 @@ using namespace std;
 const Position illegal_move = Position{-2, -2};
 const Position invalid_input = Position{-1, -1};
 
+// Constants to store the size of the grid
+const int NUM_COLS = 8;
+const int NUM_ROWS = 8;
+
+
 // Helper functions
 bool isValidSyntax(char c1, char c2)
 {

@@ -72,4 +72,9 @@ bool operator!=(const Move &m1, const Move &m2);
 extern const Position illegal_move;
 extern const Position invalid_input;
 
+// Constants to store the size of the grid
+extern const int NUM_COLS;
+extern const int NUM_ROWS;
+
+
 #endif

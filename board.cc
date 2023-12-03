@@ -5,9 +5,6 @@
 
 using namespace std;
 
-static const int NUM_ROWS = 8;
-static const int NUM_COLS = 8;
-
 // independent fns and helpers
 // ! [added] Static helper
 static unique_ptr<Player> createPlayer(const PlayerType pt, const int level)
@@ -443,14 +440,11 @@ bool Board::boardIsValid() const
     // 2. no pawn on first or last row
     for (int i = 0; i < NUM_COLS; ++i)
     {
-        for (int j = 0; j < NUM_ROWS; ++j)
+        Piece *p1 = board[i][0].get(); // first row
+        Piece *p2 = board[i][7].get(); // last row
+        if (isPawn(p1) || isPawn(p2))
         {
-            Piece *p1 = board[i][0].get(); // first row
-            Piece *p2 = board[i][7].get(); // last row
-            if (isPawn(p1) || isPawn(p2))
-            {
-                return false;
-            }
+            return false;
         }
     }
     // 3. no king in check
