@@ -234,6 +234,7 @@ static bool enterSetupMode(Board &gameBoard)
             }
 
             gameBoard.delPiece(pos);
+            gameBoard.notifyObservers(pos);
         }
 
         else if (lowerCmd == "=")
