@@ -80,7 +80,7 @@ bool TextDisplay::doNotify(Position pos, Piece *p)
 {
     // Call getPieceChar() to get the appropriate character and update the grid
     //! [fixed] make sure you convert row for display purposes
-    char tmp = p == nullptr ? squareCharDisplay(pos.col, pos.row) : getPieceChar(p);
+    char tmp = (p == nullptr ? squareCharDisplay(pos.col, getCorrectRow(pos.row)) : getPieceChar(p));
     // If there is a change
     if (tmp != theDisplay[pos.col][getCorrectRow(pos.row)]) {
         // Update the grid
