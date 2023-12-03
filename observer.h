@@ -7,7 +7,7 @@
 enum class GameState;
 
 class Observer {
-    virtual void doNotify(Position pos, Piece *p) = 0;
+    virtual bool doNotify(Position pos, Piece *p) = 0;
     virtual void doUpdate() = 0;
     public:
         // NVI - call doNotify

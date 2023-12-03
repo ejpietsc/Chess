@@ -77,7 +77,7 @@ TextDisplay::TextDisplay(Board *subject)
 }
 
 // doNotify(pair, Piece *) - Overriden function to update and print the grid
-void TextDisplay::doNotify(Position pos, Piece *p)
+bool TextDisplay::doNotify(Position pos, Piece *p)
 {
     // Call getPieceChar() to get the appropriate character and update the grid
     //! [fixed] make sure you convert row for display purposes
@@ -86,7 +86,9 @@ void TextDisplay::doNotify(Position pos, Piece *p)
     if (tmp != theDisplay[pos.col][getCorrectRow(pos.row)]) {
         // Update the grid
         theDisplay[pos.col][getCorrectRow(pos.row)] = tmp;
+        return true;
     }
+    return false;
 }
 
 void TextDisplay::doUpdate() {
