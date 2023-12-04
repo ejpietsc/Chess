@@ -255,12 +255,12 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         }
 
         // !! debug output
-        if (DEBUG_OUTPUT) {
-            cout << "Past Valid Moves:\n-----------" << endl; 
-            for (Move &m : moves) {
-                cout << posToStr(m.startPos) << " to " << posToStr(m.endPos) << endl;
-            }
-        }
+        // if (DEBUG_OUTPUT) {
+        //     cout << "Past Valid Moves:\n-----------" << endl; 
+        //     for (Move &m : moves) {
+        //         cout << posToStr(m.startPos) << " to " << posToStr(m.endPos) << endl;
+        //     }
+        // }
     }
 
     return moves;

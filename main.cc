@@ -89,7 +89,6 @@ static PieceType strToPieceType(const string &s)
     }
 
     throw(std::invalid_argument("Incorrect piece string"));
-
 }
 
 // given a string (eg. "computer4"), return the associated computer level
@@ -128,6 +127,7 @@ static bool enterSetupMode(Board &gameBoard)
     cout << "• '- e1' removes the piece from the square e1. If there is no piece at that square, take no action" << endl;
     cout << "• '= colour' makes it colour's turn to go next" << endl;
     cout << "• 'print' prints out the current board again" << endl;
+    cout << "[ADDED]• 'clear' clears the board from all pieces" << endl;
     cout << "• 'done' leaves setup mode\n"
          << endl;
 
@@ -198,9 +198,12 @@ static bool enterSetupMode(Board &gameBoard)
             const string lowerOption1 = toLowerString(option1);
             PieceType pieceType;
 
-            try {
+            try
+            {
                 pieceType = strToPieceType(lowerOption1);
-            } catch (...) { // handle invalid input
+            }
+            catch (...)
+            { // handle invalid input
                 cout << "Invalid piece type! Try again" << endl;
                 continue;
             }
@@ -258,6 +261,18 @@ static bool enterSetupMode(Board &gameBoard)
             else if (lowerOption1 == "black")
             {
                 gameBoard.setTurn(Colour::Black);
+            }
+        }
+        else if (lowerCmd == "clear")
+        {
+            for (int i = 0; i < NUM_COLS; ++i)
+            {
+                for (int j = 0; j < NUM_ROWS; ++j)
+                {
+                    Position pos = Position{j, i};
+                    gameBoard.delPiece(pos);
+                    gameBoard.notifyObservers(pos);
+                }
             }
         }
 
@@ -380,10 +395,14 @@ static void playGame(Board &gameBoard)
                         if (landingPos == invalid_input)
                         {
                             cout << "Invalid Input! Input format is: move [a-h,1-8] [a-h,1-8]" << endl;
-                        } else if (landingPos == illegal_move) {
+                        }
+                        else if (landingPos == illegal_move)
+                        {
                             // ? add more for more specific error messages
                             cout << "Illegal Move! Try again" << endl;
-                        } else {
+                        }
+                        else
+                        {
                             gameBoard.flipTurn();
                         }
                         string trash;
