@@ -245,8 +245,8 @@ vector<Position> Pawn::doGetMoves() const
 
     int directionMult = 1;
 
-    if (this->colour == Colour::Black)
-    { // change dir for black
+    if (this->colour == Colour::White)
+    { // change dir for white
         directionMult = -1;
     }
 

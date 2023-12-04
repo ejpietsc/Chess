@@ -261,15 +261,13 @@ Position Board::makeMove()
 {
     vector<Move> validMoves = getValidMoves(currPlayer, false);
     // TODO add pawn capture moves to validMoves !!!!
-    // ! uncomment
-    /*Move move = currPlayer->getNextMove(validMoves);
+    Move move = currPlayer->getNextMove(validMoves);
     // check if move valid
     if (move.endPos.col >= 0)
     {
         doMove(move);
     }
-    return move.endPos;*/
-    return Position{"e2"};
+    return move.endPos;
 }
 
 // Default board, you are white
