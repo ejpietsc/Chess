@@ -26,7 +26,8 @@ static pair<int, int> strToCoords(const string &s)
     }
     else
     {
-        return make_pair(s[0] - 'a', s[1] - '1');
+        //! fix
+        return make_pair(s[0] - 'a', abs((s[1] - '1') - 7));
     }
 }
 
