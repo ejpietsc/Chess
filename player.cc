@@ -6,12 +6,21 @@ using namespace std;
 
 // Constants for the computer players
 std::map<PieceType, int> PIECE_VALUES = {
-    {PieceType::King, 1000},
-    {PieceType::Queen, 500},
-    {PieceType::Bishop, 200},
-    {PieceType::Rook, 200},
-    {PieceType::Knight, 150},
+    {PieceType::King, 500},
+    {PieceType::Queen, 250},
+    {PieceType::Bishop, 100},
+    {PieceType::Rook, 100},
+    {PieceType::Knight, 75},
     {PieceType::Pawn, 25}
+};
+
+std::map<PieceType, int> PIECE_CAPTURE_MULTIPLIERS = {
+    {PieceType::King, 5},
+    {PieceType::Queen, 3},
+    {PieceType::Bishop, 1},
+    {PieceType::Rook, 2},
+    {PieceType::Knight, 1},
+    {PieceType::Pawn, 2}
 };
 
 // TODO
@@ -104,9 +113,7 @@ LevelFour::~LevelFour() {}
 // TODO !!!!! vvvv
 Move LevelOne::generateMove(vector<Move> &moves) const
 {
-    cout << "-Incomplete method-" << endl;
-    Move m{};
-    return m;
+    return moves[rand() % moves.size()]; // Pick a random move
 }
 
 Move LevelTwo::generateMove(vector<Move> &moves) const

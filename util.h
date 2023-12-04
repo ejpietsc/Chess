@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include <cstdlib> // ! added for abs()
+#include <cstdlib> // ! added for abs() and rand()
 /*
 #include "board.h"
 #include "observer.h"
