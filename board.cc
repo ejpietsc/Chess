@@ -65,12 +65,6 @@ Colour getNextColour(Colour clr)
     return (clr == Colour::White ? Colour::Black : Colour::White);
 }
 
-//! don't make static
-int getCorrectRow(int r)
-{
-    return abs(r - NUM_ROWS + 1);
-}
-
 // ____________________________________________
 
 // for the sake of swap only
@@ -87,7 +81,7 @@ vector<Piece *> Board::getPlayerPieces(const Player *plr) const
             Piece *p = loc.get();
             // Add to pieces only if colour matches
             //! [added] check p not null FIRST!
-            if ((p != nullptr) && (p->getType() != PieceType::NULL_PIECE) && (p->getColour() == plr->getColour()))
+            if ((p != nullptr) && (p->getColour() == plr->getColour()))
             {
                 pieces.emplace_back(p);
             }
@@ -122,7 +116,8 @@ bool Board::checkMoveEndPos(const Move &m) const
         m.endPos.col < NUM_COLS &&
         m.endPos.row >= 0 &&
         m.endPos.row < NUM_ROWS &&
-        (!p2 || (p2->getType() == PieceType::NULL_PIECE) || !p1 || (p1->getColour() != p2->getColour())));
+        (!p2 || !p1 || (p1->getColour() != p2->getColour()))
+    );
 }
 
 //! gets all moves for all pieces - even for human
@@ -130,6 +125,12 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
 {
     vector<Move> moves; // List of possible moves
     vector<Piece *> pieces = getPlayerPieces(plr);
+    
+    for (Piece *p : pieces) {
+        if (p) {
+            cout << p->getCol() << " " << p->getRow() << endl;
+        }
+    }
 
     for (Piece *p : pieces)
     {
@@ -142,8 +143,11 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         for (const Position &ep : pmoves)
         {
             Move m{p->getPosition(), ep};
+
+            moves.emplace_back(m);
+
             // 2. check moves that land us on valid spot
-            if (checkMoveEndPos(m))
+            /*if (checkMoveEndPos(m))
             {
                 //! add capture info
                 if (getPiece(ep))
@@ -152,13 +156,13 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
                     m.capturedPt = getPiece(ep)->getType();
                 }
                 moves.emplace_back(m);
-            }
+            }*/
         }
     }
     //! when a player A has the opponent B in check, even A moves that put B the attacker
     //! in check are moves that A can't make - we can't uncheck ourselves by checking the opponent
     //! that's why the following checks should be omitted when in experiment
-    if (!experiment)
+    /*if (!experiment)
     { // 3. are we in check
         if (isPlayerInCheck(plr))
         {
@@ -176,7 +180,7 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
             }
             moves = newMoves;
         }
-    }
+    }*/
 
     return moves;
 }
@@ -199,6 +203,7 @@ vector<Move> Board::getMovesToUncheck(vector<Move> &moves) const
             movesToUncheck.emplace_back(m);
         }
     }
+    
     return movesToUncheck;
 }
 
@@ -249,9 +254,9 @@ bool Board::isPlayerStalemated(const Player *plr) const
 void Board::doMove(const Move &m)
 {
     delPiece(m.endPos);
-    Piece &p = *getPiece(m.startPos);
-    addPiece(p.getType(), p.getColour(), m.endPos);
-    delPiece(m.startPos);
+    Piece *p = getPiece(m.startPos);
+    p->setPosition(m.endPos.col, m.endPos.row);
+    board[m.startPos.col][m.startPos.row].swap(board[m.endPos.col][m.endPos.row]);
     notifyObservers({m.startPos, m.endPos});
 }
 
@@ -260,16 +265,16 @@ void Board::doMove(const Move &m)
 Position Board::makeMove()
 {
     vector<Move> validMoves = getValidMoves(currPlayer, false);
+    
     // TODO add pawn capture moves to validMoves !!!!
-    // ! uncomment
-    /*Move move = currPlayer->getNextMove(validMoves);
+
+    Move move = currPlayer->getNextMove(validMoves);
     // check if move valid
     if (move.endPos.col >= 0)
     {
         doMove(move);
     }
-    return move.endPos;*/
-    return Position{"e2"};
+    return move.endPos;
 }
 
 // Default board, you are white
@@ -332,7 +337,10 @@ void Board::notifyObservers(Position pos) const
 
 void Board::notifyObservers(std::vector<Position> vec) const
 {
-    std::vector<std::pair<Position, Piece *>> vec1;
+    for (Position &p : vec) {
+        notifyObservers(p);
+    }
+    /*std::vector<std::pair<Position, Piece *>> vec1;
     for (Position p : vec) {
         vec1.push_back({p, getPiece(p)});
     }
@@ -340,7 +348,7 @@ void Board::notifyObservers(std::vector<Position> vec) const
     for (const unique_ptr<Observer> &obs : observers)
     {
         obs.get()->notify(vec1);
-    }
+    }*/
 }
 
 void Board::updateObservers() const
@@ -362,9 +370,10 @@ void Board::initBoard()
     {
         clearBoard();
     }
-    state = GameState::Play;
 
+    state = GameState::Play;
     currPlayer = whitePlayer.get();
+
     // SETUP BOARD
     board.resize(NUM_COLS);
     for (int i = 0; i < NUM_ROWS; ++i)
@@ -372,46 +381,54 @@ void Board::initBoard()
         board[i].resize(NUM_ROWS);
     }
 
+    for (int i = 0; i < NUM_ROWS; ++i) {
+        for (int j = 0; j < NUM_COLS; ++j) {
+            if (j >= 2 && j <= 5) {
+                board[i][j] = unique_ptr<Piece>{nullptr};
+            }
+        }
+    }
+
     // ? need move ?
     for (int i = 0; i < NUM_ROWS; ++i)
     {
         // pawns
-        board[i][1] = createPiece(PieceType::Pawn, Colour::Black, Position{i, 1});
-        board[i][6] = createPiece(PieceType::Pawn, Colour::White, Position{i, 6});
+        board[i][1] = createPiece(PieceType::Pawn, Colour::White, Position{i, 1});
+        board[i][6] = createPiece(PieceType::Pawn, Colour::Black, Position{i, 6});
 
         // rooks
         if (i == 0 || i == 7)
         {
-            board[i][0] = createPiece(PieceType::Rook, Colour::Black, Position{i, 0});
-            board[i][7] = createPiece(PieceType::Rook, Colour::White, Position{i, 7});
+            board[i][0] = createPiece(PieceType::Rook, Colour::White, Position{i, 0});
+            board[i][7] = createPiece(PieceType::Rook, Colour::Black, Position{i, 7});
 
         } // knights
         else if (i == 1 || i == 6)
         {
-            board[i][0] = createPiece(PieceType::Knight, Colour::Black, Position{i, 0});
-            board[i][7] = createPiece(PieceType::Knight, Colour::White, Position{i, 7});
+            board[i][0] = createPiece(PieceType::Knight, Colour::White, Position{i, 0});
+            board[i][7] = createPiece(PieceType::Knight, Colour::Black, Position{i, 7});
 
         } // bishops
         else if (i == 2 || i == 5)
         {
-            board[i][0] = createPiece(PieceType::Bishop, Colour::Black, Position{i, 0});
-            board[i][7] = createPiece(PieceType::Bishop, Colour::White, Position{i, 7});
+            board[i][0] = createPiece(PieceType::Bishop, Colour::White, Position{i, 0});
+            board[i][7] = createPiece(PieceType::Bishop, Colour::Black, Position{i, 7});
         }
         if (i == 3)
         {
-            board[i][0] = createPiece(PieceType::Queen, Colour::Black, Position{i, 0});
-            board[i][7] = createPiece(PieceType::Queen, Colour::White, Position{i, 7});
+            board[i][0] = createPiece(PieceType::Queen, Colour::White, Position{i, 0});
+            board[i][7] = createPiece(PieceType::Queen, Colour::Black, Position{i, 7});
         }
         if (i == 4)
         {
-            board[i][0] = createPiece(PieceType::King, Colour::Black, Position{i, 0});
-            board[i][7] = createPiece(PieceType::King, Colour::White, Position{i, 7});
+            board[i][0] = createPiece(PieceType::King, Colour::White, Position{i, 0});
+            board[i][7] = createPiece(PieceType::King, Colour::Black, Position{i, 7});
         }
     }                                                         // board setup loop
     unique_ptr<Observer> td = make_unique<TextDisplay>(this); // todo update when td ctor is done
-    unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(this); // todo update when gd ctor is done
+    //unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(this); // todo update when gd ctor is done
     attach(std::move(td));
-    attach(std::move(gd));
+    //attach(std::move(gd));
 }
 
 //* SETUP mode methods
@@ -465,7 +482,7 @@ void Board::addPiece(const PieceType &pt, const Colour &clr, const Position &pos
 
 void Board::delPiece(const Position &pos)
 {
-    board[pos.col][pos.row] = nullptr;
+    board[pos.col][pos.row].reset();
 }
 
 void Board::flipTurn()

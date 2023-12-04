@@ -11,6 +11,11 @@ const int TILE_PADDING = 10;
 const int NUM_PIXELS = 10;
 const int PIXEL_SIZE = ((TILE_SIZE - (2 * TILE_PADDING)) / NUM_PIXELS);
 
+static int getCorrectRow(int r)
+{
+    return abs(r - NUM_ROWS + 1);
+}
+
 std::map<PieceType, std::vector<std::string>> PIECE_SHAPES{
     {
         PieceType::King,
@@ -171,7 +176,7 @@ void GraphicsDisplay::displayGridLoc(int c, int r) {
     }
 
     if (c == 0) {
-        std::string val = std::to_string(NUM_ROWS - r);
+        std::string val = std::to_string(getCorrectRow(r) + 1);
         window.drawString(
             5,
             ((r * TILE_SIZE) + 50),
@@ -192,7 +197,7 @@ void GraphicsDisplay::displayGridLoc(int c, int r) {
     }
 
     if (c == NUM_COLS - 1) {
-        std::string val = std::to_string(NUM_ROWS - r);
+        std::string val = std::to_string(getCorrectRow(r) + 1);
         window.drawString(
             (((c + 1) * TILE_SIZE) - 10),
             ((r * TILE_SIZE) + 50),
@@ -224,7 +229,7 @@ GraphicsDisplay::GraphicsDisplay(Board *subject): window{Xwindow{WINDOW_SIZE, WI
         for (int r = 0; r < NUM_ROWS; ++r) {
             displayTile(c, getCorrectRow(r));
 
-            Piece *p = subject->getPieceByCoords(c, getCorrectRow(r));
+            Piece *p = subject->getPieceByCoords(c, r);
             if (p) displayPiece(c, getCorrectRow(r), p);
             displayGridLoc(c, getCorrectRow(r));
         }

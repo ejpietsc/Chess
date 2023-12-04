@@ -120,6 +120,5 @@ public:
     bool isWhite(Piece *p);
     Colour getNextColour(Colour clr);
     bool moveIsValid(Move &move, vector<Move> &validMoves);
-    int getCorrectRow(int r);
 
 #endif

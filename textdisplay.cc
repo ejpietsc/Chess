@@ -3,6 +3,11 @@
 
 using namespace std;
 
+static int getCorrectRow(int r)
+{
+    return abs(r - NUM_ROWS + 1);
+}
+
 // abs(int) - Returns the absolute value of a number
 int abs(int a)
 {
@@ -64,7 +69,7 @@ TextDisplay::TextDisplay(Board *subject)
         // Iterate through the row
         for (int r = 0; r < NUM_ROWS; ++r) {
             // Call getPieceChar() to get the appropriate character and update the grid
-            Piece *p = subject->getPieceByCoords(c, getCorrectRow(r));
+            Piece *p = subject->getPieceByCoords(c, r);
             theDisplay[c][getCorrectRow(r)] = p == nullptr ? squareCharDisplay(c, getCorrectRow(r)) : getPieceChar(p);
         }
     }
