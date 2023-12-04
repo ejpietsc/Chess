@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include <cstdlib> // ! added for abs()
+#include <cstdlib> // ! added for abs() and rand()
 /*
 #include "board.h"
 #include "observer.h"
@@ -28,8 +28,8 @@ enum class PieceType
     Bishop,
     Rook,
     Knight,
-    Pawn,
-    NULL_PIECE
+    Pawn
+    // NULL_PIECE
 };
 // Position
 //? improve to class that returns move errors and have makemove() in board return that class

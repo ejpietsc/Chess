@@ -48,7 +48,8 @@ char getPieceChar(Piece *p) {
             break;
 
         default:
-            cout << "ERROR : Attempt to set up NULL_PIECE" << endl;
+            // cout << "ERROR : Attempt to set up NULL_PIECE" << endl;
+            cout << "THIS SHOULDN'T HAPPEN : NO MORE NULL_PIECE" << endl;
             ans = 'X';
             break;
     }

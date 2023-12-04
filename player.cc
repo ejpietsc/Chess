@@ -1,7 +1,31 @@
 #include "player.h"
 #include "board.h"
+#include "util.h"
 
 using namespace std;
+
+// Constants for the computer players
+std::map<PieceType, int> PIECE_VALUES = {
+    {PieceType::King, 500},
+    {PieceType::Queen, 250},
+    {PieceType::Bishop, 100},
+    {PieceType::Rook, 100},
+    {PieceType::Knight, 75},
+    {PieceType::Pawn, 25}
+};
+
+std::map<PieceType, int> PIECE_CAPTURE_MULTIPLIERS = {
+    {PieceType::King, 5},
+    {PieceType::Queen, 3},
+    {PieceType::Bishop, 1},
+    {PieceType::Rook, 2},
+    {PieceType::Knight, 1},
+    {PieceType::Pawn, 2}
+};
+
+int CHECK_VALUE = 250;
+int CHECKMATE_VALUE = 2500;
+int CHECK_CAPTURE_MULTIPLIER = 2;
 
 // TODO
 
@@ -93,20 +117,32 @@ LevelFour::~LevelFour() {}
 // TODO !!!!! vvvv
 Move LevelOne::generateMove(vector<Move> &moves) const
 {
-    cout << "-Incomplete method-" << endl;
-    Move m{};
-    return m;
+    return moves[rand() % moves.size()]; // Pick a random move
 }
 
 Move LevelTwo::generateMove(vector<Move> &moves) const
 {
-    cout << "-Incomplete method-" << endl;
-    Move m{};
-    return m;
+    Move bestMove;
+    int bestscore = -1;
+
+    for (Move m : moves) {
+        int currscore = m.captured ? PIECE_VALUES[m.capturedPt] * PIECE_CAPTURE_MULTIPLIERS[m.capturedPt] : 0;
+        // TODO: Update score for checks and checkmates
+
+        if (currscore > bestscore) {
+            bestscore = currscore;
+            bestMove = m;
+        }
+    }
+
+    return bestMove;
 }
 
 Move LevelThree::generateMove(vector<Move> &moves) const
 {
+    // Level Three: prefers avoiding capture, capturing moves, and checks
+    // Needs move logic changes
+
     cout << "-Incomplete method-" << endl;
     Move m{};
     return m;
@@ -114,6 +150,10 @@ Move LevelThree::generateMove(vector<Move> &moves) const
 
 Move LevelFour::generateMove(vector<Move> &moves) const
 {
+    // Level Four: Something more sophisticated
+    // Plan: MiniMax. Simulate ahead and find what will happen if the move is made
+    // Needs move logic changes
+
     cout << "-Incomplete method-" << endl;
     Move m{};
     return m;
