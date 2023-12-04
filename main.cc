@@ -57,12 +57,8 @@ static PlayerType strToPlayer(const string &s)
     return PlayerType::NULL_PLR;
 }
 
-//! [added]
-bool isValidPieceType(const string& s) {
-    return (s == "k" || s == "q" || s == "r" || s == "n" || s == "b" || s == "p");
-}
-
 // given a string (eg. "computer4"), return the appropriate PlayerType
+//  or NULL_PLR if invalid input strToPieceType
 static PieceType strToPieceType(const string &s)
 {
     const string lowerS = toLowerString(s);
@@ -87,11 +83,12 @@ static PieceType strToPieceType(const string &s)
     {
         return PieceType::Bishop;
     }
-    else
+    else if (lowerS == "p")
     {
         return PieceType::Pawn;
     }
-    // return PieceType::NULL_PIECE;
+
+    return PieceType::NULL_PIECE;
 }
 
 // given a string (eg. "computer4"), return the associated computer level
@@ -198,15 +195,14 @@ static bool enterSetupMode(Board &gameBoard)
 
             // determine piece type to add
             const string lowerOption1 = toLowerString(option1);
-            bool valid = isValidPieceType(lowerOption1);
+            PieceType pieceType = strToPieceType(lowerOption1);
 
             // handle invalid input
-            if (!valid)
+            if (pieceType == PieceType::NULL_PIECE)
             {
                 cout << "Invalid piece type! Try again" << endl;
                 continue;
             }
-            PieceType pieceType = strToPieceType(lowerOption1);
 
             Position piecePosition{lowerOption2};
             if (piecePosition.col < 0 || piecePosition.col >= 8 || piecePosition.row < 0 || piecePosition.row >= 8)

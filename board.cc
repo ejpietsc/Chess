@@ -267,6 +267,7 @@ Position Board::makeMove()
     vector<Move> validMoves = getValidMoves(currPlayer, false);
     
     // TODO add pawn capture moves to validMoves !!!!
+    // ! uncomment
 
     Move move = currPlayer->getNextMove(validMoves);
     // check if move valid
