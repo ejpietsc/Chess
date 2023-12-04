@@ -1,7 +1,18 @@
 #include "player.h"
 #include "board.h"
+#include "util.h"
 
 using namespace std;
+
+// Constants for the computer players
+std::map<PieceType, int> PIECE_VALUES = {
+    {PieceType::King, 1000},
+    {PieceType::Queen, 500},
+    {PieceType::Bishop, 200},
+    {PieceType::Rook, 200},
+    {PieceType::Knight, 150},
+    {PieceType::Pawn, 25}
+};
 
 // TODO
 
