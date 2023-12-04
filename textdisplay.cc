@@ -3,11 +3,6 @@
 
 using namespace std;
 
-static int getCorrectRow(int r)
-{
-    return abs(r - NUM_ROWS + 1);
-}
-
 // abs(int) - Returns the absolute value of a number
 int abs(int a)
 {
@@ -65,7 +60,7 @@ TextDisplay::TextDisplay(Board *subject)
         for (int r = 0; r < NUM_ROWS; ++r) {
             // Call getPieceChar() to get the appropriate character and update the grid
             Piece *p = subject->getPieceByCoords(c, r);
-            theDisplay[c][getCorrectRow(r)] = p == nullptr ? squareCharDisplay(c, getCorrectRow(r)) : getPieceChar(p);
+            theDisplay[c][getRowForOutput(r)] = p == nullptr ? squareCharDisplay(c, getRowForOutput(r)) : getPieceChar(p);
         }
     }
 
@@ -77,11 +72,11 @@ bool TextDisplay::doNotify(Position pos, Piece *p)
 {
     // Call getPieceChar() to get the appropriate character and update the grid
     //! [fixed] make sure you convert row for display purposes
-    char tmp = (p == nullptr ? squareCharDisplay(pos.col, getCorrectRow(pos.row)) : getPieceChar(p));
+    char tmp = (p == nullptr ? squareCharDisplay(pos.col, getRowForOutput(pos.row)) : getPieceChar(p));
     // If there is a change
-    if (tmp != theDisplay[pos.col][getCorrectRow(pos.row)]) {
+    if (tmp != theDisplay[pos.col][getRowForOutput(pos.row)]) {
         // Update the grid
-        theDisplay[pos.col][getCorrectRow(pos.row)] = tmp;
+        theDisplay[pos.col][getRowForOutput(pos.row)] = tmp;
         return true;
     }
     return false;

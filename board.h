@@ -25,6 +25,8 @@ enum class SquareColor
     Light
 };
 
+int getRowForOutput(int r);
+
 // class for the game board
 //   ! Board now persists between games
 class Board

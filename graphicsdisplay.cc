@@ -11,11 +11,6 @@ const int TILE_PADDING = 10;
 const int NUM_PIXELS = 10;
 const int PIXEL_SIZE = ((TILE_SIZE - (2 * TILE_PADDING)) / NUM_PIXELS);
 
-static int getCorrectRow(int r)
-{
-    return abs(r - NUM_ROWS + 1);
-}
-
 std::map<PieceType, std::vector<std::string>> PIECE_SHAPES{
     {
         PieceType::King,
@@ -161,7 +156,7 @@ void GraphicsDisplay::displayGridLoc(int c, int r) {
     }
 
     if (c == 0) {
-        std::string val = std::to_string(getCorrectRow(r) + 1);
+        std::string val = std::to_string(getRowForOutput(r) + 1);
         window.drawString(
             5,
             ((r * TILE_SIZE) + 50),
@@ -182,7 +177,7 @@ void GraphicsDisplay::displayGridLoc(int c, int r) {
     }
 
     if (c == NUM_COLS - 1) {
-        std::string val = std::to_string(getCorrectRow(r) + 1);
+        std::string val = std::to_string(getRowForOutput(r) + 1);
         window.drawString(
             (((c + 1) * TILE_SIZE) - 10),
             ((r * TILE_SIZE) + 50),
@@ -204,7 +199,7 @@ GraphicsDisplay::GraphicsDisplay(Board *subject): window{Xwindow{WINDOW_SIZE, WI
     for (int c = 0; c < NUM_COLS; ++c) {
         // Iterate through the row
         for (int r = 0; r < NUM_ROWS; ++r) {
-            displayTile(c, getCorrectRow(r));
+            displayTile(c, getRowForOutput(r));
         }
     }
 
@@ -212,19 +207,19 @@ GraphicsDisplay::GraphicsDisplay(Board *subject): window{Xwindow{WINDOW_SIZE, WI
     for (int c = 0; c < NUM_COLS; ++c) {
         // Iterate through the row
         for (int r = 0; r < NUM_ROWS; ++r) {
-            displayTile(c, getCorrectRow(r));
+            displayTile(c, getRowForOutput(r));
 
             Piece *p = subject->getPieceByCoords(c, r);
-            if (p) displayPiece(c, getCorrectRow(r), p);
-            displayGridLoc(c, getCorrectRow(r));
+            if (p) displayPiece(c, getRowForOutput(r), p);
+            displayGridLoc(c, getRowForOutput(r));
         }
     }
 }
 
 bool GraphicsDisplay::doNotify(Position pos, Piece *p) {
-    displayTile(pos.col, getCorrectRow(pos.row));
-    if (p) displayPiece(pos.col, getCorrectRow(pos.row), p);
-    displayGridLoc(pos.col, getCorrectRow(pos.row));
+    displayTile(pos.col, getRowForOutput(pos.row));
+    if (p) displayPiece(pos.col, getRowForOutput(pos.row), p);
+    displayGridLoc(pos.col, getRowForOutput(pos.row));
 
     return false; // We never need to call update() for the GraphicsDisplay
 }

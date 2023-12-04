@@ -6,10 +6,6 @@ using namespace std;
 const Position illegal_move = Position{-2, -2};
 const Position invalid_input = Position{-1, -1};
 
-// Constants to store the size of the grid
-const int NUM_COLS = 8;
-const int NUM_ROWS = 8;
-
 
 // Helper functions
 bool isValidSyntax(char c1, char c2)
@@ -28,6 +24,13 @@ static pair<int, int> strToCoords(const string &s)
     {
         return make_pair(s[0] - 'a', s[1] - '1');
     }
+}
+
+string posToStr(const Position &p) {
+    string str;
+    str += 'a' + p.col;
+    str += to_string(p.row + 1);
+    return str;
 }
 
 Position::Position(const int col, const int row) : col{col}, row{row} {}

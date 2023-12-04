@@ -3,7 +3,15 @@
 #include "textdisplay.h"
 #include "graphicsdisplay.h"
 
+const bool DEBUG_OUTPUT = true;
+
 using namespace std;
+
+// used by graphics/textdisplays to index differently
+int getRowForOutput(int r)
+{
+    return abs(r - NUM_ROWS + 1);
+}
 
 // independent fns and helpers
 // ! [added] Static helper
@@ -89,6 +97,7 @@ vector<Piece *> Board::getPlayerPieces(const Player *plr) const
     }
     return pieces;
 }
+
 // WORK IN PROGRESS vvv ------------------
 //? what for vvv
 bool Board::checkMovePiece(const Move &m) const
@@ -104,12 +113,80 @@ bool Board::checkMovePiece(const Move &m) const
     return false;
 }
 
+// return true if there is a Piece between m.startPos and m.endPos (non-inclusive)
+static bool pieceInTheWay(const Board &board, const Move &m) {
+    const int xDif = m.endPos.col - m.startPos.col;
+    const int yDif = m.endPos.row - m.startPos.row;
+
+    if (abs(xDif) <= 1 && abs(yDif) <= 1) { // we're not travelling far enough to care
+        return false;
+    }
+
+    int xMult = 1;
+    int yMult = 1;
+
+    if (xDif < 0) {
+        xMult = -1;
+    }
+    if (yDif < 0) {
+        yMult = -1;
+    }
+
+    if (xDif == 0) { // straight up/down
+        for (int i = 1; i <= abs(yDif) - 1; ++i) {
+            Position pos{m.startPos.col, m.startPos.row + (i * yMult)};
+            const Piece *p = board.getPiece(pos);
+            if (p != nullptr) {
+                return true;
+            }
+        }
+    }
+
+    if (yDif == 0) { // straight left/right
+        for (int i = 1; i <= abs(xDif) - 1; ++i) {
+            Position pos{m.startPos.col + (i * xMult), m.startPos.row};
+            const Piece *p = board.getPiece(pos);
+            if (p != nullptr) {
+                return true;
+            }
+        }
+    }
+
+    if (abs(xDif) == abs(yDif)) { // diagonals
+        for (int i = 1; i <= abs(xDif) - 1; ++i) {
+            Position pos{m.startPos.col + (i * xMult), m.startPos.row + (i * yMult)};
+            const Piece *p = board.getPiece(pos);
+            if (p != nullptr) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 //? repeated checks?
 // TODO - Add advanced logic (Double move, en passant, castling)
 bool Board::checkMoveEndPos(const Move &m) const
 {
     Piece *p1 = getPiece(m.startPos);
     Piece *p2 = getPiece(m.endPos);
+
+    PieceType p1t = p1->getType();
+
+    if (p1t == PieceType::Pawn && p2 && p1->getPosition().col == p2->getPosition().col) { // remove pawn forward captures
+        return false;
+    }
+
+    // ! update for en passant
+    if (p1t == PieceType::Pawn && !p2 && p1->getPosition().col != m.endPos.col) { // remove pawn moving diagonally when there is no capture
+        return false;
+    }
+
+    if (p1t != PieceType::Knight && pieceInTheWay(*this, m)) { // remove pieces jumping over others
+        return false;
+    }
+
     return (
         //? checked in pieces already?
         m.endPos.col >= 0 && // The end position is within bounds
@@ -125,12 +202,6 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
 {
     vector<Move> moves; // List of possible moves
     vector<Piece *> pieces = getPlayerPieces(plr);
-    
-    /*for (Piece *p : pieces) {
-        if (p) {
-            cout << p->getCol() << " " << p->getRow() << endl;
-        }
-    }*/
 
     for (Piece *p : pieces)
     {
@@ -165,8 +236,12 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         if (isPlayerInCheck(plr))
         {
             moves = getMovesToUncheck(moves);
+            // !! debug output
+            /*for (Move &m : moves) {
+                cout << m.startPos.col << " " << m.startPos.row << " to " << m.endPos.col << " " << m.endPos.row << endl;
+            }*/
         }
-        /*else
+        else
         { // 4. will move put us in check
             vector<Move> newMoves;
             for (const Move &m : moves)
@@ -177,7 +252,15 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
                 }
             }
             moves = newMoves;
-        }*/
+        }
+
+        // !! debug output
+        if (DEBUG_OUTPUT) {
+            cout << "Past Valid Moves:\n-----------" << endl; 
+            for (Move &m : moves) {
+                cout << posToStr(m.startPos) << " to " << posToStr(m.endPos) << endl;
+            }
+        }
     }
 
     return moves;
@@ -231,6 +314,13 @@ bool Board::isPlayerInCheck(const Player *plr) const
     {
         if (m.captured && m.capturedPt == PieceType::King)
         {
+            if (DEBUG_OUTPUT) {
+                if (plr->getColour() == Colour::Black) {
+                    cout << "BLACK IN CHECK" << endl;
+                } else {
+                    cout << "WHITE IN CHECK" << endl;
+                }
+            }
             return true;
         }
     }
@@ -424,9 +514,9 @@ void Board::initBoard()
         }
     }                                                         // board setup loop
     unique_ptr<Observer> td = make_unique<TextDisplay>(this); // todo update when td ctor is done
-    //unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(this); // todo update when gd ctor is done
+    unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(this); // todo update when gd ctor is done
     attach(std::move(td));
-    //attach(std::move(gd));
+    attach(std::move(gd));
 }
 
 //* SETUP mode methods

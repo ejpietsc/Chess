@@ -20,6 +20,10 @@
 
 using namespace std;
 
+// Constants to store the size of the grid
+const int NUM_COLS = 8;
+const int NUM_ROWS = 8;
+
 //! moved here since used in new Move fields
 enum class PieceType
 {
@@ -49,6 +53,8 @@ struct Position
 bool operator==(const Position &p1, const Position &p2);
 
 bool operator!=(const Position &p1, const Position &p2);
+
+string posToStr(const Position &p);
 
 // MOVE
 struct Move
