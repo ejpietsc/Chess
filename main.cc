@@ -126,8 +126,9 @@ static bool enterSetupMode(Board &gameBoard)
     cout << "• '+ K e1' places the piece K (i.e., white king in this case) on the square e1. If a piece is already on that square, it is replaced" << endl;
     cout << "• '- e1' removes the piece from the square e1. If there is no piece at that square, take no action" << endl;
     cout << "• '= colour' makes it colour's turn to go next" << endl;
+    cout << "• 'clear' clears the board from all pieces" << endl;
     cout << "• 'print' prints out the current board again" << endl;
-    cout << "[ADDED]• 'clear' clears the board from all pieces" << endl;
+    cout << "• 'refresh' Force refresh all displays (use this if the graphics display is corrupted)" << endl;
     cout << "• 'done' leaves setup mode\n"
          << endl;
 
@@ -174,7 +175,12 @@ static bool enterSetupMode(Board &gameBoard)
 
         else if (lowerCmd == "print")
         {
-            gameBoard.updateObservers();
+            gameBoard.displayObservers();
+        }
+
+        else if (lowerCmd == "refresh")
+        {
+            gameBoard.refreshObservers();
         }
 
         else if (lowerCmd == "+")
@@ -392,11 +398,11 @@ static void playGame(Board &gameBoard)
                     try
                     {
                         Position landingPos = gameBoard.makeMove();
-                        if (landingPos == invalid_input)
+                        if (landingPos == INVALID_INPUT)
                         {
                             cout << "Invalid Input! Input format is: move [a-h,1-8] [a-h,1-8]" << endl;
                         }
-                        else if (landingPos == illegal_move)
+                        else if (landingPos == ILLEGAL_MOVE)
                         {
                             // ? add more for more specific error messages
                             cout << "Illegal Move! Try again" << endl;

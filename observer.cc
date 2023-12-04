@@ -5,24 +5,27 @@
 void Observer::notify(Position pos, Piece *p)
 {
     // NVI - Call the doNotify function
-    if (doNotify(pos, p)) doUpdate();
+    if (doNotify(pos, p)) doDisplay();
 }
 void Observer::notify(std::vector<std::pair<Position, Piece *>> vec) {
-    /*bool to_update = false;
+    bool to_update = false;
     for (std::pair<Position, Piece *> p : vec) {
         to_update = to_update || doNotify(p.first, p.second);
     }
-    if (to_update) doUpdate();
-    */
+    if (to_update) doDisplay();
 
     // ! changed
-    for (std::pair<Position, Piece *> p : vec) {
-        doNotify(p.first, p.second);
-    }
+    // for (std::pair<Position, Piece *> p : vec) {
+    //     doNotify(p.first, p.second);
+    // }
 
-    doUpdate();
+    doDisplay();
 }
 
-void Observer::update() {
-    doUpdate();
+void Observer::display() {
+    doDisplay();
+}
+
+void Observer::refresh(const Board *subject) {
+    doRefresh(subject);
 }

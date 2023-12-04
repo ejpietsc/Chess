@@ -68,7 +68,8 @@ public:
     // Observer Pattern methods
     void notifyObservers(Position pos) const;
     void notifyObservers(std::vector<Position> vec) const;
-    void updateObservers() const;
+    void displayObservers() const;
+    void refreshObservers() const;
     void attach(unique_ptr<Observer> o); // done
 
     // SetUp mode

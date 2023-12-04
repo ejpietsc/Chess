@@ -9,14 +9,18 @@ class TextDisplay : public Observer
 {
     std::vector<std::vector<char>> theDisplay;
 
+    // doNotify - Updates a tile on the board
     bool doNotify(Position pos, Piece *p) override;
-    void doUpdate() override;
+
+    // doDisplay - Prints out the board again
+    void doDisplay() override;
+
+    // Force refresh everything
+    void doRefresh(const Board *subject) override;
 
     public:
         TextDisplay() = default; //! used in Board copy/move- don't delete
-        TextDisplay(Board *subject);
-        // void updateMsg(ostream &out, string msg);
-        // void displayScoreBoard(ostream &out);
+        TextDisplay(const Board *subject);
         ~TextDisplay();
 
     friend std::ostream &operator<<(std::ostream &out, const TextDisplay &td);

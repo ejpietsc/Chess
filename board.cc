@@ -439,11 +439,18 @@ void Board::notifyObservers(std::vector<Position> vec) const
     }
 }
 
-void Board::updateObservers() const
+void Board::displayObservers() const
 {
     for (const unique_ptr<Observer> &obs : observers)
     {
-        obs.get()->update();
+        obs.get()->display();
+    }
+}
+
+void Board::refreshObservers() const {
+for (const unique_ptr<Observer> &obs : observers)
+    {
+        obs.get()->refresh(this);
     }
 }
 

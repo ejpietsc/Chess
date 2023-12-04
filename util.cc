@@ -7,8 +7,8 @@ using namespace std;
 const int NUM_COLS = 8;
 const int NUM_ROWS = 8;
 
-const Position illegal_move = Position{-2, -2};
-const Position invalid_input = Position{-1, -1};
+const Position ILLEGAL_MOVE = Position{-2, -2};
+const Position INVALID_INPUT = Position{-1, -1};
 
 
 // Helper functions

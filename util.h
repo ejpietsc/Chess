@@ -70,8 +70,9 @@ bool operator==(const Move &m1, const Move &m2);
 //! ADDED
 bool operator!=(const Move &m1, const Move &m2);
 
-extern const Position illegal_move;
-extern const Position invalid_input;
+// Constants for sentinel Position values
+extern const Position ILLEGAL_MOVE;
+extern const Position INVALID_INPUT;
 
 // Constants to store the size of the grid
 extern const int NUM_COLS;

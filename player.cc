@@ -90,7 +90,7 @@ Move Human::getHumanMove(vector<Move> &validMoves) const
     Move move = Move{start, end};
     if (!moveIsValid(move, validMoves))
     {
-        move.endPos = Position(illegal_move);
+        move.endPos = Position(ILLEGAL_MOVE);
     }
     return move;
 }

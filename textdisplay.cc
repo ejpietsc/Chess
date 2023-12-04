@@ -50,21 +50,10 @@ char getPieceChar(Piece *p) {
 }
 
 // Constructor for TextDisplay
-TextDisplay::TextDisplay(Board *subject)
+TextDisplay::TextDisplay(const Board *subject)
 {
-    // Iterate through columns
-    for (int c = 0; c < NUM_COLS; ++c) {
-        // Initialize the column to a vector (the row)
-        theDisplay.push_back(vector<char>(NUM_COLS, ' '));
-        // Iterate through the row
-        for (int r = 0; r < NUM_ROWS; ++r) {
-            // Call getPieceChar() to get the appropriate character and update the grid
-            Piece *p = subject->getPieceByCoords(c, r);
-            theDisplay[c][getRowForOutput(r)] = p == nullptr ? squareCharDisplay(c, getRowForOutput(r)) : getPieceChar(p);
-        }
-    }
-
-    doUpdate();
+    // Call doRefresh to populate theDisplay and print out the board
+    doRefresh(subject);
 }
 
 // doNotify(pair, Piece *) - Overriden function to update and print the grid
@@ -82,9 +71,27 @@ bool TextDisplay::doNotify(Position pos, Piece *p)
     return false;
 }
 
-void TextDisplay::doUpdate() {
+void TextDisplay::doDisplay() {
     // Print out the updated TextDisplay
     cout << *this << endl;
+}
+
+// doRefresh - Force refresh everything
+void TextDisplay::doRefresh(const Board *subject) {
+    // Iterate through columns
+    for (int c = 0; c < NUM_COLS; ++c) {
+        // Initialize the column to a vector (the row)
+        theDisplay.push_back(vector<char>(NUM_COLS, ' '));
+        // Iterate through the row
+        for (int r = 0; r < NUM_ROWS; ++r) {
+            // Call getPieceChar() to get the appropriate character and update the grid
+            Piece *p = subject->getPieceByCoords(c, r);
+            theDisplay[c][getRowForOutput(r)] = p == nullptr ? squareCharDisplay(c, getRowForOutput(r)) : getPieceChar(p);
+        }
+    }
+
+    // Print out the game board
+    doDisplay();
 }
 
 // Destructor for TextDisplay - Doesn't need to do anything
