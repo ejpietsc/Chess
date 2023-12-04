@@ -1,7 +1,37 @@
 #include "player.h"
 #include "board.h"
+#include "util.h"
+
 
 using namespace std;
+
+
+// Constants for the computer players
+
+// Values of different piece types
+std::map<PieceType, int> PIECE_VALUES = {
+    {PieceType::King, 500},
+    {PieceType::Queen, 250},
+    {PieceType::Bishop, 100},
+    {PieceType::Rook, 100},
+    {PieceType::Knight, 75},
+    {PieceType::Pawn, 25}
+};
+
+// How many times the piece value is it to capture any enemy piece of the same type
+std::map<PieceType, int> PIECE_CAPTURE_MULTIPLIERS = {
+    {PieceType::King, 5},
+    {PieceType::Queen, 3},
+    {PieceType::Bishop, 1},
+    {PieceType::Rook, 2},
+    {PieceType::Knight, 1},
+    {PieceType::Pawn, 2}
+};
+
+int CHECK_VALUE = 250; // Value of a check
+int CHECKMATE_VALUE = 2500; // Value of a checkmate
+int CHECK_CAPTURE_MULTIPLIER = 2; // How much more valuable it is to check the enemy
+
 
 // TODO
 
@@ -90,19 +120,33 @@ LevelTwo::~LevelTwo() {}
 LevelThree::~LevelThree() {}
 LevelFour::~LevelFour() {}
 
-// TODO !!!!! vvvv
+// Level 1: random legal moves.
 Move LevelOne::generateMove(vector<Move> &moves) const
 {
-    cout << "-Incomplete method-" << endl;
-    Move m{};
-    return m;
+    // Pick a random move from the vector of possible legal moves
+    return moves[rand() % moves.size()];
 }
 
+// Level 2: prefers capturing moves and checks over other moves
 Move LevelTwo::generateMove(vector<Move> &moves) const
 {
-    cout << "-Incomplete method-" << endl;
-    Move m{};
-    return m;
+    Move bestMove; // Best move so far
+    int bestscore = -1; // Best score so far
+
+    // Iterate through moves
+    for (Move m : moves) {
+        // Calculate score for move
+        int currscore = m.captured ? PIECE_VALUES[m.capturedPt] * PIECE_CAPTURE_MULTIPLIERS[m.capturedPt] : 0;
+        // TODO: Update score for checks and checkmates
+
+        // Update the best move and score if the score is better
+        if (currscore > bestscore) {
+            bestscore = currscore;
+            bestMove = m;
+        }
+    }
+
+    return bestMove; // Return the best move
 }
 
 Move LevelThree::generateMove(vector<Move> &moves) const
