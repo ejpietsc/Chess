@@ -3,6 +3,10 @@
 
 using namespace std;
 
+// Constants to store the size of the grid
+const int NUM_COLS = 8;
+const int NUM_ROWS = 8;
+
 const Position illegal_move = Position{-2, -2};
 const Position invalid_input = Position{-1, -1};
 

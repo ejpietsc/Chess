@@ -20,10 +20,6 @@
 
 using namespace std;
 
-// Constants to store the size of the grid
-const int NUM_COLS = 8;
-const int NUM_ROWS = 8;
-
 //! moved here since used in new Move fields
 enum class PieceType
 {
