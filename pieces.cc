@@ -8,10 +8,8 @@ Piece::Piece(PieceType type, Colour colour, Position pos)
 Piece::~Piece() {}
 
 // TODO vvv ------------------
-void Piece::movePiece(Position &landingPos)
+void Piece::movePiece(const Position &landingPos)
 {
-    cout << "-Incomplete method-" << endl;
-
     if (this->getType() == PieceType::Pawn)
     {
         Pawn *p = dynamic_cast<Pawn *>(this);
@@ -22,9 +20,6 @@ void Piece::movePiece(Position &landingPos)
     }
 
     this->setPosition(landingPos.col, landingPos.row);
-    // todo NOTIFY OBSERVERS
-
-    // ! there may be more things needed here
 }
 
 // TODO ^^^ ------------------
@@ -44,10 +39,8 @@ std::unique_ptr<Piece> createPiece(PieceType type, Colour colour, Position pos)
         return std::make_unique<Rook>(colour, pos);
     case PieceType::Knight:
         return std::make_unique<Knight>(colour, pos);
-    case PieceType::Pawn:
-        return std::make_unique<Pawn>(colour, pos);
     default:
-        return nullptr; // Handle NULL_PIECE - empty tile
+        return std::make_unique<Pawn>(colour, pos);
     }
 }
 

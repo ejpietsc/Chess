@@ -7,20 +7,20 @@ using namespace std;
 
 // independent fns and helpers
 // ! [added] Static helper
-static unique_ptr<Player> createPlayer(const PlayerType pt, const int level)
+static unique_ptr<Player> createPlayer(const PlayerType pt, const int level, const Colour clr)
 {
     switch (level)
     {
     case (4):
-        return make_unique<LevelFour>(Colour::White, pt, level);
+        return make_unique<LevelFour>(clr, pt, level);
     case (3):
-        return make_unique<LevelThree>(Colour::White, pt, level);
+        return make_unique<LevelThree>(clr, pt, level);
     case (2):
-        return make_unique<LevelTwo>(Colour::White, pt, level);
+        return make_unique<LevelTwo>(clr, pt, level);
     case (1):
-        return make_unique<LevelOne>(Colour::White, pt, level);
+        return make_unique<LevelOne>(clr, pt, level);
     default:
-        return make_unique<Human>(Colour::White, pt);
+        return make_unique<Human>(clr, pt);
     }
 }
 
@@ -126,11 +126,11 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
     vector<Move> moves; // List of possible moves
     vector<Piece *> pieces = getPlayerPieces(plr);
     
-    for (Piece *p : pieces) {
+    /*for (Piece *p : pieces) {
         if (p) {
             cout << p->getCol() << " " << p->getRow() << endl;
         }
-    }
+    }*/
 
     for (Piece *p : pieces)
     {
@@ -144,31 +144,29 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         {
             Move m{p->getPosition(), ep};
 
-            moves.emplace_back(m);
-
             // 2. check moves that land us on valid spot
-            /*if (checkMoveEndPos(m))
+            if (checkMoveEndPos(m))
             {
                 //! add capture info
-                if (getPiece(ep))
+                if (getPiece(ep) != nullptr)
                 {
                     m.captured = true;
                     m.capturedPt = getPiece(ep)->getType();
                 }
                 moves.emplace_back(m);
-            }*/
+            }
         }
     }
     //! when a player A has the opponent B in check, even A moves that put B the attacker
     //! in check are moves that A can't make - we can't uncheck ourselves by checking the opponent
     //! that's why the following checks should be omitted when in experiment
-    /*if (!experiment)
+    if (!experiment)
     { // 3. are we in check
         if (isPlayerInCheck(plr))
         {
             moves = getMovesToUncheck(moves);
         }
-        else
+        /*else
         { // 4. will move put us in check
             vector<Move> newMoves;
             for (const Move &m : moves)
@@ -179,8 +177,8 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
                 }
             }
             moves = newMoves;
-        }
-    }*/
+        }*/
+    }
 
     return moves;
 }
@@ -211,9 +209,8 @@ vector<Move> Board::getMovesToUncheck(vector<Move> &moves) const
 bool Board::putsPlayerInCheck(const Move &m, const Player *plr) const
 {
     Board tmp{*this};
-    tmp.board[m.endPos.col][m.endPos.row] = unique_ptr<Piece>{getPiece(m.startPos)};
-
-    tmp.board[m.startPos.col][m.startPos.row] = unique_ptr<Piece>(nullptr);
+    tmp.delPiece(m.endPos);
+    tmp.board[m.endPos.col][m.endPos.row].swap(tmp.board[m.startPos.col][m.startPos.row]);
     return tmp.isPlayerInCheck(plr);
 }
 
@@ -255,7 +252,7 @@ void Board::doMove(const Move &m)
 {
     delPiece(m.endPos);
     Piece *p = getPiece(m.startPos);
-    p->setPosition(m.endPos.col, m.endPos.row);
+    p->movePiece(m.endPos);
     board[m.startPos.col][m.startPos.row].swap(board[m.endPos.col][m.endPos.row]);
     notifyObservers({m.startPos, m.endPos});
 }
@@ -267,7 +264,6 @@ Position Board::makeMove()
     vector<Move> validMoves = getValidMoves(currPlayer, false);
     
     // TODO add pawn capture moves to validMoves !!!!
-    // ! uncomment
 
     Move move = currPlayer->getNextMove(validMoves);
     // check if move valid
@@ -284,16 +280,16 @@ Board::Board(const PlayerType whitePl, const int whiteLevel, const PlayerType bl
 {
     // set up players
     // ! [changed] Player/Computer is an ABC - can't instantiate directly
-    whitePlayer = createPlayer(whitePl, whiteLevel); //? need move
-    blackPlayer = createPlayer(blackPl, blackLevel);
+    whitePlayer = createPlayer(whitePl, whiteLevel, Colour::White); //? need move
+    blackPlayer = createPlayer(blackPl, blackLevel, Colour::Black);
     currPlayer = whitePlayer.get();
 }
 
 //! does not copy observers since we will never have more than one active board at once
 //? are observers correctly set to empty vector (no deep copy! or will change displays as we experiment)
 Board::Board(const Board &other) : observers{},
-                                   whitePlayer{isHuman(other.whitePlayer.get()) ? createPlayer(PlayerType::Human, 0) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.whitePlayer.get()))->getLvl())},
-                                   blackPlayer{isHuman(other.blackPlayer.get()) ? createPlayer(PlayerType::Human, 0) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.blackPlayer.get()))->getLvl())},
+                                   whitePlayer{isHuman(other.whitePlayer.get()) ? createPlayer(PlayerType::Human, 0, Colour::White) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.whitePlayer.get()))->getLvl(), Colour::White)},
+                                   blackPlayer{isHuman(other.blackPlayer.get()) ? createPlayer(PlayerType::Human, 0, Colour::Black) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.blackPlayer.get()))->getLvl(), Colour::Black)},
                                    currPlayer{isWhiteTeam(other.currPlayer) ? whitePlayer.get() : blackPlayer.get()},
                                    whiteScore{other.whiteScore}, blackScore{other.blackScore}
 {
@@ -309,9 +305,10 @@ Board::Board(const Board &other) : observers{},
         for (int j = 0; j < NUM_ROWS; ++j)
         {
             Piece *p = (other.board[i][j]).get();
-            if (p)
-            {
+            if (p) {
                 board[i][j] = createPiece(p->getType(), p->getColour(), p->getPosition());
+            } else {
+                board[i][j] = unique_ptr<Piece>{nullptr};
             }
         }
     }
@@ -338,10 +335,10 @@ void Board::notifyObservers(Position pos) const
 
 void Board::notifyObservers(std::vector<Position> vec) const
 {
-    for (Position &p : vec) {
+    /*for (Position &p : vec) {
         notifyObservers(p);
-    }
-    /*std::vector<std::pair<Position, Piece *>> vec1;
+    }*/
+    std::vector<std::pair<Position, Piece *>> vec1;
     for (Position p : vec) {
         vec1.push_back({p, getPiece(p)});
     }
@@ -349,7 +346,7 @@ void Board::notifyObservers(std::vector<Position> vec) const
     for (const unique_ptr<Observer> &obs : observers)
     {
         obs.get()->notify(vec1);
-    }*/
+    }
 }
 
 void Board::updateObservers() const

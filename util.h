@@ -29,7 +29,6 @@ enum class PieceType
     Rook,
     Knight,
     Pawn,
-    NULL_PIECE
 };
 // Position
 //? improve to class that returns move errors and have makemove() in board return that class

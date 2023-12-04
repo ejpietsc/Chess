@@ -35,7 +35,8 @@ class Board
     unique_ptr<Player> whitePlayer;
     unique_ptr<Player> blackPlayer; //* player is abstract - must be ptr
     Player *currPlayer;             // non-ownership
-    float whiteScore, blackScore = 0;
+    float whiteScore = 0;
+    float blackScore = 0;
 
     // Determine GameStates
     bool isPlayerInCheck(const Player *plr) const;

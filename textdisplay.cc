@@ -43,13 +43,8 @@ char getPieceChar(Piece *p) {
         case PieceType::Knight:
             ans = 'N';
             break;
-        case PieceType::Pawn:
-            ans = 'P';
-            break;
-
         default:
-            cout << "ERROR : Attempt to set up NULL_PIECE" << endl;
-            ans = 'X';
+            ans = 'P';
             break;
     }
 

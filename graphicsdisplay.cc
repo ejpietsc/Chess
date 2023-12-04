@@ -110,21 +110,6 @@ std::map<PieceType, std::vector<std::string>> PIECE_SHAPES{
 
         }
     },
-    {
-        PieceType::NULL_PIECE,
-        {
-            "..........",
-            "##......##",
-            ".##....##.",
-            "..##..##..",
-            "...####...",
-            "....##....",
-            "...####...",
-            "..##..##..",
-            ".##....##.",
-            "##......##"
-        }
-    }
 };
 
 // squareColourDisplay(int, int) - Determines whether an empty square is black or white

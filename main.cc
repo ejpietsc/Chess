@@ -88,7 +88,8 @@ static PieceType strToPieceType(const string &s)
         return PieceType::Pawn;
     }
 
-    return PieceType::NULL_PIECE;
+    throw(std::invalid_argument("Incorrect piece string"));
+
 }
 
 // given a string (eg. "computer4"), return the associated computer level
@@ -195,11 +196,11 @@ static bool enterSetupMode(Board &gameBoard)
 
             // determine piece type to add
             const string lowerOption1 = toLowerString(option1);
-            PieceType pieceType = strToPieceType(lowerOption1);
+            PieceType pieceType;
 
-            // handle invalid input
-            if (pieceType == PieceType::NULL_PIECE)
-            {
+            try {
+                pieceType = strToPieceType(lowerOption1);
+            } catch (...) { // handle invalid input
                 cout << "Invalid piece type! Try again" << endl;
                 continue;
             }
@@ -382,6 +383,8 @@ static void playGame(Board &gameBoard)
                         } else if (landingPos == illegal_move) {
                             // ? add more for more specific error messages
                             cout << "Illegal Move! Try again" << endl;
+                        } else {
+                            gameBoard.flipTurn();
                         }
                         string trash;
                         getline(cin, trash); // flush current line
