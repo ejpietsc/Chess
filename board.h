@@ -39,6 +39,8 @@ class Board
     Player *currPlayer;             // non-ownership
     float whiteScore = 0;
     float blackScore = 0;
+    bool text;
+    bool graphics;
 
     // Determine GameStates
     bool isPlayerInCheck(const Player *plr) const;
@@ -50,7 +52,14 @@ class Board
 
 public:
     Board();                                                                                               // done
-    Board(const PlayerType whitePl, const int whiteLevel, const PlayerType blackPl, const int blackLevel); // done
+    Board(
+        const PlayerType whitePl,
+        const int whiteLevel,
+        const PlayerType blackPl,
+        const int blackLevel,
+        const bool graphics,
+        const bool text
+    ); // done
 
     // Copy ctor and assignment operator
     Board(const Board &other);

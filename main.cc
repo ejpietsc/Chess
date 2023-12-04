@@ -138,6 +138,7 @@ static bool enterSetupMode(Board &gameBoard)
 
     while (true)
     {
+        cout << "> ";
         getline(cin, curLine);
 
         // handle fatal read fail
@@ -300,8 +301,7 @@ static void playGame(Board &gameBoard)
         cout << "Commands:\n"
              << "---------" << endl;
         cout << "• 'setup' will enter setup mode" << endl;
-        cout << "• 'start' will start the game\n"
-             << endl;
+        cout << "• 'start' will start the game\n" << endl;
 
         // we need the user to explicitly call a "start" command
         //  otherwise, say they first run 'game computer1 human'
@@ -312,6 +312,7 @@ static void playGame(Board &gameBoard)
         string cmd;
         while (true)
         { // this loop is to await start/setup command
+            cout << "> ";
             getline(cin, curLine);
 
             // handle fatal read fail
@@ -354,6 +355,15 @@ static void playGame(Board &gameBoard)
             }
         }
 
+
+        cout << "A game is in progress" << endl;
+        cout << "Commands:\n"
+             << "---------" << endl;
+        cout << "• 'move <start> <end>' moves the piece in <start> to <end>" << endl;
+        cout << "• 'resign' concedes the game to the opponenent (they will win)" << endl;
+        cout << "• 'print' prints out the current board again" << endl;
+        cout << "• 'refresh' Force refresh all displays (use this if the graphics display is corrupted)\n" << endl;
+
         while (true)
         { // this loop iterates each player to process their moves until the game ends
             Player &currPlr = *(gameBoard.getCurrPlayer());
@@ -374,6 +384,7 @@ static void playGame(Board &gameBoard)
 
                 const string clrStr = (currClr == Colour::White ? "White" : "Black");
                 cout << clrStr << "'s turn:" << endl;
+                cout << "> ";
 
                 string cmdPrefix;
                 cin >> cmdPrefix;
@@ -392,6 +403,15 @@ static void playGame(Board &gameBoard)
                     cout << clrStr << " has resigned! Ending game..." << endl;
                     gameBoard.incrementScore(otherClr, WIN_POINTS);
                     break;
+                }
+                else if (lowerCmdPrefix == "print")
+                {
+                    gameBoard.displayObservers();
+                }
+
+                else if (lowerCmdPrefix == "refresh")
+                {
+                    gameBoard.refreshObservers();
                 }
                 else if (lowerCmdPrefix == "move")
                 {
@@ -457,10 +477,53 @@ static void outScore(const float whiteScore, const float blackScore)
     cout << "Black: " << blackScore << endl;
 }
 
-int main()
+bool isInVector(std::vector<std::string>& vec, std::string key) {
+    for (std::string i : vec) {
+        if (i == key) return true;
+    }
+    return false;
+}
+
+int main(int argc, char **argv)
 {
-    cout << "Welcome to Chess - By Imane, Amol & Evan with <3!\n"
-         << endl;
+    cout << "          " << endl;
+    cout << "   ####   " << endl;
+    cout << "  ######     _____ _    _ ______  _____ _____ " << endl;
+    cout << "   ####     / ____| |  | |  ____|/ ____/ ____|" << endl;
+    cout << "    ##     | |    | |__| | |__  | (___| (___   " << endl;
+    cout << "   ####    | |    |  __  |  __|  \\___ \\\\___ \\ " << endl;
+    cout << "    ##     | |____| |  | | |____ ____) |___) |" << endl;
+    cout << "  ######    \\_____|_|  |_|______|_____/_____/ " << endl;
+    cout << "  ######  " << endl;
+    cout << " ######## " << endl;
+    cout << "\nWelcome to Chess - By Imane, Amol & Evan with <3!\n" << endl;
+
+    bool useGraphics = true, useText = true;
+
+    std::vector<std::string> args;
+    for (int i = 1; i < argc; ++i) {
+        args.emplace_back(argv[i]);
+    }
+
+    if (isInVector(args, "-d")) {
+        cout << "Debug" << endl;
+    }
+
+    if (isInVector(args, "-ng")) {
+        cout << "[INFO] Graphics display is disabled." << endl;
+        useGraphics = false;
+    }
+
+    if (isInVector(args, "-nt")) {
+        if (useGraphics) {
+            cout << "[INFO] Text display is disabled." << endl;
+            useText = false;
+        }
+        else {
+            cout << "[WARNING] You have requested for both displays to be disabled. This makes the game unplayable, and thus the text display had been left enabled." << endl;
+        }
+    }
+
     cout << "Commands:\n"
          << "---------" << endl;
     cout << "• 'game white-player black-player' starts a game with designated player types." << endl;
@@ -534,7 +597,7 @@ int main()
     }
 
     // create board and commence main gameplay loop
-    Board gameBoard{whitePt, whiteLevel, blackPt, blackLevel};
+    Board gameBoard{whitePt, whiteLevel, blackPt, blackLevel, useGraphics, useText};
 
     playGame(gameBoard);
 

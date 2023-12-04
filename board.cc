@@ -76,7 +76,7 @@ Colour getNextColour(Colour clr)
 // ____________________________________________
 
 // for the sake of swap only
-Board::Board() : state{GameState::NA} {}
+Board::Board(): state{GameState::NA}, text{false}, graphics{false} {}
 
 //! [added] getValidMoves getting too big and this can be reused
 vector<Piece *> Board::getPlayerPieces(const Player *plr) const
@@ -384,7 +384,15 @@ Position Board::makeMove()
 }
 
 // Default board, you are white
-Board::Board(const PlayerType whitePl, const int whiteLevel, const PlayerType blackPl, const int blackLevel) : state{GameState::NA}
+// ! row indices are flipped to match board layout
+Board::Board(
+    const PlayerType whitePl,
+    const int whiteLevel,
+    const PlayerType blackPl,
+    const int blackLevel,
+    const bool graphics,
+    const bool text
+): state{GameState::NA}, text{text}, graphics{graphics}
 {
     // set up players
     // ! [changed] Player/Computer is an ABC - can't instantiate directly
@@ -399,7 +407,9 @@ Board::Board(const Board &other) : observers{},
                                    whitePlayer{isHuman(other.whitePlayer.get()) ? createPlayer(PlayerType::Human, 0, Colour::White) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.whitePlayer.get()))->getLvl(), Colour::White)},
                                    blackPlayer{isHuman(other.blackPlayer.get()) ? createPlayer(PlayerType::Human, 0, Colour::Black) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.blackPlayer.get()))->getLvl(), Colour::Black)},
                                    currPlayer{isWhiteTeam(other.currPlayer) ? whitePlayer.get() : blackPlayer.get()},
-                                   whiteScore{other.whiteScore}, blackScore{other.blackScore}
+                                   whiteScore{other.whiteScore}, blackScore{other.blackScore},
+                                   text{false},
+                                   graphics{false}
 {
     // SETUP BOARD
     board.resize(NUM_COLS);
@@ -544,11 +554,19 @@ void Board::initBoard()
             board[i][0] = createPiece(PieceType::King, Colour::White, Position{i, 0});
             board[i][7] = createPiece(PieceType::King, Colour::Black, Position{i, 7});
         }
-    }                                                             // board setup loop
-    unique_ptr<Observer> td = make_unique<TextDisplay>(this);     // todo update when td ctor is done
-    unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(this); // todo update when gd ctor is done
-    attach(std::move(td));
-    attach(std::move(gd));
+    }                                                         // board setup loop
+
+    // Only add the text display if required
+    if (text) {
+        unique_ptr<Observer> td = make_unique<TextDisplay>(this);
+        attach(std::move(td));
+    }
+
+    // Only add the graphics display if required
+    if (graphics) {
+        unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(this);
+        attach(std::move(gd));
+    }
 }
 
 int isColour(Piece *p, const Colour &col)
