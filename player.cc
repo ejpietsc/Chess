@@ -23,6 +23,10 @@ std::map<PieceType, int> PIECE_CAPTURE_MULTIPLIERS = {
     {PieceType::Pawn, 2}
 };
 
+int CHECK_VALUE = 250;
+int CHECKMATE_VALUE = 2500;
+int CHECK_CAPTURE_MULTIPLIER = 2;
+
 // TODO
 
 // PUBLIC HELPER
@@ -118,13 +122,27 @@ Move LevelOne::generateMove(vector<Move> &moves) const
 
 Move LevelTwo::generateMove(vector<Move> &moves) const
 {
-    cout << "-Incomplete method-" << endl;
-    Move m{};
-    return m;
+    Move bestMove;
+    int bestscore = -1;
+
+    for (Move m : moves) {
+        int currscore = m.captured ? PIECE_VALUES[m.capturedPt] * PIECE_CAPTURE_MULTIPLIERS[m.capturedPt] : 0;
+        // TODO: Update score for checks and checkmates
+
+        if (currscore > bestscore) {
+            bestscore = currscore;
+            bestMove = m;
+        }
+    }
+
+    return bestMove;
 }
 
 Move LevelThree::generateMove(vector<Move> &moves) const
 {
+    // Level Three: prefers avoiding capture, capturing moves, and checks
+    // Needs move logic changes
+
     cout << "-Incomplete method-" << endl;
     Move m{};
     return m;
@@ -132,6 +150,10 @@ Move LevelThree::generateMove(vector<Move> &moves) const
 
 Move LevelFour::generateMove(vector<Move> &moves) const
 {
+    // Level Four: Something more sophisticated
+    // Plan: MiniMax. Simulate ahead and find what will happen if the move is made
+    // Needs move logic changes
+
     cout << "-Incomplete method-" << endl;
     Move m{};
     return m;
