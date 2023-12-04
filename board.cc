@@ -384,7 +384,6 @@ Position Board::makeMove()
 }
 
 // Default board, you are white
-// ! row indices are flipped to match board layout
 Board::Board(const PlayerType whitePl, const int whiteLevel, const PlayerType blackPl, const int blackLevel) : state{GameState::NA}
 {
     // set up players
@@ -577,6 +576,7 @@ int Board::getPieceTypeCount(const PieceType &pt, const Colour &col) const
             count += (isPieceType(p, pt) && isColour(p, col)) ? 1 : 0;
         }
     }
+    return count;
 }
 
 int getPromotedCount(int n, bool isQueen = false)
@@ -632,6 +632,7 @@ bool Board::boardIsValid() const
     }
     return true;
 } // end of boardIsValid()
+
 // bool Board::boardIsValid() const
 // {
 //     int blackKing = 0;

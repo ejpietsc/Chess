@@ -86,7 +86,7 @@ public:
     float getScore(Colour clr);
     vector<Piece *> getPlayerPieces(const Player *plr) const;
     Player *getNextPlayer() const;
-    int Board::getPieceTypeCount(const PieceType &pt, const Colour &col) const;
+    int getPieceTypeCount(const PieceType &pt, const Colour &col) const;
 
     // done
 
