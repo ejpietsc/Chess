@@ -87,7 +87,7 @@ vector<Piece *> Board::getPlayerPieces(const Player *plr) const
             Piece *p = loc.get();
             // Add to pieces only if colour matches
             //! [added] check p not null FIRST!
-            if ((p != nullptr) && (p->getType() != PieceType::NULL_PIECE) && (p->getColour() == plr->getColour()))
+            if ((p != nullptr) && (p->getColour() == plr->getColour()))
             {
                 pieces.emplace_back(p);
             }
@@ -122,7 +122,7 @@ bool Board::checkMoveEndPos(const Move &m) const
         m.endPos.col < NUM_COLS &&
         m.endPos.row >= 0 &&
         m.endPos.row < NUM_ROWS &&
-        (!p2 || (p2->getType() == PieceType::NULL_PIECE) || !p1 || (p1->getColour() != p2->getColour())));
+        (!p2 || !p1 || (p1->getColour() != p2->getColour())));
 }
 
 //! gets all moves for all pieces - even for human
