@@ -46,7 +46,7 @@ std::unique_ptr<Piece> createPiece(PieceType type, Colour colour, Position pos)
         return std::make_unique<Knight>(colour, pos);
     case PieceType::Pawn:
         return std::make_unique<Pawn>(colour, pos);
-    default:
+    default: //? make default pawn?
         return nullptr; // Handle NULL_PIECE - empty tile
     }
 }
@@ -245,8 +245,8 @@ vector<Position> Pawn::doGetMoves() const
 
     int directionMult = 1;
 
-    if (this->colour == Colour::White)
-    { // change dir for white
+    if (this->colour == Colour::Black)
+    { // change dir for black
         directionMult = -1;
     }
 
