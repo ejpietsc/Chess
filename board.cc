@@ -76,7 +76,7 @@ Colour getNextColour(Colour clr)
 // ____________________________________________
 
 // for the sake of swap only
-Board::Board(): text{false}, graphics{false} {}
+Board::Board() : text{false}, graphics{false} {}
 
 //! [added] getValidMoves getting too big and this can be reused
 vector<Piece *> Board::getPlayerPieces(const Player *plr) const
@@ -185,7 +185,8 @@ bool Board::checkMoveEndPos(const Move &m) const
     Piece *p1 = getPiece(m.startPos);
     Piece *p2 = getPiece(m.endPos);
 
-    if (!p1) return false;
+    if (!p1)
+        return false;
 
     PieceType p1t = p1->getType();
 
@@ -228,6 +229,7 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         }
         // 1. get moves that conform to piece move & don't go out of bound
         vector<Position> pmoves = p->getMoves();
+        //! add capture=true for pawn capturing moves
         for (const Position &ep : pmoves)
         {
             Move m{p->getPosition(), ep};
@@ -235,7 +237,7 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
             // 2. check moves that land us on valid spot
             if (checkMoveEndPos(m))
             {
-                //! add capture info
+                // setup capture info
                 if (getPiece(ep) != nullptr)
                 {
                     m.captured = true;
@@ -272,9 +274,11 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         }
 
         // !! debug output
-        if (DEBUG_OUTPUT) {
+        if (DEBUG_OUTPUT)
+        {
             cout << "Past Valid Moves:\n-----------" << endl;
-            for (Move &m : moves) {
+            for (Move &m : moves)
+            {
                 cout << posToStr(m.startPos) << " to " << posToStr(m.endPos) << endl;
             }
         }
@@ -322,9 +326,11 @@ int Board::putsPlayerInCheckMate(const Move &m, const Player *plr) const
     Board tmp{*this};
     tmp.delPiece(m.endPos);
     tmp.board[m.endPos.col][m.endPos.row].swap(tmp.board[m.startPos.col][m.startPos.row]);
-    
-    if (tmp.isPlayerInCheck(plr)) {
-        if (getValidMoves(plr).empty()) return 2;
+
+    if (tmp.isPlayerInCheck(plr))
+    {
+        if (getValidMoves(plr).empty())
+            return 2;
         return 1;
     }
     return 0;
@@ -366,6 +372,16 @@ bool Board::isPlayerInCheck(const Player *plr) const
 
 bool Board::isPlayerCheckmated(const Player *plr) const
 {
+    auto moves = getValidMoves(plr);
+    bool isCheckmated = getValidMoves(plr).empty();
+    cout << "IS PLAYER CHECKMATED: " << isCheckmated << endl;
+    cout << "IS PLAYER CHECKMATED: " << isCheckmated << endl;
+    cout << "IS PLAYER CHECKMATED: " << isCheckmated << endl;
+    cout << "IS PLAYER CHECKMATED: " << isCheckmated << endl;
+    for (const auto &m : moves)
+    {
+        cout << "VALID: " << m.startPos.col << " " << m.startPos.row << " to " << m.endPos.col << " " << m.endPos.row << endl;
+    }
     return isPlayerInCheck(plr) && getValidMoves(plr).empty();
 }
 
@@ -390,8 +406,6 @@ Position Board::makeMove()
 {
     vector<Move> validMoves = getValidMoves(currPlayer, false);
 
-    // TODO add pawn capture moves to validMoves !!!!
-
     Move move = currPlayer->getNextMove(validMoves, this);
     // check if move valid
     if (move.endPos.col >= 0)
@@ -410,8 +424,7 @@ Board::Board(
     const int blackLevel,
     const bool graphics,
     const bool text,
-    const bool useUnicode
-): text{text}, graphics{graphics}, useUnicode{useUnicode}
+    const bool useUnicode) : text{text}, graphics{graphics}, useUnicode{useUnicode}
 {
     // set up players
     // ! [changed] Player/Computer is an ABC - can't instantiate directly
@@ -497,8 +510,9 @@ void Board::displayObservers() const
     }
 }
 
-void Board::refreshObservers() const {
-for (const unique_ptr<Observer> &obs : observers)
+void Board::refreshObservers() const
+{
+    for (const unique_ptr<Observer> &obs : observers)
     {
         obs.get()->refresh(this);
     }
@@ -571,16 +585,18 @@ void Board::initBoard()
             board[i][0] = createPiece(PieceType::King, Colour::White, Position{i, 0});
             board[i][7] = createPiece(PieceType::King, Colour::Black, Position{i, 7});
         }
-    }                                                         // board setup loop
+    } // board setup loop
 
     // Only add the text display if required
-    if (text) {
+    if (text)
+    {
         unique_ptr<Observer> td = make_unique<TextDisplay>(this, useUnicode);
         attach(std::move(td));
     }
 
     // Only add the graphics display if required
-    if (graphics) {
+    if (graphics)
+    {
         unique_ptr<Observer> gd = make_unique<GraphicsDisplay>(this);
         attach(std::move(gd));
     }
@@ -627,7 +643,8 @@ int getPromotedCount(int n, bool isQueen = false)
 bool Board::boardIsValid() const
 {
     // one king per colour
-    if (getPieceTypeCount(PieceType::King, Colour::Black) != 1 || getPieceTypeCount(PieceType::King, Colour::White) != 1) {
+    if (getPieceTypeCount(PieceType::King, Colour::Black) != 1 || getPieceTypeCount(PieceType::King, Colour::White) != 1)
+    {
         return false;
     }
 
@@ -647,7 +664,8 @@ bool Board::boardIsValid() const
                     getPromotedCount(getPieceTypeCount(PieceType::Bishop, Colour::Black)) +
                     getPromotedCount(getPieceTypeCount(PieceType::Queen, Colour::Black), true);
 
-    if ((promotedWhite + whitePawn > 8) || (promotedBlack + blackPawn > 8)) {
+    if ((promotedWhite + whitePawn > 8) || (promotedBlack + blackPawn > 8))
+    {
         return false;
     }
     // 2. no pawn on first or last row
@@ -667,49 +685,6 @@ bool Board::boardIsValid() const
     }
     return true;
 } // end of boardIsValid()
-
-// bool Board::boardIsValid() const
-// {
-//     int blackKing = 0;
-//     int whiteKing = 0;
-//     // exactly one w/b king
-//     for (int i = 0; i < NUM_COLS; ++i)
-//     {
-//         for (int j = 0; j < NUM_ROWS; ++j)
-//         {
-//             Piece *p = (board[i][j]).get();
-//             if (p == nullptr)
-//             {
-//                 continue;
-//             }
-
-//             blackKing += (!isWhite(p) && isKing(p)) ? 1 : 0;
-//             whiteKing += (isWhite(p) && isKing(p)) ? 1 : 0;
-//         }
-//     }
-
-//     if (blackKing != 1 || whiteKing != 1)
-//     {
-//         return false;
-//     }
-
-//     // 2. no pawn on first or last row
-//     for (int i = 0; i < NUM_COLS; ++i)
-//     {
-//         Piece *p1 = board[i][0].get(); // first row
-//         Piece *p2 = board[i][7].get(); // last row
-//         if (isPawn(p1) || isPawn(p2))
-//         {
-//             return false;
-//         }
-//     }
-//     // 3. no king in check
-//     if (isPlayerInCheck(whitePlayer.get()) || isPlayerInCheck(blackPlayer.get()))
-//     {
-//         return false;
-//     }
-//     return true;
-// } // end of boardIsValid()
 
 void Board::addPiece(const PieceType &pt, const Colour &clr, const Position &pos)
 {
