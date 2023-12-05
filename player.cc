@@ -3,7 +3,6 @@
 #include "gameio.h"
 #include "util.h"
 
-
 using namespace std;
 
 // Forward declarations
@@ -20,12 +19,10 @@ std::map<PieceType, int> PIECE_VALUES = {
     {PieceType::Bishop, 100},
     {PieceType::Rook, 100},
     {PieceType::Knight, 75},
-    {PieceType::Pawn, 25}
-};
+    {PieceType::Pawn, 25}};
 
-int CHECK_VALUE = 250; // Value of a check
+int CHECK_VALUE = 250;      // Value of a check
 int CHECKMATE_VALUE = 2500; // Value of a checkmate
-
 
 // TODO
 
@@ -73,16 +70,11 @@ Move Human::doGetNextMove(vector<Move> &validMoves, Board *b) const
 //! check start and end are proper format
 Move Human::getHumanMove(vector<Move> &validMoves, Board *b) const
 {
-    std::pair<std::string, std::string>mv = getMoveFromUser();
+    std::pair<std::string, std::string> mv = getMoveFromUser();
     Move move = Move{mv.first, mv.second};
 
-    if (!moveIsValid(move, validMoves))
-    {
-        move.endPos = Position(ILLEGAL_MOVE);
-        return move;
-    }
-
-    // Special case for En Passent
+    //!____________________________________________________
+    // En Passent
     Position epp = Position{move.endPos.col, move.startPos.row};
     Piece *ep_piece = b->getPiece(epp);
     Piece *p = b->getPiece(move.startPos);
@@ -98,28 +90,116 @@ Move Human::getHumanMove(vector<Move> &validMoves, Board *b) const
         move.capturedPt = PieceType::Pawn;
         move.enPassentCapture = true;
         move.epCaptureLoc = epp;
-    }
-    // pawn capture??
-    if (p->getType() == PieceType::Pawn && 
-    b->getPieceByPos(move.endPos) 
-    && move.startPos.col != move.endPos.col
-    && move.endPos.row != move.endPos.row 
-    ) {
-        move.captured = true;
-    }
 
-    if (
+        if (!moveIsValid(move, validMoves, 'e'))
+        {
+            move.endPos = Position(ILLEGAL_MOVE);
+            return move;
+        }
+    }
+    //!____________________________________________________
+    // Pawn promotion
+    else if (
         p->getType() == PieceType::Pawn &&
         (move.endPos.row == 0 ||
-        move.endPos.row == NUM_ROWS - 1)
-    ) {
+         move.endPos.row == NUM_ROWS - 1))
+    {
         std::string pt = getUserInput();
         move.upgradePiece = true;
         move.upgradeTo = strToPieceType(toLowerString(pt));
+
+        if (!moveIsValid(move, validMoves, 'p'))
+        {
+            move.endPos = Position(ILLEGAL_MOVE);
+            return move;
+        }
+    }
+    //!____________________________________________________
+    else if (p->getType() == PieceType::King && !(dynamic_cast<King *>(p)->getHasMoved()) &&
+             isCastleMove(move, *b))
+    {
+        move.isCastleMove = true;
+
+        if (!moveIsValid(move, validMoves, 'k'))
+        {
+            move.endPos = Position(ILLEGAL_MOVE);
+            return move;
+        }
+    }
+    //!____________________________________________________
+
+    else if (b->getPieceByPos(move.endPos))
+    {
+        move.captured = true;
+        
+        if (!moveIsValid(move, validMoves, 'c'))
+        {
+            move.endPos = Position(ILLEGAL_MOVE);
+            return move;
+        }
+    }
+    //!____________________________________________________
+
+    else
+    {
+        if (!moveIsValid(move, validMoves, 'n'))
+        {
+            move.endPos = Position(ILLEGAL_MOVE);
+            return move;
+        }
     }
 
     return move;
 }
+// Move Human::getHumanMove(vector<Move> &validMoves, Board *b) const
+// {
+//     std::pair<std::string, std::string>mv = getMoveFromUser();
+//     Move move = Move{mv.first, mv.second};
+
+//     if (!moveIsValid(move, validMoves))
+//     {
+//         move.endPos = Position(ILLEGAL_MOVE);
+//         return move;
+//     }
+
+//     // Special case for En Passent
+//     Position epp = Position{move.endPos.col, move.startPos.row};
+//     Piece *ep_piece = b->getPiece(epp);
+//     Piece *p = b->getPiece(move.startPos);
+
+//     if (
+//         ep_piece &&
+//         p->getType() == PieceType::Pawn &&
+//         ep_piece->getType() == PieceType::Pawn &&
+//         ep_piece->getColour() != p->getColour() &&
+//         dynamic_cast<Pawn *>(ep_piece)->getDoubleMoved())
+//     {
+//         move.captured = true;
+//         move.capturedPt = PieceType::Pawn;
+//         move.enPassentCapture = true;
+//         move.epCaptureLoc = epp;
+//     }
+//     // pawn capture??
+//     if (p->getType() == PieceType::Pawn &&
+//     b->getPieceByPos(move.endPos)
+//     && move.startPos.col != move.endPos.col
+//     && move.endPos.row != move.endPos.row
+//     ) {
+//         move.captured = true;
+//     }
+
+//     if (
+//         p->getType() == PieceType::Pawn &&
+//         (move.endPos.row == 0 ||
+//         move.endPos.row == NUM_ROWS - 1)
+//     ) {
+//         std::string pt = getUserInput();
+//         move.upgradePiece = true;
+//         move.upgradeTo = strToPieceType(toLowerString(pt));
+//     }
+
+//     return move;
+// }
 
 // === COMPUTER ===
 //! ADDED LVL FIELD
@@ -132,7 +212,8 @@ Move Computer::doGetNextMove(vector<Move> &validMoves, Board *b) const
     return generateMove(validMoves, b);
 }
 
-int Computer::getLvl() const {
+int Computer::getLvl() const
+{
     return lvl;
 }
 
@@ -155,32 +236,34 @@ Move LevelOne::generateMove(vector<Move> &moves, Board *b) const
     return moves[rand() % moves.size()];
 }
 
-
 // Level 2: prefers capturing moves and checks over other moves
 // Prioritizes checks and checkmates first
 // Compares the value of each piece captured
 Move LevelTwo::generateMove(vector<Move> &moves, Board *b) const
 {
     int num_moves = moves.size();
-    Move bestMove; // Best move so far
+    Move bestMove;      // Best move so far
     int bestscore = -1; // Best score so far
 
     // Iterate through moves
-    for (Move m : moves) {
+    for (Move m : moves)
+    {
         // Calculate score for move
         int currscore = m.captured ? 10 : 0;
 
         // Update the best move and score if the score is better
-        if (currscore > bestscore) {
+        if (currscore > bestscore)
+        {
             // Check if the move causes a check - increase move score
-            if (b->putsPlayerInCheck(m, b->getNextPlayer())) currscore = 100;
+            if (b->putsPlayerInCheck(m, b->getNextPlayer()))
+                currscore = 100;
 
             // If the score is better - use that move
             // If the score is equal - use RNG to decide whether to use this move
             if (
                 (currscore > bestscore) ||
-                ((currscore == bestscore) && (num_moves > 2) && ((rand() % num_moves) <= 2))
-            ) {
+                ((currscore == bestscore) && (num_moves > 2) && ((rand() % num_moves) <= 2)))
+            {
                 bestscore = currscore;
                 bestMove = m;
             }
@@ -190,7 +273,8 @@ Move LevelTwo::generateMove(vector<Move> &moves, Board *b) const
     return bestMove; // Return the best move
 }
 
-int calculateMoveValue(const Move m, const Board *b, int scale=1, int rec=0) {
+int calculateMoveValue(const Move m, const Board *b, int scale = 1, int rec = 0)
+{
     int score = m.captured ? (PIECE_VALUES[m.capturedPt]) : 0;
     int ch = b->putsPlayerInCheckMate(m, b->getNextPlayer());
     score += (ch == 0) ? 0 : ((ch == 1) ? (CHECK_VALUE) : (CHECKMATE_VALUE));
@@ -199,10 +283,12 @@ int calculateMoveValue(const Move m, const Board *b, int scale=1, int rec=0) {
     tmp.doMove(m);
     tmp.flipTurn();
 
-    if (rec) {
+    if (rec)
+    {
         int nextMoveVals = 0;
         std::vector<Move> nextMoves = tmp.getValidMoves(tmp.getCurrPlayer(), false);
-        for (Move m1 : nextMoves) {
+        for (Move m1 : nextMoves)
+        {
             nextMoveVals += calculateMoveValue(m1, &tmp, scale, rec - 1);
         }
 
@@ -215,16 +301,18 @@ int calculateMoveValue(const Move m, const Board *b, int scale=1, int rec=0) {
 // Level 3: prefers avoiding capture, capturing moves, and checks
 Move LevelThree::generateMove(vector<Move> &moves, Board *b) const
 {
-    Move bestMove; // Best move so far
+    Move bestMove;      // Best move so far
     int bestscore = -1; // Best score so far
     int first = true;
 
     // Iterate through moves
-    for (Move m : moves) {
+    for (Move m : moves)
+    {
         // Calculate score for move
         int val = calculateMoveValue(m, b, 3, 1);
 
-        if (val > bestscore || first) {
+        if (val > bestscore || first)
+        {
             bestscore = val;
             bestMove = m;
 
@@ -238,16 +326,18 @@ Move LevelThree::generateMove(vector<Move> &moves, Board *b) const
 // Level 4: something more sophisticated
 Move LevelFour::generateMove(vector<Move> &moves, Board *b) const
 {
-    Move bestMove; // Best move so far
+    Move bestMove;      // Best move so far
     int bestscore = -1; // Best score so far
     int first = true;
 
     // Iterate through moves
-    for (Move m : moves) {
+    for (Move m : moves)
+    {
         // Calculate score for move
         int val = calculateMoveValue(m, b, 2, 2);
 
-        if (val > bestscore || first) {
+        if (val > bestscore || first)
+        {
             bestscore = val;
             bestMove = m;
 

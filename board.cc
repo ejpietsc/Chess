@@ -35,17 +35,60 @@ static unique_ptr<Player> createPlayer(const PlayerType pt, const int level, con
 // determine if move is within the validMoves vector
 //! removed static - used in Player
 //? if not used here, move to player.cc
-bool moveIsValid(Move &move, vector<Move> &validMoves)
+bool moveIsValid(Move &move, vector<Move> &validMoves, char mode)
 {
-    for (const auto &m : validMoves)
+    switch (mode)
     {
-        // ! [updated] since Move has more fields, we just cmp pos to check if same move
-        if (move.startPos == m.startPos && move.endPos == m.endPos)
+    case ('n'):
+        for (const auto &m : validMoves)
         {
-            return true;
+            if (move.startPos == m.startPos && move.endPos == m.endPos)
+            {
+                return true;
+            }
         }
+        return false;
+    case ('e'):
+        for (const auto &m : validMoves)
+        {
+            if (move.startPos == m.startPos && move.endPos == m.endPos && move.captured == m.captured && move.capturedPt == m.capturedPt && move.enPassentCapture == m.enPassentCapture &&
+                move.epCaptureLoc == m.epCaptureLoc)
+            {
+                return true;
+            }
+        }
+        return false;
+    case ('p'):
+        for (const auto &m : validMoves)
+        {
+            if (move.startPos == m.startPos && move.endPos == m.endPos && move.upgradePiece == m.upgradePiece &&
+                move.upgradeTo == m.upgradeTo)
+            {
+                return true;
+            }
+        }
+        return false;
+    case ('k'):
+        for (const auto &m : validMoves)
+        {
+            if (move.startPos == m.startPos && move.endPos == m.endPos && move.isCastleMove == m.isCastleMove)
+            {
+                return true;
+            }
+        }
+        return false;
+    case ('c'):
+        for (const auto &m : validMoves)
+        {
+            if (move.startPos == m.startPos && move.endPos == m.endPos && move.captured == m.captured)
+            {
+                return true;
+            }
+        }
+        return false;
+    default:
+        return false;
     }
-    return false;
 }
 
 // ____________________________________________
@@ -287,12 +330,12 @@ vector<Move> Board::getCastlingMoves(const Player *plr) const
         // check left castle
         if (isCaslteValid(getPieceByPos(leftWhiteRookStart), plr, true))
         {
-            moves.emplace_back(Move{whiteKingPos, Position{whiteKingPos.col - 2, whiteKingPos.row}});
+            moves.emplace_back(Move{whiteKingPos, Position{whiteKingPos.col - 2, whiteKingPos.row}, true});
         }
 
         if (isCaslteValid(getPieceByPos(rightWhiteRookStart), plr))
         {
-            moves.emplace_back(Move{whiteKingPos, Position{whiteKingPos.col + 2, whiteKingPos.row}});
+            moves.emplace_back(Move{whiteKingPos, Position{whiteKingPos.col + 2, whiteKingPos.row}, true});
         }
     }
     else
@@ -300,12 +343,12 @@ vector<Move> Board::getCastlingMoves(const Player *plr) const
         // check left castle
         if (isCaslteValid(getPieceByPos(leftBlackRookStart), plr, true))
         {
-            moves.emplace_back(Move{blackKingPos, Position{blackKingPos.col - 2, blackKingPos.row}});
+            moves.emplace_back(Move{blackKingPos, Position{blackKingPos.col - 2, blackKingPos.row}, true});
         }
 
         if (isCaslteValid(getPieceByPos(rightBlackRookStart), plr))
         {
-            moves.emplace_back(Move{blackKingPos, Position{blackKingPos.col + 2, blackKingPos.row}});
+            moves.emplace_back(Move{blackKingPos, Position{blackKingPos.col + 2, blackKingPos.row}, true});
         }
     }
     return moves;
@@ -521,7 +564,7 @@ bool Board::isPlayerCheckmated(const Player *plr) const
     auto moves = getValidMoves(plr);
     for (const auto &m : moves)
     {
-        cout << "VALID: " << m.startPos.col << " " << m.startPos.row << " to " << m.endPos.col << " " << m.endPos.row << endl;
+        cout << "MOVES THAT SAVE ME: " << m.startPos.col << " " << m.startPos.row << " to " << m.endPos.col << " " << m.endPos.row << endl;
     }
     // !___________________________________________________________...
     return isPlayerInCheck(plr) && getValidMoves(plr).empty();

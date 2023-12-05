@@ -123,6 +123,7 @@ bool isKing(const Piece *p);
 bool isPawn(const Piece *p);
 bool isWhite(const Piece *p);
 Colour getNextColour(Colour clr);
-bool moveIsValid(Move &move, vector<Move> &validMoves);
+bool moveIsValid(Move &move, vector<Move> &validMoves, char mode);
+bool isCastleMove(const Move &move, const Board &b);
 
 #endif
