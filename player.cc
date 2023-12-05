@@ -227,7 +227,7 @@ Move LevelFour::generateMove(vector<Move> &moves, Board *b) const
     // Iterate through moves
     for (Move m : moves) {
         // Calculate score for move
-        int val = calculateMoveValue(m, b, 2, 3);
+        int val = calculateMoveValue(m, b, 2, 2);
 
         if (val > bestscore || first) {
             bestscore = val;
