@@ -133,22 +133,6 @@ bool moveIsValid(Move &move, vector<Move> &validMoves, char mode)
 }
 // end of helpers and standalone fns ____________________________________________
 
-// Default board, you are white
-Board::Board(
-    const PlayerType whitePl,
-    const int whiteLevel,
-    const PlayerType blackPl,
-    const int blackLevel,
-    const bool graphics,
-    const bool text,
-    const bool useUnicode) : text{text}, graphics{graphics}, useUnicode{useUnicode}
-{
-    // set up players
-    whitePlayer = createPlayer(whitePl, whiteLevel, Colour::White);
-    blackPlayer = createPlayer(blackPl, blackLevel, Colour::Black);
-    currPlayer = whitePlayer.get();
-}
-
 // for the sake of swap only
 Board::Board() : text{false}, graphics{false} {}
 
@@ -442,7 +426,7 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         {
             moves = getMovesToUncheck(moves);
             // !! debug output
-            if (DEBUG_OUTPUT)
+            if (debugOutput)
             {
                 for (Move &m : moves)
                 {
@@ -542,7 +526,7 @@ bool Board::isPlayerInCheck(const Player *plr) const
     {
         if (m.captured && m.capturedPt == PieceType::King)
         {
-            if (DEBUG_OUTPUT)
+            if (debugOutput)
             {
                 if (plr->getColour() == Colour::Black)
                 {
