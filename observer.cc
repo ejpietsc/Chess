@@ -5,7 +5,8 @@
 void Observer::notify(Position pos, Piece *p)
 {
     // NVI - Call the doNotify function
-    if (doNotify(pos, p)) doDisplay();
+    doNotify(pos, p);
+    doDisplay();
 }
 void Observer::notify(std::vector<std::pair<Position, Piece *>> vec) {
     for (std::pair<Position, Piece *> p : vec) {
