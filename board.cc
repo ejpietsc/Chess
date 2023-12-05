@@ -314,6 +314,22 @@ bool Board::putsPlayerInCheck(const Move &m, const Player *plr) const
     return tmp.isPlayerInCheck(plr);
 }
 
+// 0: none
+// 1: check
+// 2: checkmate
+int Board::putsPlayerInCheckMate(const Move &m, const Player *plr) const
+{
+    Board tmp{*this};
+    tmp.delPiece(m.endPos);
+    tmp.board[m.endPos.col][m.endPos.row].swap(tmp.board[m.startPos.col][m.startPos.row]);
+    
+    if (tmp.isPlayerInCheck(plr)) {
+        if (getValidMoves(plr).empty()) return 2;
+        return 1;
+    }
+    return 0;
+}
+
 // checks in case it were the other player turn, if they could make a valid move that captures our king
 bool Board::isPlayerInCheck(const Player *plr) const
 {

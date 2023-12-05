@@ -110,6 +110,7 @@ public:
     // Move logic
     vector<Move> getMovesToUncheck(vector<Move> &moves) const; // todo
     bool putsPlayerInCheck(const Move &m, const Player *plr) const;
+    int putsPlayerInCheckMate(const Move &m, const Player *plr) const;
     //! [updated] returns position just for the sake of error reporting
     Position makeMove();
     void doMove(const Move &m);                                                   //! [added]

@@ -18,19 +18,8 @@ std::map<PieceType, int> PIECE_VALUES = {
     {PieceType::Pawn, 25}
 };
 
-// How many times the piece value is it to capture any enemy piece of the same type
-std::map<PieceType, int> PIECE_CAPTURE_MULTIPLIERS = {
-    {PieceType::King, 5},
-    {PieceType::Queen, 3},
-    {PieceType::Bishop, 1},
-    {PieceType::Rook, 2},
-    {PieceType::Knight, 1},
-    {PieceType::Pawn, 2}
-};
-
 int CHECK_VALUE = 250; // Value of a check
 int CHECKMATE_VALUE = 2500; // Value of a checkmate
-int CHECK_CAPTURE_MULTIPLIER = 2; // How much more valuable it is to check the enemy
 
 
 // TODO
@@ -121,6 +110,8 @@ LevelThree::~LevelThree() {}
 LevelFour::~LevelFour() {}
 
 // Level 1: random legal moves.
+// Picks a random move from the list of legal moves
+// DOES NOT compare moves
 Move LevelOne::generateMove(vector<Move> &moves, Board *b) const
 {
     // Pick a random move from the vector of possible legal moves
@@ -128,6 +119,8 @@ Move LevelOne::generateMove(vector<Move> &moves, Board *b) const
 }
 
 // Level 2: prefers capturing moves and checks over other moves
+// Prioritizes checks and checkmates first
+// Compares the value of each piece captured
 Move LevelTwo::generateMove(vector<Move> &moves, Board *b) const
 {
     int num_moves = moves.size();
@@ -145,7 +138,7 @@ Move LevelTwo::generateMove(vector<Move> &moves, Board *b) const
             if (b->putsPlayerInCheck(m, b->getNextPlayer())) currscore = 100;
 
             // If the score is better - use that move
-            // If the score is better, use RNG to decide whether to use this move
+            // If the score is equal - use RNG to decide whether to use this move
             if (
                 (currscore > bestscore) ||
                 ((currscore == bestscore) && (num_moves > 2) && ((rand() % num_moves) <= 2))
@@ -159,13 +152,54 @@ Move LevelTwo::generateMove(vector<Move> &moves, Board *b) const
     return bestMove; // Return the best move
 }
 
-Move LevelThree::generateMove(vector<Move> &moves, Board *b) const
-{
-    cout << "-Incomplete method-" << endl;
-    Move m{};
-    return m;
+int calculateMoveValue(const Move m, const Board *b, int scale=1, int rec=0) {
+    int score = m.captured ? (PIECE_VALUES[m.capturedPt]) : 0;
+    int ch = b->putsPlayerInCheckMate(m, b->getNextPlayer());
+    score += (ch == 0) ? 0 : ((ch == 1) ? (CHECK_VALUE) : (CHECKMATE_VALUE));
+
+    Board tmp{*b};
+    tmp.doMove(m);
+    tmp.flipTurn();
+
+    if (rec) {
+        int nextMoveVals = 0;
+        std::vector<Move> nextMoves = tmp.getValidMoves(tmp.getCurrPlayer(), false);
+        // score = (scale * score) - calculateMoveValue(m, )
+        for (Move m1 : nextMoves) {
+            nextMoveVals += calculateMoveValue(m1, &tmp, scale, rec - 1);
+        }
+
+        score = (score * scale) - (nextMoveVals / nextMoves.size());
+    }
+
+    return score;
 }
 
+// Level 3: prefers avoiding capture, capturing moves, and checks
+Move LevelThree::generateMove(vector<Move> &moves, Board *b) const
+{
+    int num_moves = moves.size();
+    Move bestMove; // Best move so far
+    int bestscore = -1; // Best score so far
+    int first = true;
+
+    // Iterate through moves
+    for (Move m : moves) {
+        // Calculate score for move
+        int val = calculateMoveValue(m, b, 3, 1);
+
+        if (val > bestscore || first) {
+            bestscore = val;
+            bestMove = m;
+
+            first = false;
+        }
+    }
+
+    return bestMove;
+}
+
+// Level 4: something more sophisticated
 Move LevelFour::generateMove(vector<Move> &moves, Board *b) const
 {
     cout << "-Incomplete method-" << endl;
