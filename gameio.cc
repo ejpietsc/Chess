@@ -118,6 +118,31 @@ int strToComputerLvl(const string &s)
     return level;
 }
 
+std::string getUserInput() {
+    cout << "> ";
+    std::string inp;
+    cin >> inp;
+
+    // handle fatal read error
+    if (cin.fail()) { // handler is in main
+        throw ios_base::failure("Failure to read from cin");
+    }
+
+    return inp;
+}
+
+std::pair<std::string, std::string> getMoveFromUser() {
+    std::pair<std::string, std::string> ans;
+    cin >> ans.first >> ans.second;
+
+    // handle fatal read error
+    if (cin.fail()) { // handler is in main
+        throw ios_base::failure("Failure to read from cin");
+    }
+
+    return ans;
+}
+
 // enable Board setup mode
 bool enterSetupMode(Board &gameBoard)
 {

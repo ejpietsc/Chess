@@ -19,6 +19,10 @@ PieceType strToPieceType(const string &s);
 
 int strToComputerLvl(const string &s);
 
+string getUserInput();
+
+std::pair<std::string, std::string> getMoveFromUser();
+
 bool enterSetupMode(Board &gameBoard);
 
 void playGame(Board &gameBoard);

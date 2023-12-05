@@ -337,26 +337,27 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
                 Position epp = Position{ep.col, p->getPosition().row};
                 Piece *ep_piece = getPiece(epp);
 
-                //! add capture info
+                // Piece capturing
                 if (getPiece(ep) != nullptr)
                 {
                     m.captured = true;
                     m.capturedPt = getPiece(ep)->getType();
                 }
+
+                // En Passant capture
                 if (
                     ep_piece &&
                     ep_piece->getType() == PieceType::Pawn &&
                     ep_piece->getColour() != p->getColour() &&
                     dynamic_cast<Pawn *>(ep_piece)->getDoubleMoved())
                 {
-                    cout << "LOLOLOLOL" << endl;
-                    cout << ep.col << ep.row;
-                    cout << epp.col << epp.row;
                     m.captured = true;
                     m.capturedPt = PieceType::Pawn;
                     m.enPassentCapture = true;
                     m.epCaptureLoc = epp;
                 }
+
+                // Castling moves
                 //* [NEW] check if castling moves are to be added
                 else if (!experiment && p->getType() == PieceType::King && !(dynamic_cast<King *>(p)->getHasMoved()))
                 {
@@ -367,6 +368,22 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
                         moves.emplace_back(castlingMoves[i]);
                     }
                 }
+
+                // Pawn promotion
+                if (
+                    ep_piece &&
+                    ep_piece->getType() == PieceType::Pawn &&
+                    (ep.row == 0 ||
+                    ep.row == NUM_ROWS - 1)
+                )
+                {
+                    m.upgradePiece = true;
+                    for (PieceType p : std::vector<PieceType>{PieceType::Queen, PieceType::Rook, PieceType::Bishop, PieceType::Knight}) {
+                        m.upgradeTo = p;
+                        moves.emplace_back(m);
+                    }
+                }
+
                 moves.emplace_back(m);
             }
         }

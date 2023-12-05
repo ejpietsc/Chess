@@ -1,10 +1,15 @@
 #include "player.h"
 #include "board.h"
+#include "gameio.h"
 #include "util.h"
 
 
 using namespace std;
 
+// Forward delcarations
+// std::string getUserInput(const std::string prompt);
+// std::pair<std::string, std::string> getHumanMove();
+// PieceType strToPieceType(const string &s);
 
 // Constants for the computer players
 
@@ -68,15 +73,9 @@ Move Human::doGetNextMove(vector<Move> &validMoves, Board *b) const
 //! check start and end are proper format
 Move Human::getHumanMove(vector<Move> &validMoves, Board *b) const
 {
-    string currLine, start, end;
-    cin >> start >> end;
+    std::pair<std::string, std::string>mv = getMoveFromUser();
 
-    // handle fatal read error
-    if (cin.fail())
-    { // handler is in main
-        throw ios_base::failure("Failure to read from cin");
-    }
-    Move move = Move{start, end};
+    Move move = Move{mv.first, mv.second};
     if (!moveIsValid(move, validMoves))
     {
         move.endPos = Position(ILLEGAL_MOVE);
@@ -98,6 +97,16 @@ Move Human::getHumanMove(vector<Move> &validMoves, Board *b) const
         move.capturedPt = PieceType::Pawn;
         move.enPassentCapture = true;
         move.epCaptureLoc = epp;
+    }
+
+    if (
+        p->getType() == PieceType::Pawn &&
+        (move.endPos.row == 0 ||
+        move.endPos.row == NUM_ROWS - 1)
+    ) {
+        std::string pt = getUserInput();
+        move.upgradePiece = true;
+        move.upgradeTo = strToPieceType(toLowerString(pt));
     }
 
     return move;
