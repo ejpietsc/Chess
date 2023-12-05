@@ -10,17 +10,9 @@
 #include <string>
 #include <memory>
 #include <cstdlib> // ! added for abs()
-/*
-#include "board.h"
-#include "observer.h"
-#include "pieces.h"
-#include "player.h"
-#include "TextDisplay.h"
-*/
 
 using namespace std;
 
-//! moved here since used in new Move fields
 enum class PieceType
 {
     King,
@@ -30,9 +22,6 @@ enum class PieceType
     Knight,
     Pawn,
 };
-// Position
-//? improve to class that returns move errors and have makemove() in board return that class
-// ? instead of a Position
 
 // 0 based coordinates ( eg. "a1" becomes (0, 0) )
 //! (column, row) not the opposite
@@ -56,7 +45,6 @@ string posToStr(const Position &p);
 struct Move
 {
     Position startPos, endPos;
-    //! [added] two fields for capture info
     bool captured = false;
     PieceType capturedPt;
     bool enPassentCapture = false;
@@ -64,9 +52,9 @@ struct Move
     bool upgradePiece = false;
     PieceType upgradeTo;
 
-    bool isCastleMove = false; // ! ADDED
+    bool isCastleMove = false;
 
-    Move(); // ? good default value
+    Move();
     Move(const Position &startPos, const Position &endPos);
     Move(const string &startPos, const string &endPos);
     Move(const Position &startPos, const Position &endPos, bool isCastleMove);
@@ -76,7 +64,6 @@ struct Move
 
 bool operator==(const Move &m1, const Move &m2);
 
-//! ADDED
 bool operator!=(const Move &m1, const Move &m2);
 
 // Constants for sentinel Position values

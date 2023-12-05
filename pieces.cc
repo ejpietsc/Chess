@@ -19,7 +19,6 @@ Pawn::Pawn(Colour colour, Position pos) : Piece{PieceType::Pawn, colour, pos} {}
 
 Piece::~Piece() {}
 
-// TODO vvv ------------------
 void Piece::movePiece(const Position &landingPos)
 {
     // Special cases for Pawn
@@ -68,9 +67,6 @@ void Piece::movePiece(const Position &landingPos)
     this->setPosition(landingPos.col, landingPos.row);
 }
 
-// TODO ^^^ ------------------
-
-// ! added
 std::unique_ptr<Piece> createPiece(PieceType type, Colour colour, Position pos)
 {
     switch (type)

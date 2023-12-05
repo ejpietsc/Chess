@@ -25,7 +25,6 @@ class Player
     PlayerType p;
 
     // Computer overwrites to call generateMove, Human overwrites to call getHumanMove()
-    //! [modified] doGetNextMove now takes validMoves
     virtual Move doGetNextMove(vector<Move>& validMoves, Board *b) const = 0;
 
 public:
@@ -34,7 +33,6 @@ public:
     virtual ~Player() = default;
 
     // NVI - calls doGetNextMove()
-    //! [modified] getNextMove now takes validMoves
     Move getNextMove(vector<Move>& validMoves, Board *b) const;
     Colour getColour() const;
     PlayerType getPlayerType() const;
@@ -52,12 +50,10 @@ class Human final : public Player
     Move doGetNextMove(vector<Move>& validMoves, Board *b) const override;
 };
 
-//! ADDED LVL FIELD
 class Computer : public Player
 {
     protected:
     int lvl;
-    // generate a vector of valid moves to pass to generateMove
 
     // generate a Move object using algorithm depending on Computer level
     //  pass it generateValidMoves() rvalue
@@ -106,18 +102,8 @@ class LevelFour final : public Computer
     ~LevelFour();
 };
 
-//! added both below - used in board (don't make static or private)
 bool isHuman(const Player* p);
 bool isWhiteTeam(const Player* p);
 
-/* BIG 5 - Not needed given current implementation _____________________
-!IF NEEDED LATER MAKE PROTECTED
-// Copy ctor and assignment operator
-Player(const Player& other);
-Player& operator=(const Player& other);
-
-// Move ctor and assignment operator
-Player(Player&& other);
-Player& operator=(Player&& other); */
 
 #endif

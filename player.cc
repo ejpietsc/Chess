@@ -5,13 +5,6 @@
 
 using namespace std;
 
-// Forward declarations
-// std::string getUserInput(const std::string prompt);
-// std::pair<std::string, std::string> getHumanMove();
-// PieceType strToPieceType(const string &s);
-
-// Constants for the computer players
-
 // Values of different piece types
 std::map<PieceType, int> PIECE_VALUES = {
     {PieceType::King, 500},
@@ -24,16 +17,12 @@ std::map<PieceType, int> PIECE_VALUES = {
 int CHECK_VALUE = 250;      // Value of a check
 int CHECKMATE_VALUE = 2500; // Value of a checkmate
 
-// TODO
-
-// PUBLIC HELPER
-//! DON'T MAKE STATIC - USED IN BOARD.cc
+// HELPERS
 bool isHuman(const Player *p)
 {
     return (p->getPlayerType() == PlayerType::Human);
 }
 
-//! DON'T MAKE STATIC - USED IN BOARD.cc
 bool isWhiteTeam(const Player *p)
 {
     return (p->getColour() == Colour::White);
@@ -67,7 +56,6 @@ Move Human::doGetNextMove(vector<Move> &validMoves, Board *b) const
     return this->getHumanMove(validMoves, b);
 }
 
-//! check start and end are proper format
 Move Human::getHumanMove(vector<Move> &validMoves, Board *b) const
 {
     std::pair<std::string, std::string> mv = getMoveFromUser();
