@@ -105,7 +105,6 @@ public:
     //! [updated] returns position just for the sake of error reporting
     Position makeMove();
     void doMove(const Move &m);                                                   //! [added]
-    bool checkMovePiece(const Move &m) const;                                     // Checks if the piece in the location can make the move
     bool checkMoveEndPos(const Move &m) const;                                    // Checks if the end location is within bounds and can be occupied
     bool isLegalMove(Move m) const;                                               // Checks if the move doesn't put the player in checkmate
     vector<Move> getValidMoves(const Player *plr, bool experiment = false) const; // Gets a list of valid moves that the player can make

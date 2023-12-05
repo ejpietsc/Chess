@@ -115,11 +115,11 @@ Move Human::getHumanMove(vector<Move> &validMoves, Board *b) const
         }
     }
     //!____________________________________________________
+    // castling
     else if (p->getType() == PieceType::King && !(dynamic_cast<King *>(p)->getHasMoved()) &&
              isCastleMove(move, *b))
     {
         move.isCastleMove = true;
-
         if (!moveIsValid(move, validMoves, 'k'))
         {
             move.endPos = Position(ILLEGAL_MOVE);
@@ -127,7 +127,7 @@ Move Human::getHumanMove(vector<Move> &validMoves, Board *b) const
         }
     }
     //!____________________________________________________
-
+    // capture move
     else if (b->getPieceByPos(move.endPos))
     {
         move.captured = true;

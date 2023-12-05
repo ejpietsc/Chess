@@ -7,14 +7,35 @@ const bool DEBUG_OUTPUT = false;
 
 using namespace std;
 
+// ____________________________________________
+
+// Helpers and Standalone fns
+bool isKing(Piece *p)
+{
+    return p == nullptr ? false : p->getType() == PieceType::King;
+}
+
+bool isPawn(Piece *p)
+{
+    return p == nullptr ? false : p->getType() == PieceType::Pawn;
+}
+
+bool isWhite(Piece *p)
+{
+    return p == nullptr ? false : p->getColour() == Colour::White;
+}
+
+Colour getNextColour(Colour clr)
+{
+    return (clr == Colour::White ? Colour::Black : Colour::White);
+}
+
 // used by graphics/textdisplays to index differently
 int getRowForOutput(int r)
 {
     return abs(r - NUM_ROWS + 1);
 }
 
-// independent fns and helpers
-// ! [added] Static helper
 static unique_ptr<Player> createPlayer(const PlayerType pt, const int level, const Colour clr)
 {
     switch (level)
@@ -31,10 +52,9 @@ static unique_ptr<Player> createPlayer(const PlayerType pt, const int level, con
         return make_unique<Human>(clr, pt);
     }
 }
+// ____________________________________________
 
 // determine if move is within the validMoves vector
-//! removed static - used in Player
-//? if not used here, move to player.cc
 bool moveIsValid(Move &move, vector<Move> &validMoves, char mode)
 {
     switch (mode)
@@ -91,37 +111,9 @@ bool moveIsValid(Move &move, vector<Move> &validMoves, char mode)
     }
 }
 
-// ____________________________________________
-
-// Helpers
-// ! [changed] updated to handle nullptr because p->getType is undefined for nullptr.
-// ! consider if this is desired for isWhite()
-bool isKing(Piece *p)
-{
-    return p == nullptr ? false : p->getType() == PieceType::King;
-}
-
-bool isPawn(Piece *p)
-{
-    return p == nullptr ? false : p->getType() == PieceType::Pawn;
-}
-
-bool isWhite(Piece *p)
-{
-    return p == nullptr ? false : p->getColour() == Colour::White;
-}
-
-Colour getNextColour(Colour clr)
-{
-    return (clr == Colour::White ? Colour::Black : Colour::White);
-}
-
-// ____________________________________________
-
 // for the sake of swap only
 Board::Board() : text{false}, graphics{false} {}
 
-//! [added] getValidMoves getting too big and this can be reused
 vector<Piece *> Board::getPlayerPieces(const Player *plr) const
 {
     vector<Piece *> pieces;
@@ -131,7 +123,6 @@ vector<Piece *> Board::getPlayerPieces(const Player *plr) const
         {
             Piece *p = loc.get();
             // Add to pieces only if colour matches
-            //! [added] check p not null FIRST!
             if ((p != nullptr) && (p->getColour() == plr->getColour()))
             {
                 pieces.emplace_back(p);
@@ -139,21 +130,6 @@ vector<Piece *> Board::getPlayerPieces(const Player *plr) const
         }
     }
     return pieces;
-}
-
-// WORK IN PROGRESS vvv ------------------
-//? what for vvv
-bool Board::checkMovePiece(const Move &m) const
-{
-    // Get possible moves for piece
-    vector<Position> mvs = getPiece(m.startPos)->getMoves();
-    // Return true if the provided move is one of these moves, false otherwise
-    for (Position &p : mvs)
-    {
-        if (m.endPos == p)
-            return true;
-    }
-    return false;
 }
 
 // return true if there is a Piece between m.startPos and m.endPos (non-inclusive)
@@ -221,8 +197,6 @@ static bool pieceInTheWay(const Board &board, const Move &m)
     return false;
 }
 
-//? repeated checks?
-// TODO - Add advanced logic (Double move, en passant, castling)
 bool Board::checkMoveEndPos(const Move &m) const
 {
     Piece *p1 = getPiece(m.startPos);
@@ -263,22 +237,12 @@ bool Board::checkMoveEndPos(const Move &m) const
     }
 
     return (
-        //? checked in pieces already?
         m.endPos.col >= 0 && // The end position is within bounds
         m.endPos.col < NUM_COLS &&
         m.endPos.row >= 0 &&
         m.endPos.row < NUM_ROWS &&
         (!p2 || !p1 || (p1->getColour() != p2->getColour())));
 }
-
-//! to be careful abt: we are moving two pieces here - doMove x 2
-// how does move happen?
-// king moves two steps towards rook
-// rook stops one position before the one where the king was
-
-// 1. none of the rook or king to be castled should have moved before
-// 2. no pieces btw two
-// 3. king not in check in 3 pos: starting-middle-end
 
 bool Board::isCaslteValid(const Piece *rook, const Player *plr, bool isLeftCaslte) const
 {
@@ -313,6 +277,7 @@ bool Board::isCaslteValid(const Piece *rook, const Player *plr, bool isLeftCaslt
 
     return rookNotMoved && !piecesBlocking && !inCheck;
 }
+
 vector<Move> Board::getCastlingMoves(const Player *plr) const
 {
     Position whiteKingPos = Position{4, 0};
@@ -354,7 +319,7 @@ vector<Move> Board::getCastlingMoves(const Player *plr) const
     return moves;
 }
 
-//! gets all moves for all pieces - even for human
+// gets all moves for all pieces - even for human
 vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
 {
     vector<Move> moves; // List of possible moves
@@ -366,7 +331,6 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         {
             continue;
         }
-
         // 1. get moves that conform to piece move & don't go out of bound
         vector<Position> pmoves = p->getMoves();
         //! add capture=true for pawn capturing moves
@@ -401,13 +365,13 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
                 }
 
                 // Castling moves
-                //* [NEW] check if castling moves are to be added
-                else if (!experiment && p->getType() == PieceType::King && !(dynamic_cast<King *>(p)->getHasMoved()))
+                if (!experiment && p->getType() == PieceType::King && !(dynamic_cast<King *>(p)->getHasMoved()))
                 {
                     auto castlingMoves = getCastlingMoves(plr);
                     int len = castlingMoves.size();
                     for (int i = 0; i < len; ++i)
                     {
+                        castlingMoves[i].isCastleMove = true;
                         moves.emplace_back(castlingMoves[i]);
                     }
                 }
@@ -641,19 +605,6 @@ Position Board::makeMove()
 
     vector<Move> validMoves = getValidMoves(currPlayer, false);
 
-    if (currPlayer->getPlayerType() == PlayerType::Computer)
-    {
-        for (auto &move : validMoves)
-        {
-            if (isCastleMove(move, *this))
-            {
-                move.isCastleMove = true;
-            }
-        }
-    }
-
-    //! DO NOT change the code here! we need to check isCastleMove AFTER
-    //! the call to getNextMove - JUST DON'T CHANGE THE CASTLE LOGIC!!
     Move move = currPlayer->getNextMove(validMoves, this);
 
     // ! [added] return if invalid move given to avoid segfault
