@@ -3,7 +3,7 @@
 #include "textdisplay.h"
 #include "graphicsdisplay.h"
 
-const bool DEBUG_OUTPUT = true;
+const bool DEBUG_OUTPUT = false;
 
 using namespace std;
 
@@ -540,11 +540,6 @@ void Board::doMove(const Move &m)
 
     // castling ________
     // move rook
-    cout << "IS CASTLE MOVE: " << m.isCastleMove << endl;
-    cout << "IS CASTLE MOVE: " << m.isCastleMove << endl;
-    cout << "IS CASTLE MOVE: " << m.isCastleMove << endl;
-    cout << "IS CASTLE MOVE: " << m.isCastleMove << endl;
-
     if (m.isCastleMove)
     {
         cout << "CASTLING WOHOO!!" << endl;
