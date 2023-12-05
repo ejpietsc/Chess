@@ -374,11 +374,11 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
                     ep_piece &&
                     ep_piece->getType() == PieceType::Pawn &&
                     (ep.row == 0 ||
-                    ep.row == NUM_ROWS - 1)
-                )
+                     ep.row == NUM_ROWS - 1))
                 {
                     m.upgradePiece = true;
-                    for (PieceType p : std::vector<PieceType>{PieceType::Queen, PieceType::Rook, PieceType::Bishop, PieceType::Knight}) {
+                    for (PieceType p : std::vector<PieceType>{PieceType::Queen, PieceType::Rook, PieceType::Bishop, PieceType::Knight})
+                    {
                         m.upgradeTo = p;
                         moves.emplace_back(m);
                     }
@@ -396,6 +396,13 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         if (isPlayerInCheck(plr))
         {
             moves = getMovesToUncheck(moves);
+            // !! debug output
+            if (DEBUG_OUTPUT)
+            {
+                /*for (Move &m : moves) {
+    cout << m.startPos.col << " " << m.startPos.row << " to " << m.endPos.col << " " << m.endPos.row << endl;
+}*/
+            }
         }
         else
         { // 4. will move put us in check
@@ -490,6 +497,18 @@ bool Board::isPlayerInCheck(const Player *plr) const
     {
         if (m.captured && m.capturedPt == PieceType::King)
         {
+            if (DEBUG_OUTPUT)
+            {
+                if (plr->getColour() == Colour::Black)
+                {
+                    cout << "BLACK IN CHECK" << endl;
+                }
+                else
+                {
+                    cout << "WHITE IN CHECK" << endl;
+                }
+                cout << " >> Move that captures king: " << m.startPos.col << m.startPos.row << " " << m.endPos.col << m.endPos.row << endl;
+            }
             return true;
         }
     }
@@ -499,16 +518,11 @@ bool Board::isPlayerInCheck(const Player *plr) const
 bool Board::isPlayerCheckmated(const Player *plr) const
 {
     //! for debug purposes
-    // auto moves = getValidMoves(plr);
-    // bool isCheckmated = getValidMoves(plr).empty();
-    // cout << "IS PLAYER CHECKMATED: " << isCheckmated << endl;
-    // cout << "IS PLAYER CHECKMATED: " << isCheckmated << endl;
-    // cout << "IS PLAYER CHECKMATED: " << isCheckmated << endl;
-    // cout << "IS PLAYER CHECKMATED: " << isCheckmated << endl;
-    // for (const auto &m : moves)
-    // {
-    //     cout << "VALID: " << m.startPos.col << " " << m.startPos.row << " to " << m.endPos.col << " " << m.endPos.row << endl;
-    // }
+    auto moves = getValidMoves(plr);
+    for (const auto &m : moves)
+    {
+        cout << "VALID: " << m.startPos.col << " " << m.startPos.row << " to " << m.endPos.col << " " << m.endPos.row << endl;
+    }
     // !___________________________________________________________...
     return isPlayerInCheck(plr) && getValidMoves(plr).empty();
 }
@@ -527,7 +541,6 @@ bool Board::isPlayerStalemated(const Player *plr) const
 // 2. no pieces btw two
 // 3. king not in check in 3 pos: starting-middle-end
 
-//! will prob not work with moves that are complex like en passant - UPDATE LATER
 void Board::doMove(const Move &m)
 {
     std::vector<Position> toNotify = {m.startPos, m.endPos};
@@ -538,8 +551,6 @@ void Board::doMove(const Move &m)
         toNotify.emplace_back(m.epCaptureLoc);
     }
 
-    // castling ________
-    // move rook
     if (m.isCastleMove)
     {
         cout << "CASTLING WOHOO!!" << endl;
@@ -562,7 +573,8 @@ void Board::doMove(const Move &m)
     p->movePiece(m.endPos);
     board[m.startPos.col][m.startPos.row].swap(board[m.endPos.col][m.endPos.row]);
 
-    if (m.upgradePiece) {
+    if (m.upgradePiece)
+    {
         Piece *op = getPiece(m.endPos);
         Colour c = op->getColour();
         delPiece(m.endPos);
@@ -602,7 +614,8 @@ Position Board::makeMove()
     Move move = currPlayer->getNextMove(validMoves, this);
 
     // ! [added] return if invalid move given to avoid segfault
-    if (move.endPos.col < 0) {
+    if (move.endPos.col < 0)
+    {
         return move.endPos;
     }
 

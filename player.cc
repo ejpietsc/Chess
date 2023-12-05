@@ -99,6 +99,14 @@ Move Human::getHumanMove(vector<Move> &validMoves, Board *b) const
         move.enPassentCapture = true;
         move.epCaptureLoc = epp;
     }
+    // pawn capture??
+    if (p->getType() == PieceType::Pawn && 
+    b->getPieceByPos(move.endPos) 
+    && move.startPos.col != move.endPos.col
+    && move.endPos.row != move.endPos.row 
+    ) {
+        move.captured = true;
+    }
 
     if (
         p->getType() == PieceType::Pawn &&
