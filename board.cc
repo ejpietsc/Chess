@@ -528,13 +528,14 @@ bool Board::isPlayerStalemated(const Player *plr) const
 //! will prob not work with moves that are complex like en passant - UPDATE LATER
 void Board::doMove(const Move &m)
 {
-    std::vector<Position> toNotify = {m.startPos, m.endPos}
+    std::vector<Position> toNotify = {m.startPos, m.endPos};
 
-    if (getPiece(m.endPos) == nullptr && m.captured)
+    if (m.enPassentCapture)
     {
-        delPiece(m.enPassentCapture);
-        toNotify.emplace_back(m.enPassentCapture);
+        delPiece(m.epCaptureLoc);
+        toNotify.emplace_back(m.epCaptureLoc);
     }
+
     // castling ________
     // move rook
     cout << "IS CASTLE MOVE: " << m.isCastleMove << endl;
@@ -563,6 +564,14 @@ void Board::doMove(const Move &m)
     Piece *p = getPiece(m.startPos);
     p->movePiece(m.endPos);
     board[m.startPos.col][m.startPos.row].swap(board[m.endPos.col][m.endPos.row]);
+
+    if (m.upgradePiece) {
+        Piece *op = getPiece(m.endPos);
+        Colour c = op->getColour();
+        delPiece(m.endPos);
+        addPiece(m.upgradeTo, c, m.endPos);
+    }
+
     notifyObservers(toNotify);
 }
 

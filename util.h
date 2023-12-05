@@ -68,9 +68,10 @@ struct Move
 
     Move(); // ? good default value
     Move(const Position &startPos, const Position &endPos);
+    Move(const string &startPos, const string &endPos);
     Move(const Position &startPos, const Position &endPos, bool isCastleMove);
     Move(const Position &startPos, const Position &endPos, bool captured, PieceType pt);
-    Move(const string &startPos, const string &endPos);
+    Move(const Position &startPos, const Position &endPos, bool captured, PieceType pt, const Position &epc);
 };
 
 bool operator==(const Move &m1, const Move &m2);
