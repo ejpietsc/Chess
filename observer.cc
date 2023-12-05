@@ -8,17 +8,9 @@ void Observer::notify(Position pos, Piece *p)
     if (doNotify(pos, p)) doDisplay();
 }
 void Observer::notify(std::vector<std::pair<Position, Piece *>> vec) {
-    bool to_update = false;
     for (std::pair<Position, Piece *> p : vec) {
-        to_update = to_update || doNotify(p.first, p.second);
+        doNotify(p.first, p.second);
     }
-    if (to_update) doDisplay();
-
-    // ! changed
-    // for (std::pair<Position, Piece *> p : vec) {
-    //     doNotify(p.first, p.second);
-    // }
-
     doDisplay();
 }
 

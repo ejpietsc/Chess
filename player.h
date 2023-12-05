@@ -8,6 +8,9 @@
 
 using namespace std;
 
+// Forward declaration
+class Board;
+
 // ! NULL_PLR added to return from stringToPlayerType in main.cc
 enum class PlayerType
 {
@@ -23,7 +26,7 @@ class Player
 
     // Computer overwrites to call generateMove, Human overwrites to call getHumanMove()
     //! [modified] doGetNextMove now takes validMoves
-    virtual Move doGetNextMove(vector<Move>& validMoves) const = 0;
+    virtual Move doGetNextMove(vector<Move>& validMoves, Board *b) const = 0;
 
 public:
     Player(const Colour team, const PlayerType p);
@@ -32,7 +35,7 @@ public:
 
     // NVI - calls doGetNextMove()
     //! [modified] getNextMove now takes validMoves
-    Move getNextMove(vector<Move>& validMoves) const;
+    Move getNextMove(vector<Move>& validMoves, Board *b) const;
     Colour getColour() const;
     PlayerType getPlayerType() const;
 };
@@ -46,7 +49,7 @@ class Human final : public Player
   public:
     Human(const Colour team, const PlayerType p);
         // call getHumanMove()
-    Move doGetNextMove(vector<Move>& validMoves) const override;
+    Move doGetNextMove(vector<Move>& validMoves, Board *b) const override;
 };
 
 //! ADDED LVL FIELD
@@ -58,18 +61,18 @@ class Computer : public Player
 
     // generate a Move object using algorithm depending on Computer level
     //  pass it generateValidMoves() rvalue
-    virtual Move generateMove(vector<Move> &moves) const = 0;
+    virtual Move generateMove(vector<Move> &moves, Board *b) const = 0;
     public:
     Computer(const Colour team, const PlayerType p, const int lvl);
     int getLvl() const;
 
     // NVI - call generateMove()
-    Move doGetNextMove(vector<Move>& validMoves) const override;
+    Move doGetNextMove(vector<Move>& validMoves, Board *b) const override;
 };
 
 class LevelOne final : public Computer
 {
-    Move generateMove(vector<Move>& moves) const override; // random pick
+    Move generateMove(vector<Move>& moves, Board *b) const override; // random pick
 
   public:
     LevelOne(const Colour team, const PlayerType p, const int lvl);
@@ -78,7 +81,7 @@ class LevelOne final : public Computer
 
 class LevelTwo final : public Computer
 {
-    Move generateMove(vector<Move>& moves) const override; // prefers capture & checks
+    Move generateMove(vector<Move>& moves, Board *b) const override; // prefers capture & checks
 
   public:
     LevelTwo(const Colour team, const PlayerType p, const int lvl);
@@ -87,7 +90,7 @@ class LevelTwo final : public Computer
 
 class LevelThree final : public Computer
 {
-    Move generateMove(vector<Move>& moves) const override; // prefers avoiding capture, capture & checks
+    Move generateMove(vector<Move>& moves, Board *b) const override; // prefers avoiding capture, capture & checks
 
   public:
     LevelThree(const Colour team, const PlayerType p, const int lvl);
@@ -96,7 +99,7 @@ class LevelThree final : public Computer
 
 class LevelFour final : public Computer
 {
-    Move generateMove(vector<Move>& moves) const override; // something sophisticated
+    Move generateMove(vector<Move>& moves, Board *b) const override; // something sophisticated
     
   public:
     LevelFour(const Colour team, const PlayerType p, const int lvl);

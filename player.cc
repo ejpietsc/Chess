@@ -62,16 +62,16 @@ PlayerType Player::getPlayerType() const
     return this->p;
 }
 
-Move Player::getNextMove(vector<Move> &validMoves) const
+Move Player::getNextMove(vector<Move> &validMoves, Board *b) const
 {
-    return this->doGetNextMove(validMoves);
+    return this->doGetNextMove(validMoves, b);
 }
 
 // === HUMAN ===
 Human::Human(const Colour team, const PlayerType p)
     : Player{team, p} {}
 
-Move Human::doGetNextMove(vector<Move> &validMoves) const
+Move Human::doGetNextMove(vector<Move> &validMoves, Board *b) const
 {
     return this->getHumanMove(validMoves);
 }
@@ -100,10 +100,10 @@ Move Human::getHumanMove(vector<Move> &validMoves) const
 Computer::Computer(const Colour team, const PlayerType p, const int lvl)
     : Player{team, p}, lvl{lvl} {}
 
-Move Computer::doGetNextMove(vector<Move> &validMoves) const
+Move Computer::doGetNextMove(vector<Move> &validMoves, Board *b) const
 {
     //! pick from validMoves
-    return Move{Position{0, 0}, Position{0, 0}}; // TODO TODO TODO - Incorrect code - PLEASE REPLACE EVENTUALLY
+    return generateMove(validMoves, b);
 }
 
 int Computer::getLvl() const {
@@ -121,42 +121,52 @@ LevelThree::~LevelThree() {}
 LevelFour::~LevelFour() {}
 
 // Level 1: random legal moves.
-Move LevelOne::generateMove(vector<Move> &moves) const
+Move LevelOne::generateMove(vector<Move> &moves, Board *b) const
 {
     // Pick a random move from the vector of possible legal moves
     return moves[rand() % moves.size()];
 }
 
 // Level 2: prefers capturing moves and checks over other moves
-Move LevelTwo::generateMove(vector<Move> &moves) const
+Move LevelTwo::generateMove(vector<Move> &moves, Board *b) const
 {
+    int num_moves = moves.size();
     Move bestMove; // Best move so far
     int bestscore = -1; // Best score so far
 
     // Iterate through moves
     for (Move m : moves) {
         // Calculate score for move
-        int currscore = m.captured ? PIECE_VALUES[m.capturedPt] * PIECE_CAPTURE_MULTIPLIERS[m.capturedPt] : 0;
-        // TODO: Update score for checks and checkmates
+        int currscore = m.captured ? 10 : 0;
 
         // Update the best move and score if the score is better
         if (currscore > bestscore) {
-            bestscore = currscore;
-            bestMove = m;
+            // Check if the move causes a check - increase move score
+            if (b->putsPlayerInCheck(m, b->getNextPlayer())) currscore = 100;
+
+            // If the score is better - use that move
+            // If the score is better, use RNG to decide whether to use this move
+            if (
+                (currscore > bestscore) ||
+                ((currscore == bestscore) && (num_moves > 2) && ((rand() % num_moves) <= 2))
+            ) {
+                bestscore = currscore;
+                bestMove = m;
+            }
         }
     }
 
     return bestMove; // Return the best move
 }
 
-Move LevelThree::generateMove(vector<Move> &moves) const
+Move LevelThree::generateMove(vector<Move> &moves, Board *b) const
 {
     cout << "-Incomplete method-" << endl;
     Move m{};
     return m;
 }
 
-Move LevelFour::generateMove(vector<Move> &moves) const
+Move LevelFour::generateMove(vector<Move> &moves, Board *b) const
 {
     cout << "-Incomplete method-" << endl;
     Move m{};

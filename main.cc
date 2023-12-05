@@ -379,6 +379,7 @@ static void playGame(Board &gameBoard)
                 if (currPlr.getPlayerType() == PlayerType::Computer)
                 {
                     gameBoard.makeMove();
+                    gameBoard.flipTurn();
                     continue;
                 }
 

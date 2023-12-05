@@ -185,6 +185,8 @@ bool Board::checkMoveEndPos(const Move &m) const
     Piece *p1 = getPiece(m.startPos);
     Piece *p2 = getPiece(m.endPos);
 
+    if (!p1) return false;
+
     PieceType p1t = p1->getType();
 
     if (p1t == PieceType::Pawn && p2 && p1->getPosition().col == p2->getPosition().col)
@@ -374,7 +376,7 @@ Position Board::makeMove()
 
     // TODO add pawn capture moves to validMoves !!!!
 
-    Move move = currPlayer->getNextMove(validMoves);
+    Move move = currPlayer->getNextMove(validMoves, this);
     // check if move valid
     if (move.endPos.col >= 0)
     {
