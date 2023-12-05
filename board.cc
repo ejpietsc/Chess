@@ -396,10 +396,6 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         if (isPlayerInCheck(plr))
         {
             moves = getMovesToUncheck(moves);
-            // !! debug output
-            /*for (Move &m : moves) {
-                cout << m.startPos.col << " " << m.startPos.row << " to " << m.endPos.col << " " << m.endPos.row << endl;
-            }*/
         }
         else
         { // 4. will move put us in check
@@ -417,7 +413,7 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         // !! debug output
         if (DEBUG_OUTPUT)
         {
-            cout << "Valid Moves:\n-----------" << endl;
+            cout << "Valid Moves:\n---------" << endl;
             for (Move &m : moves)
             {
                 cout << posToStr(m.startPos) << " to " << posToStr(m.endPos) << endl;
@@ -470,7 +466,7 @@ int Board::putsPlayerInCheckMate(const Move &m, const Player *plr) const
 
     if (tmp.isPlayerInCheck(plr))
     {
-        if (getValidMoves(plr).empty())
+        if (tmp.getValidMoves(plr).empty())
             return 2;
         return 1;
     }
@@ -494,17 +490,6 @@ bool Board::isPlayerInCheck(const Player *plr) const
     {
         if (m.captured && m.capturedPt == PieceType::King)
         {
-            /*if (DEBUG_OUTPUT)
-            {
-                if (plr->getColour() == Colour::Black)
-                {
-                    cout << "BLACK IN CHECK" << endl;
-                }
-                else
-                {
-                    cout << "WHITE IN CHECK" << endl;
-                }
-            }*/
             return true;
         }
     }
