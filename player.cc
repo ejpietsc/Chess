@@ -151,55 +151,6 @@ Move Human::getHumanMove(vector<Move> &validMoves, Board *b) const
 
     return move;
 }
-// Move Human::getHumanMove(vector<Move> &validMoves, Board *b) const
-// {
-//     std::pair<std::string, std::string>mv = getMoveFromUser();
-//     Move move = Move{mv.first, mv.second};
-
-//     if (!moveIsValid(move, validMoves))
-//     {
-//         move.endPos = Position(ILLEGAL_MOVE);
-//         return move;
-//     }
-
-//     // Special case for En Passent
-//     Position epp = Position{move.endPos.col, move.startPos.row};
-//     Piece *ep_piece = b->getPiece(epp);
-//     Piece *p = b->getPiece(move.startPos);
-
-//     if (
-//         ep_piece &&
-//         p->getType() == PieceType::Pawn &&
-//         ep_piece->getType() == PieceType::Pawn &&
-//         ep_piece->getColour() != p->getColour() &&
-//         dynamic_cast<Pawn *>(ep_piece)->getDoubleMoved())
-//     {
-//         move.captured = true;
-//         move.capturedPt = PieceType::Pawn;
-//         move.enPassentCapture = true;
-//         move.epCaptureLoc = epp;
-//     }
-//     // pawn capture??
-//     if (p->getType() == PieceType::Pawn &&
-//     b->getPieceByPos(move.endPos)
-//     && move.startPos.col != move.endPos.col
-//     && move.endPos.row != move.endPos.row
-//     ) {
-//         move.captured = true;
-//     }
-
-//     if (
-//         p->getType() == PieceType::Pawn &&
-//         (move.endPos.row == 0 ||
-//         move.endPos.row == NUM_ROWS - 1)
-//     ) {
-//         std::string pt = getUserInput();
-//         move.upgradePiece = true;
-//         move.upgradeTo = strToPieceType(toLowerString(pt));
-//     }
-
-//     return move;
-// }
 
 // === COMPUTER ===
 //! ADDED LVL FIELD
