@@ -33,11 +33,11 @@ public:
     void movePiece(const Position &landingPos);
 
     // Getters and setters
-    PieceType getType() const; // done
-    Colour getColour() const; // done
+    PieceType getType() const;    // done
+    Colour getColour() const;     // done
     Position getPosition() const; // done
-    int getRow() const; // done
-    int getCol() const; // done
+    int getRow() const;           // done
+    int getCol() const;           // done
 
     void setType(PieceType pt);
     void setColour(Colour clr);
@@ -52,7 +52,7 @@ class King final : public Piece
     vector<Position> doGetMoves() const override;
 
 public:
-    King(Colour colour, Position pos) : Piece{PieceType::King, colour, pos} {}
+    King(Colour colour, Position pos);
 };
 
 class Queen final : public Piece
@@ -60,7 +60,7 @@ class Queen final : public Piece
     vector<Position> doGetMoves() const override;
 
 public:
-    Queen(Colour colour, Position pos) : Piece{PieceType::Queen, colour, pos} {}
+    Queen(Colour colour, Position pos);
 };
 
 class Bishop final : public Piece
@@ -68,7 +68,7 @@ class Bishop final : public Piece
     vector<Position> doGetMoves() const override;
 
 public:
-    Bishop(Colour colour, Position pos) : Piece{PieceType::Bishop, colour, pos} {}
+    Bishop(Colour colour, Position pos);
 };
 
 class Rook final : public Piece
@@ -76,7 +76,7 @@ class Rook final : public Piece
     vector<Position> doGetMoves() const override;
 
 public:
-    Rook(Colour colour, Position pos) : Piece{PieceType::Rook, colour, pos} {}
+    Rook(Colour colour, Position pos);
 };
 
 class Knight final : public Piece
@@ -84,25 +84,20 @@ class Knight final : public Piece
     vector<Position> doGetMoves() const override;
 
 public:
-    Knight(Colour colour, Position pos) : Piece{PieceType::Knight, colour, pos} {}
+    Knight(Colour colour, Position pos);
 };
 
 class Pawn final : public Piece
 {
     bool hasMoved = false; // used to see if double move is allowed
     vector<Position> doGetMoves() const override;
+
 public:
-    Pawn(Colour colour, Position pos) : Piece{PieceType::Pawn, colour, pos} {}
+    Pawn(Colour colour, Position pos);
     void setHasMoved(const bool b);
 };
 
 std::unique_ptr<Piece> createPiece(PieceType type, Colour colour, Position pos);
 
-/* BIG 5 - Not needed given current implementation _______________________
-!IF NEEDED LATER MAKE PROTECTED
-Piece(const Piece& other);
-Piece& operator=(const Piece& other);
-Piece(Piece&& other);
-Piece& operator=(Piece&& other); */
-
 #endif
+

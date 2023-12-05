@@ -5,6 +5,18 @@ using namespace std;
 Piece::Piece(PieceType type, Colour colour, Position pos)
     : type(type), colour{colour}, pos{pos} {}
 
+King::King(Colour colour, Position pos) : Piece{PieceType::King, colour, pos} {}
+
+Queen::Queen(Colour colour, Position pos) : Piece{PieceType::Queen, colour, pos} {}
+
+Bishop::Bishop(Colour colour, Position pos) : Piece{PieceType::Bishop, colour, pos} {}
+
+Rook::Rook(Colour colour, Position pos) : Piece{PieceType::Rook, colour, pos} {}
+
+Knight::Knight(Colour colour, Position pos) : Piece{PieceType::Knight, colour, pos} {}
+
+Pawn::Pawn(Colour colour, Position pos) : Piece{PieceType::Pawn, colour, pos} {}
+
 Piece::~Piece() {}
 
 // TODO vvv ------------------
