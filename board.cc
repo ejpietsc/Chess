@@ -343,7 +343,7 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
                     m.captured = true;
                     m.capturedPt = getPiece(ep)->getType();
                 }
-                else if (
+                if (
                     ep_piece &&
                     ep_piece->getType() == PieceType::Pawn &&
                     ep_piece->getColour() != p->getColour() &&
@@ -354,7 +354,8 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
                     cout << epp.col << epp.row;
                     m.captured = true;
                     m.capturedPt = PieceType::Pawn;
-                    m.enPassentCapture = epp;
+                    m.enPassentCapture = true;
+                    m.epCaptureLoc = epp;
                 }
                 //* [NEW] check if castling moves are to be added
                 else if (!experiment && p->getType() == PieceType::King && !(dynamic_cast<King *>(p)->getHasMoved()))
@@ -527,10 +528,12 @@ bool Board::isPlayerStalemated(const Player *plr) const
 //! will prob not work with moves that are complex like en passant - UPDATE LATER
 void Board::doMove(const Move &m)
 {
+    std::vector<Position> toNotify = {m.startPos, m.endPos}
 
     if (getPiece(m.endPos) == nullptr && m.captured)
     {
         delPiece(m.enPassentCapture);
+        toNotify.emplace_back(m.enPassentCapture);
     }
     // castling ________
     // move rook
@@ -552,13 +555,15 @@ void Board::doMove(const Move &m)
 
         getPiece(rookStartPos)->movePiece(rookEndPos);
         board[rookStartPos.col][rookStartPos.row].swap(board[rookEndPos.col][rookEndPos.row]);
-        notifyObservers({rookStartPos, rookEndPos});
+
+        toNotify.emplace_back(rookStartPos);
+        toNotify.emplace_back(rookEndPos);
     }
     delPiece(m.endPos);
     Piece *p = getPiece(m.startPos);
     p->movePiece(m.endPos);
     board[m.startPos.col][m.startPos.row].swap(board[m.endPos.col][m.endPos.row]);
-    notifyObservers({m.startPos, m.endPos});
+    notifyObservers(toNotify);
 }
 
 bool isCastleMove(const Move &move, const Board &b)

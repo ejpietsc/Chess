@@ -62,11 +62,11 @@ Human::Human(const Colour team, const PlayerType p)
 
 Move Human::doGetNextMove(vector<Move> &validMoves, Board *b) const
 {
-    return this->getHumanMove(validMoves);
+    return this->getHumanMove(validMoves, b);
 }
 
 //! check start and end are proper format
-Move Human::getHumanMove(vector<Move> &validMoves) const
+Move Human::getHumanMove(vector<Move> &validMoves, Board *b) const
 {
     string currLine, start, end;
     cin >> start >> end;
@@ -81,6 +81,25 @@ Move Human::getHumanMove(vector<Move> &validMoves) const
     {
         move.endPos = Position(ILLEGAL_MOVE);
     }
+
+    // Special case for En Passent
+    Position epp = Position{move.endPos.col, move.startPos.row};
+    Piece *ep_piece = b->getPiece(epp);
+    Piece *p = b->getPiece(move.startPos);
+
+    if (
+        ep_piece &&
+        p->getType() == PieceType::Pawn &&
+        ep_piece->getType() == PieceType::Pawn &&
+        ep_piece->getColour() != p->getColour() &&
+        dynamic_cast<Pawn *>(ep_piece)->getDoubleMoved())
+    {
+        move.captured = true;
+        move.capturedPt = PieceType::Pawn;
+        move.enPassentCapture = true;
+        move.epCaptureLoc = epp;
+    }
+
     return move;
 }
 
@@ -165,7 +184,6 @@ int calculateMoveValue(const Move m, const Board *b, int scale=1, int rec=0) {
     if (rec) {
         int nextMoveVals = 0;
         std::vector<Move> nextMoves = tmp.getValidMoves(tmp.getCurrPlayer(), false);
-        // score = (scale * score) - calculateMoveValue(m, )
         for (Move m1 : nextMoves) {
             nextMoveVals += calculateMoveValue(m1, &tmp, scale, rec - 1);
         }
@@ -179,7 +197,6 @@ int calculateMoveValue(const Move m, const Board *b, int scale=1, int rec=0) {
 // Level 3: prefers avoiding capture, capturing moves, and checks
 Move LevelThree::generateMove(vector<Move> &moves, Board *b) const
 {
-    int num_moves = moves.size();
     Move bestMove; // Best move so far
     int bestscore = -1; // Best score so far
     int first = true;
@@ -203,7 +220,22 @@ Move LevelThree::generateMove(vector<Move> &moves, Board *b) const
 // Level 4: something more sophisticated
 Move LevelFour::generateMove(vector<Move> &moves, Board *b) const
 {
-    cout << "-Incomplete method-" << endl;
-    Move m{};
-    return m;
+    Move bestMove; // Best move so far
+    int bestscore = -1; // Best score so far
+    int first = true;
+
+    // Iterate through moves
+    for (Move m : moves) {
+        // Calculate score for move
+        int val = calculateMoveValue(m, b, 2, 3);
+
+        if (val > bestscore || first) {
+            bestscore = val;
+            bestMove = m;
+
+            first = false;
+        }
+    }
+
+    return bestMove;
 }

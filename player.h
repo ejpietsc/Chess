@@ -44,7 +44,7 @@ class Human final : public Player
 {
     // get next move from input and return it as a Move object
     //  this will throw if it fails to read from cin - handled in main
-    Move getHumanMove(vector<Move>& validMoves) const;
+    Move getHumanMove(vector<Move>& validMoves, Board *b) const;
 
   public:
     Human(const Colour team, const PlayerType p);
