@@ -23,14 +23,19 @@ Piece::~Piece() {}
 void Piece::movePiece(const Position &landingPos)
 {
     // Special cases for Pawn
-    if (this->getType() == PieceType::Pawn)
+    PieceType pt = this->getType();
+    bool isAny = pt == PieceType::Pawn || pt == PieceType::Rook || pt == PieceType::King;
+    if (isAny)
     {
-        // Access the Piece as a Pawn
-        Pawn *p = dynamic_cast<Pawn *>(this);
-        if (p != nullptr)
+
+        if (pt == PieceType::Pawn)
         {
+        // Access the Piece as a Pawn
+            Pawn *p = dynamic_cast<Pawn *>(this);
+            if (p != nullptr)
+            {
             // Set the hasMoved flag (ban double moves)
-            p->setHasMoved(true);
+                p->setHasMoved(true);
 
             // Check if the move is a double move and set the doubleMoved flag
             // For En Passent capture
@@ -39,6 +44,23 @@ void Piece::movePiece(const Position &landingPos)
             }
             else {
                 p->setDoubleMoved(false);
+            }
+            }
+        }
+        else if (pt == PieceType::Rook)
+        {
+            Rook *p = dynamic_cast<Rook *>(this);
+            if (p != nullptr)
+            {
+                p->setHasMoved(true);
+            }
+        }
+        else
+        {
+            King *p = dynamic_cast<King *>(this);
+            if (p != nullptr)
+            {
+                p->setHasMoved(true);
             }
         }
     }
@@ -112,6 +134,16 @@ bool Pawn::getHasMoved() const
 }
 
 void Pawn::setHasMoved(const bool b)
+{
+    this->hasMoved = b;
+}
+
+void Rook::setHasMoved(const bool b)
+{
+    this->hasMoved = b;
+}
+
+void King::setHasMoved(const bool b)
 {
     this->hasMoved = b;
 }

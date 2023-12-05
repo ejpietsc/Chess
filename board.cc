@@ -225,6 +225,15 @@ bool Board::checkMoveEndPos(const Move &m) const
         (!p2 || !p1 || (p1->getColour() != p2->getColour())));
 }
 
+// how does move happen?
+// king moves two steps towards rook
+// rook stops one position before the one where the king was
+
+// 1. none of the rook or king to be castled should have moved before
+// 2. no pieces btw two
+// 3. king not in check in 3 pos: starting-middle-end
+
+
 //! gets all moves for all pieces - even for human
 vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
 {
@@ -239,6 +248,9 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         }
         // 1. get moves that conform to piece move & don't go out of bound
         vector<Position> pmoves = p->getMoves();
+        if (p->getType() == PieceType::King) {
+            // is castling allowed, if so add to valid moves
+        }
         //! add capture=true for pawn capturing moves
         for (const Position &ep : pmoves)
         {
@@ -398,6 +410,7 @@ bool Board::isPlayerInCheck(const Player *plr) const
 
 bool Board::isPlayerCheckmated(const Player *plr) const
 {
+    //! for debug purposes
     auto moves = getValidMoves(plr);
     bool isCheckmated = getValidMoves(plr).empty();
     cout << "IS PLAYER CHECKMATED: " << isCheckmated << endl;
@@ -408,6 +421,7 @@ bool Board::isPlayerCheckmated(const Player *plr) const
     {
         cout << "VALID: " << m.startPos.col << " " << m.startPos.row << " to " << m.endPos.col << " " << m.endPos.row << endl;
     }
+    // !___________________________________________________________...
     return isPlayerInCheck(plr) && getValidMoves(plr).empty();
 }
 

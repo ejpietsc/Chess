@@ -49,10 +49,12 @@ public:
 
 class King final : public Piece
 {
+    bool hasMoved = false; // for castling
     vector<Position> doGetMoves() const override;
 
 public:
     King(Colour colour, Position pos);
+    void setHasMoved(const bool b);
 };
 
 class Queen final : public Piece
@@ -73,10 +75,12 @@ public:
 
 class Rook final : public Piece
 {
+    bool hasMoved = false; // for castling
     vector<Position> doGetMoves() const override;
 
 public:
     Rook(Colour colour, Position pos);
+    void setHasMoved(const bool b);
 };
 
 class Knight final : public Piece
