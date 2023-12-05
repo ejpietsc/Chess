@@ -7,7 +7,8 @@
 
 class TextDisplay : public Observer
 {
-    std::vector<std::vector<char>> theDisplay;
+    std::vector<std::vector<std::string>> theDisplay;
+    bool useUnicode = false;
 
     // doNotify - Updates a tile on the board
     bool doNotify(Position pos, Piece *p) override;
@@ -20,7 +21,7 @@ class TextDisplay : public Observer
 
     public:
         TextDisplay() = default; //! used in Board copy/move- don't delete
-        TextDisplay(const Board *subject);
+        TextDisplay(const Board *subject, const bool useUnicode);
         ~TextDisplay();
 
     friend std::ostream &operator<<(std::ostream &out, const TextDisplay &td);

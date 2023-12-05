@@ -499,7 +499,9 @@ int main(int argc, char **argv)
     cout << " ######## " << endl;
     cout << "\nWelcome to Chess - By Imane, Amol & Evan with <3!\n" << endl;
 
-    bool useGraphics = true, useText = true;
+    bool useGraphics = true;
+    bool useText = true;
+    bool useUnicode = false;
 
     std::vector<std::string> args;
     for (int i = 1; i < argc; ++i) {
@@ -522,6 +524,16 @@ int main(int argc, char **argv)
         }
         else {
             cout << "[WARNING] You have requested for both displays to be disabled. This makes the game unplayable, and thus the text display had been left enabled." << endl;
+        }
+    }
+
+    if (isInVector(args, "-u")) {
+        if (useText) {
+            cout << "[INFO] Unicode display is enabled." << endl;
+            useUnicode = true;
+        }
+        else {
+            cout << "[WARNING] You have requested for unicode display but have disabled the text display. This will not habe any effect." << endl;
         }
     }
 
@@ -598,7 +610,7 @@ int main(int argc, char **argv)
     }
 
     // create board and commence main gameplay loop
-    Board gameBoard{whitePt, whiteLevel, blackPt, blackLevel, useGraphics, useText};
+    Board gameBoard{whitePt, whiteLevel, blackPt, blackLevel, useGraphics, useText, useUnicode};
 
     playGame(gameBoard);
 

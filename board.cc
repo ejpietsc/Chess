@@ -409,8 +409,9 @@ Board::Board(
     const PlayerType blackPl,
     const int blackLevel,
     const bool graphics,
-    const bool text
-): state{GameState::NA}, text{text}, graphics{graphics}
+    const bool text,
+    const bool useUnicode
+): state{GameState::NA}, text{text}, graphics{graphics}, useUnicode{useUnicode}
 {
     // set up players
     // ! [changed] Player/Computer is an ABC - can't instantiate directly
@@ -576,7 +577,7 @@ void Board::initBoard()
 
     // Only add the text display if required
     if (text) {
-        unique_ptr<Observer> td = make_unique<TextDisplay>(this);
+        unique_ptr<Observer> td = make_unique<TextDisplay>(this, useUnicode);
         attach(std::move(td));
     }
 

@@ -41,6 +41,7 @@ class Board
     float blackScore = 0;
     bool text;
     bool graphics;
+    bool useUnicode;
 
     // Determine GameStates
     bool isPlayerInCheck(const Player *plr) const;
@@ -58,7 +59,8 @@ public:
         const PlayerType blackPl,
         const int blackLevel,
         const bool graphics,
-        const bool text
+        const bool text,
+        const bool useUnicode
     ); // done
 
     // Copy ctor and assignment operator
