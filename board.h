@@ -9,16 +9,6 @@
 
 using namespace std;
 
-enum class GameState
-{
-    Setup,
-    Play,
-    Check,
-    Checkmate,
-    Stalemate,
-    NA
-};
-
 enum class SquareColor
 {
     Dark,
@@ -33,7 +23,6 @@ class Board
 {
     vector<vector<unique_ptr<Piece>>> board; // 2D vector
     vector<unique_ptr<Observer>> observers;  // textDisplay & GraphicsDisplay
-    GameState state;                         // ! GET RIDE OF THIS FIELD
     unique_ptr<Player> whitePlayer;
     unique_ptr<Player> blackPlayer; //* player is abstract - must be ptr
     Player *currPlayer;             // non-ownership
@@ -42,11 +31,6 @@ class Board
     bool text;
     bool graphics;
     bool useUnicode;
-
-    // Determine GameStates
-    bool isPlayerInCheck(const Player *plr) const;
-    bool isPlayerCheckmated(const Player *plr) const;
-    bool isPlayerStalemated(const Player *plr) const;
 
     // called by initBoard()
     void clearBoard(); // done
@@ -76,6 +60,11 @@ public:
 
     void initBoard(); // done
 
+    // Determine GameStates
+    bool isPlayerInCheck(const Player *plr) const;
+    bool isPlayerCheckmated(const Player *plr) const;
+    bool isPlayerStalemated(const Player *plr) const;
+
     // Observer Pattern methods
     void notifyObservers(Position pos) const;
     void notifyObservers(std::vector<Position> vec) const;
@@ -89,7 +78,6 @@ public:
     bool boardIsValid() const;                                                  // todo: finish once isInCheckmate done
 
     // getters
-    GameState getState() const;                  // done
     Player *getPlayerByColour(Colour clr) const; // done
     Player *getCurrPlayer() const;               // done
     Piece *getPiece(const Position &pos) const;  // done
@@ -102,7 +90,6 @@ public:
     // done
 
     // setters
-    void setState(GameState state); // done
     void setTurn(Colour clr);       // done
 
     void flipTurn();                              // done
@@ -124,8 +111,6 @@ public:
     // NOTE: Valid move: Within bounds, acceptable end position
     // Legal move: Valid move AND doesn't put player in check
 
-    // Check if plr is checkmated or stalemated,
-    //  if this returns true, main can then call getState() to determine what to do
     bool didPlayerLose(Player *plr);
     // TODO discuss - ideally board has a getMove() method that calls
     // TODO   the current player's getMove() method AND AFTERWARDS sets the next player's turn upon

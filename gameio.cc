@@ -133,7 +133,6 @@ bool enterSetupMode(Board &gameBoard)
     cout << "• 'done' leaves setup mode\n"
          << endl;
 
-    gameBoard.setState(GameState::Setup);
     string curLine;
     string cmd, option1, option2;
 
@@ -145,7 +144,6 @@ bool enterSetupMode(Board &gameBoard)
         // handle fatal read fail
         if (cin.fail())
         {
-            gameBoard.setState(GameState::Play);
             return false; // indicate that setup failed
         }
 
@@ -165,7 +163,6 @@ bool enterSetupMode(Board &gameBoard)
         {
             if (gameBoard.boardIsValid())
             {
-                gameBoard.setState(GameState::Play);
                 return true; // indicate that setup succeeded
             }
             else
@@ -302,7 +299,8 @@ void playGame(Board &gameBoard)
         cout << "Commands:\n"
              << "---------" << endl;
         cout << "• 'setup' will enter setup mode" << endl;
-        cout << "• 'start' will start the game\n" << endl;
+        cout << "• 'start' will start the game\n"
+             << endl;
 
         // we need the user to explicitly call a "start" command
         //  otherwise, say they first run 'game computer1 human'
@@ -356,24 +354,35 @@ void playGame(Board &gameBoard)
             }
         }
 
-
         cout << "A game is in progress" << endl;
         cout << "Commands:\n"
              << "---------" << endl;
         cout << "• 'move <start> <end>' moves the piece in <start> to <end>" << endl;
         cout << "• 'resign' concedes the game to the opponenent (they will win)" << endl;
         cout << "• 'print' prints out the current board again" << endl;
-        cout << "• 'refresh' Force refresh all displays (use this if the graphics display is corrupted)\n" << endl;
+        cout << "• 'refresh' Force refresh all displays (use this if the graphics display is corrupted)\n"
+             << endl;
 
         while (true)
         { // this loop iterates each player to process their moves until the game ends
             Player &currPlr = *(gameBoard.getCurrPlayer());
+            Player *currPlrPtr = gameBoard.getCurrPlayer();
             Colour currClr = currPlr.getColour();
             Colour otherClr = (currClr == Colour::White) ? Colour::Black : Colour::White;
 
-            GameState state = gameBoard.getState();
+            if (gameBoard.isPlayerCheckmated(currPlrPtr))
+            { // current player is checkmated
+                gameBoard.incrementScore(otherClr, WIN_POINTS);
+                break;
+            }
+            else if (gameBoard.isPlayerStalemated(currPlrPtr))
+            {
+                gameBoard.incrementScore(currClr, STALEMATE_POINTS);
+                gameBoard.incrementScore(otherClr, STALEMATE_POINTS);
+                break;
+            }
 
-            if (state == GameState::Play || state == GameState::Check)
+            else
             { // normal game operations, the player can move
 
                 // ! handle computer move
@@ -449,23 +458,6 @@ void playGame(Board &gameBoard)
                     continue;
                 }
             }
-
-            else if (state == GameState::Checkmate)
-            { // current player is checkmated
-                gameBoard.incrementScore(otherClr, WIN_POINTS);
-                break;
-            }
-            else if (state == GameState::Stalemate)
-            {
-                gameBoard.incrementScore(currClr, STALEMATE_POINTS);
-                gameBoard.incrementScore(otherClr, STALEMATE_POINTS);
-                break;
-            }
-            else
-            {
-                cout << "Invalid GameState! Restarting..." << endl;
-                break;
-            }
         }
     }
 } // end of playGame()
@@ -479,10 +471,12 @@ void outScore(const float whiteScore, const float blackScore)
     cout << "Black: " << blackScore << endl;
 }
 
-bool isInVector(std::vector<std::string>& vec, std::string key)
+bool isInVector(std::vector<std::string> &vec, std::string key)
 {
-    for (std::string i : vec) {
-        if (i == key) return true;
+    for (std::string i : vec)
+    {
+        if (i == key)
+            return true;
     }
     return false;
 }

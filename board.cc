@@ -76,7 +76,7 @@ Colour getNextColour(Colour clr)
 // ____________________________________________
 
 // for the sake of swap only
-Board::Board(): state{GameState::NA}, text{false}, graphics{false} {}
+Board::Board(): text{false}, graphics{false} {}
 
 //! [added] getValidMoves getting too big and this can be reused
 vector<Piece *> Board::getPlayerPieces(const Player *plr) const
@@ -272,12 +272,12 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         }
 
         // !! debug output
-        // if (DEBUG_OUTPUT) {
-        //     cout << "Past Valid Moves:\n-----------" << endl;
-        //     for (Move &m : moves) {
-        //         cout << posToStr(m.startPos) << " to " << posToStr(m.endPos) << endl;
-        //     }
-        // }
+        if (DEBUG_OUTPUT) {
+            cout << "Past Valid Moves:\n-----------" << endl;
+            for (Move &m : moves) {
+                cout << posToStr(m.startPos) << " to " << posToStr(m.endPos) << endl;
+            }
+        }
     }
 
     return moves;
@@ -411,7 +411,7 @@ Board::Board(
     const bool graphics,
     const bool text,
     const bool useUnicode
-): state{GameState::NA}, text{text}, graphics{graphics}, useUnicode{useUnicode}
+): text{text}, graphics{graphics}, useUnicode{useUnicode}
 {
     // set up players
     // ! [changed] Player/Computer is an ABC - can't instantiate directly
@@ -461,7 +461,6 @@ void Board::clearBoard()
     Board tmp;
     swap(observers, tmp.observers);
     swap(board, tmp.board);
-    swap(state, tmp.state);
 }
 
 void Board::notifyObservers(Position pos) const
@@ -517,7 +516,6 @@ void Board::initBoard()
         clearBoard();
     }
 
-    state = GameState::Play;
     currPlayer = whitePlayer.get();
 
     // SETUP BOARD
@@ -740,12 +738,6 @@ void Board::setTurn(Colour clr)
     }
 }
 
-// getters
-GameState Board::getState() const
-{
-    return state;
-}
-
 Player *Board::getPlayerByColour(Colour clr) const
 {
     return (clr == Colour::Black) ? blackPlayer.get() : whitePlayer.get();
@@ -769,11 +761,6 @@ Piece *Board::getPieceByCoords(int c, int r) const
 float Board::getScore(Colour clr)
 {
     return (clr == Colour::Black) ? blackScore : whiteScore;
-}
-
-void Board::setState(GameState state)
-{
-    this->state = state;
 }
 
 void Board::incrementScore(Colour clr, float addTo)

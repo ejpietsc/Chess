@@ -4,8 +4,6 @@
 #include "util.h"
 #include "pieces.h"
 
-enum class GameState;
-
 class Board; // Forward declaration
 
 class Observer {

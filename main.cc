@@ -8,6 +8,8 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
+    using std::cout;
+
     cout << "          " << endl;
     cout << "   ####   " << endl;
     cout << "  ######     _____ _    _ ______  _____ _____ " << endl;
@@ -18,32 +20,39 @@ int main(int argc, char **argv)
     cout << "  ######    \\_____|_|  |_|______|_____/_____/ " << endl;
     cout << "  ######  " << endl;
     cout << " ######## " << endl;
-    cout << "\nWelcome to Chess - By Imane, Amol & Evan with <3!\n" << endl;
+    cout << "\nWelcome to Chess - By Imane, Amol & Evan with <3!\n"
+         << endl;
 
     bool useGraphics = true;
     bool useText = true;
     bool useUnicode = false;
 
     std::vector<std::string> args;
-    for (int i = 1; i < argc; ++i) {
+    for (int i = 1; i < argc; ++i)
+    {
         args.emplace_back(argv[i]);
     }
 
-    if (isInVector(args, "-d")) {
+    if (isInVector(args, "-d"))
+    {
         cout << "Debug" << endl;
     }
 
-    if (isInVector(args, "-ng")) {
+    if (isInVector(args, "-ng"))
+    {
         cout << "[INFO] Graphics display is disabled." << endl;
         useGraphics = false;
     }
 
-    if (isInVector(args, "-nt")) {
-        if (useGraphics) {
+    if (isInVector(args, "-nt"))
+    {
+        if (useGraphics)
+        {
             cout << "[INFO] Text display is disabled." << endl;
             useText = false;
         }
-        else {
+        else
+        {
             cout << "[WARNING] You have requested for both displays to be disabled. This makes the game unplayable, and thus the text display had been left enabled." << endl;
         }
     }
