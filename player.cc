@@ -118,6 +118,7 @@ Move LevelOne::generateMove(vector<Move> &moves, Board *b) const
     return moves[rand() % moves.size()];
 }
 
+
 // Level 2: prefers capturing moves and checks over other moves
 // Prioritizes checks and checkmates first
 // Compares the value of each piece captured

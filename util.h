@@ -60,8 +60,10 @@ struct Move
     bool captured = false;
     PieceType capturedPt;
     Position enPassentCapture;
+    bool isCastleMove = false; // ! ADDED
     Move(); // ? good default value
     Move(const Position &startPos, const Position &endPos);
+    Move(const Position &startPos, const Position &endPos, bool isCastleMove);
     Move(const Position &startPos, const Position &endPos, bool captured, PieceType pt);
     Move(const Position &startPos, const Position &endPos, bool captured, PieceType pt, const Position &epc);
     Move(const string &startPos, const string &endPos);

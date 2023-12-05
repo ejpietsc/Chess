@@ -127,8 +127,17 @@ int Piece::getRow() const
 }
 
 // === PIECE SUBCLASSES ===
-
 bool Pawn::getHasMoved() const
+{
+    return hasMoved;
+}
+
+bool King::getHasMoved() const
+{
+    return hasMoved;
+}
+
+bool Rook::getHasMoved() const
 {
     return hasMoved;
 }

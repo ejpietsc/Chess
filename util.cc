@@ -10,7 +10,6 @@ const int NUM_ROWS = 8;
 const Position ILLEGAL_MOVE = Position{-2, -2};
 const Position INVALID_INPUT = Position{-1, -1};
 
-
 // Helper functions
 bool isValidSyntax(char c1, char c2)
 {
@@ -30,7 +29,8 @@ static pair<int, int> strToCoords(const string &s)
     }
 }
 
-string posToStr(const Position &p) {
+string posToStr(const Position &p)
+{
     string str;
     str += 'a' + p.col;
     str += to_string(p.row + 1);
@@ -59,11 +59,10 @@ bool operator!=(const Position &p1, const Position &p2)
 
 Move::Move() : startPos{Position{0, 0}}, endPos{Position{0, 0}} {} // ? good default value
 Move::Move(const Position &startPos, const Position &endPos) : startPos{startPos}, endPos{endPos} {}
-Move::Move(const Position &startPos, const Position &endPos, bool captured, PieceType pt) :
-    startPos{startPos}, endPos{endPos}, captured{captured}, capturedPt{pt} {}
-Move::Move(const Position &startPos, const Position &endPos, bool captured, PieceType pt, const Position &epc) :
-    startPos{startPos}, endPos{endPos}, captured{captured}, capturedPt{pt}, enPassentCapture{epc} {}
+Move::Move(const Position &startPos, const Position &endPos, bool captured, PieceType pt) : startPos{startPos}, endPos{endPos}, captured{captured}, capturedPt{pt} {}
+Move::Move(const Position &startPos, const Position &endPos, bool captured, PieceType pt, const Position &epc) : startPos{startPos}, endPos{endPos}, captured{captured}, capturedPt{pt}, enPassentCapture{epc} {}
 Move::Move(const string &startPos, const string &endPos) : startPos{Position(startPos)}, endPos{Position(endPos)} {}
+Move::Move(const Position &startPos, const Position &endPos, bool isCastleMove) : startPos{startPos}, endPos{endPos}, isCastleMove{isCastleMove} {}
 
 bool operator==(const Move &m1, const Move &m2)
 {

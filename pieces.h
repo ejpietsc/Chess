@@ -54,6 +54,7 @@ class King final : public Piece
 
 public:
     King(Colour colour, Position pos);
+    bool getHasMoved() const;
     void setHasMoved(const bool b);
 };
 
@@ -80,6 +81,7 @@ class Rook final : public Piece
 
 public:
     Rook(Colour colour, Position pos);
+    bool getHasMoved() const;
     void setHasMoved(const bool b);
 };
 

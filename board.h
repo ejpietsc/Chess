@@ -36,7 +36,7 @@ class Board
     void clearBoard(); // done
 
 public:
-    Board();                                                                                               // done
+    Board(); // done
     Board(
         const PlayerType whitePl,
         const int whiteLevel,
@@ -44,8 +44,7 @@ public:
         const int blackLevel,
         const bool graphics,
         const bool text,
-        const bool useUnicode
-    ); // done
+        const bool useUnicode); // done
 
     // Copy ctor and assignment operator
     Board(const Board &other);
@@ -82,19 +81,22 @@ public:
     Player *getCurrPlayer() const;               // done
     Piece *getPiece(const Position &pos) const;  // done
     Piece *getPieceByCoords(int c, int r) const; // done
+    Piece *getPieceByPos(const Position &pos) const;
     float getScore(Colour clr);
     vector<Piece *> getPlayerPieces(const Player *plr) const;
     Player *getNextPlayer() const;
     int getPieceTypeCount(const PieceType &pt, const Colour &col) const;
 
-    // done
-
     // setters
-    void setTurn(Colour clr);       // done
+    void setTurn(Colour clr); // done
 
     void flipTurn();                              // done
     void incrementScore(Colour clr, float addTo); // done
-    // add addTo to player's score
+                                                  // add addTo to player's score
+
+    // advanced moves
+    vector<Move> getCastlingMoves(const Player *plr) const;
+    bool isCaslteValid(const Piece *p, const Player* plr, bool isLeftCaslte = false) const;
 
     // Move logic
     vector<Move> getMovesToUncheck(vector<Move> &moves) const; // todo
@@ -117,9 +119,9 @@ public:
     // TODO   a SUCCESSFUL turn, instead of main doing this
 };
 // public fn for entire program to use
-bool isKing(Piece *p);
-bool isPawn(Piece *p);
-bool isWhite(Piece *p);
+bool isKing(const Piece *p);
+bool isPawn(const Piece *p);
+bool isWhite(const Piece *p);
 Colour getNextColour(Colour clr);
 bool moveIsValid(Move &move, vector<Move> &validMoves);
 
