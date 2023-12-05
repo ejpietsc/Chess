@@ -7,8 +7,6 @@ const bool DEBUG_OUTPUT = false;
 
 using namespace std;
 
-// ____________________________________________
-
 // Helpers and Standalone fns
 bool isKing(Piece *p)
 {
@@ -36,6 +34,32 @@ int getRowForOutput(int r)
     return abs(r - NUM_ROWS + 1);
 }
 
+int isColour(Piece *p, const Colour &col)
+{
+    return (p->getColour() == col);
+}
+
+int isPieceType(Piece *p, const PieceType &type)
+{
+    return (p->getType() == type);
+}
+
+int getPromotedCount(int n, bool isQueen = false)
+{
+    if (isQueen)
+    {
+        return (n <= 1) ? 0 : (n - 1);
+    }
+    return (n <= 2) ? 0 : (n - 2);
+}
+
+bool isCastleMove(const Move &move, const Board &b)
+{
+    Piece *p = b.getPieceByPos(move.startPos);
+    return p && p->getType() == PieceType::King &&
+           abs(move.startPos.col - move.endPos.col) == 2;
+}
+
 static unique_ptr<Player> createPlayer(const PlayerType pt, const int level, const Colour clr)
 {
     switch (level)
@@ -52,7 +76,6 @@ static unique_ptr<Player> createPlayer(const PlayerType pt, const int level, con
         return make_unique<Human>(clr, pt);
     }
 }
-// ____________________________________________
 
 // determine if move is within the validMoves vector
 bool moveIsValid(Move &move, vector<Move> &validMoves, char mode)
@@ -109,6 +132,23 @@ bool moveIsValid(Move &move, vector<Move> &validMoves, char mode)
     default:
         return false;
     }
+}
+// end of helpers and standalone fns ____________________________________________
+
+// Default board, you are white
+Board::Board(
+    const PlayerType whitePl,
+    const int whiteLevel,
+    const PlayerType blackPl,
+    const int blackLevel,
+    const bool graphics,
+    const bool text,
+    const bool useUnicode) : text{text}, graphics{graphics}, useUnicode{useUnicode}
+{
+    // set up players
+    whitePlayer = createPlayer(whitePl, whiteLevel, Colour::White);
+    blackPlayer = createPlayer(blackPl, blackLevel, Colour::Black);
+    currPlayer = whitePlayer.get();
 }
 
 // for the sake of swap only
@@ -406,9 +446,10 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
             // !! debug output
             if (DEBUG_OUTPUT)
             {
-                /*for (Move &m : moves) {
-    cout << m.startPos.col << " " << m.startPos.row << " to " << m.endPos.col << " " << m.endPos.row << endl;
-}*/
+                for (Move &m : moves)
+                {
+                    cout << "Moves to uncheck you:" << m.startPos.col << " " << m.startPos.row << " to " << m.endPos.col << " " << m.endPos.row << endl;
+                }
             }
         }
         else
@@ -438,7 +479,6 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
     return moves;
 }
 
-//! [added]
 Player *Board::getNextPlayer() const
 {
     return (currPlayer == whitePlayer.get()) ? blackPlayer.get() : whitePlayer.get();
@@ -525,12 +565,12 @@ bool Board::isPlayerInCheck(const Player *plr) const
 bool Board::isPlayerCheckmated(const Player *plr) const
 {
     //! for debug purposes
-    auto moves = getValidMoves(plr);
-    for (const auto &m : moves)
-    {
-        cout << "MOVES THAT SAVE ME: " << m.startPos.col << " " << m.startPos.row << " to " << m.endPos.col << " " << m.endPos.row << endl;
-    }
-    // !___________________________________________________________...
+    // auto moves = getValidMoves(plr);
+    // for (const auto &m : moves)
+    // {
+    //     cout << "MOVES THAT SAVE ME: " << m.startPos.col << " " << m.startPos.row << " to " << m.endPos.col << " " << m.endPos.row << endl;
+    // }
+    // // !___________________________________________________________...
     return isPlayerInCheck(plr) && getValidMoves(plr).empty();
 }
 
@@ -538,15 +578,6 @@ bool Board::isPlayerStalemated(const Player *plr) const
 {
     return !isPlayerInCheck(plr) && getValidMoves(plr).empty();
 }
-
-//! to be careful abt: we are moving two pieces here - doMove x 2
-// how does move happen?
-// king moves two steps towards rook
-// rook stops one position before the one where the king was
-
-// 1. none of the rook or king to be castled should have moved before
-// 2. no pieces btw two
-// 3. king not in check in 3 pos: starting-middle-end
 
 void Board::doMove(const Move &m)
 {
@@ -560,7 +591,7 @@ void Board::doMove(const Move &m)
 
     if (m.isCastleMove)
     {
-        cout << "CASTLING WOHOO!!" << endl;
+        cout << "CASTLING!" << endl;
         // identify if white or black castle
         bool iswhite = m.startPos.row == 0;
         int rookRow = iswhite ? 0 : 7;
@@ -591,23 +622,12 @@ void Board::doMove(const Move &m)
     notifyObservers(toNotify);
 }
 
-bool isCastleMove(const Move &move, const Board &b)
-{
-    Piece *p = b.getPieceByPos(move.startPos);
-    return p && p->getType() == PieceType::King &&
-           abs(move.startPos.col - move.endPos.col) == 2;
-}
-
-//! [update] makeMove returns Position and leaves checking for getNextMove(validMoves)
-//? to be improved to return a move error object instead of Position
 Position Board::makeMove()
 {
-
     vector<Move> validMoves = getValidMoves(currPlayer, false);
 
     Move move = currPlayer->getNextMove(validMoves, this);
 
-    // ! [added] return if invalid move given to avoid segfault
     if (move.endPos.col < 0)
     {
         return move.endPos;
@@ -626,26 +646,7 @@ Position Board::makeMove()
     return move.endPos;
 }
 
-// Default board, you are white
-// ! row indices are flipped to match board layout
-Board::Board(
-    const PlayerType whitePl,
-    const int whiteLevel,
-    const PlayerType blackPl,
-    const int blackLevel,
-    const bool graphics,
-    const bool text,
-    const bool useUnicode) : text{text}, graphics{graphics}, useUnicode{useUnicode}
-{
-    // set up players
-    // ! [changed] Player/Computer is an ABC - can't instantiate directly
-    whitePlayer = createPlayer(whitePl, whiteLevel, Colour::White); //? need move
-    blackPlayer = createPlayer(blackPl, blackLevel, Colour::Black);
-    currPlayer = whitePlayer.get();
-}
-
 //! does not copy observers since we will never have more than one active board at once
-//? are observers correctly set to empty vector (no deep copy! or will change displays as we experiment)
 Board::Board(const Board &other) : observers{},
                                    whitePlayer{isHuman(other.whitePlayer.get()) ? createPlayer(PlayerType::Human, 0, Colour::White) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.whitePlayer.get()))->getLvl(), Colour::White)},
                                    blackPlayer{isHuman(other.blackPlayer.get()) ? createPlayer(PlayerType::Human, 0, Colour::Black) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.blackPlayer.get()))->getLvl(), Colour::Black)},
@@ -681,7 +682,6 @@ Board::Board(const Board &other) : observers{},
 void Board::clearBoard()
 {
     // clear observers and board
-    //? if this doesn't work, use reset
     Board tmp;
     swap(observers, tmp.observers);
     swap(board, tmp.board);
@@ -698,9 +698,6 @@ void Board::notifyObservers(Position pos) const
 
 void Board::notifyObservers(std::vector<Position> vec) const
 {
-    /*for (Position &p : vec) {
-        notifyObservers(p);
-    }*/
     std::vector<std::pair<Position, Piece *>> vec1;
     for (Position p : vec)
     {
@@ -731,7 +728,7 @@ void Board::refreshObservers() const
 
 void Board::attach(unique_ptr<Observer> o)
 {
-    observers.emplace_back(std::move(o)); //? does this work? move needed!
+    observers.emplace_back(std::move(o));
 }
 
 void Board::initBoard()
@@ -761,7 +758,6 @@ void Board::initBoard()
         }
     }
 
-    // ? need move ?
     for (int i = 0; i < NUM_ROWS; ++i)
     {
         // pawns
@@ -813,16 +809,6 @@ void Board::initBoard()
     }
 }
 
-int isColour(Piece *p, const Colour &col)
-{
-    return (p->getColour() == col);
-}
-
-int isPieceType(Piece *p, const PieceType &type)
-{
-    return (p->getType() == type);
-}
-
 int Board::getPieceTypeCount(const PieceType &pt, const Colour &col) const
 {
     int count = 0;
@@ -841,16 +827,6 @@ int Board::getPieceTypeCount(const PieceType &pt, const Colour &col) const
     return count;
 }
 
-int getPromotedCount(int n, bool isQueen = false)
-{
-    if (isQueen)
-    {
-        return (n <= 1) ? 0 : (n - 1);
-    }
-    return (n <= 2) ? 0 : (n - 2);
-}
-
-//* SETUP mode methods
 bool Board::boardIsValid() const
 {
     // one king per colour
@@ -860,7 +836,6 @@ bool Board::boardIsValid() const
     }
 
     //* FEATURE - extra check: number pawns + number promotions <= 8
-    // right number of promotions (num pawns + num promotions <= 8)
     int blackPawn = getPieceTypeCount(PieceType::Pawn, Colour::Black);
     int whitePawn = getPieceTypeCount(PieceType::Pawn, Colour::White);
     int promotedWhite = 0;
