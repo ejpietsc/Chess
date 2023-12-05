@@ -3,8 +3,6 @@
 #include "textdisplay.h"
 #include "graphicsdisplay.h"
 
-const bool DEBUG_OUTPUT = false;
-
 using namespace std;
 
 // Helpers and Standalone fns
@@ -466,7 +464,7 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         }
 
         // !! debug output
-        if (DEBUG_OUTPUT)
+        if (debugOutput)
         {
             cout << "Valid Moves:\n---------" << endl;
             for (Move &m : moves)
@@ -646,6 +644,26 @@ Position Board::makeMove()
     return move.endPos;
 }
 
+// Default board, you are white
+// ! row indices are flipped to match board layout
+Board::Board(
+    const PlayerType whitePl,
+    const int whiteLevel,
+    const PlayerType blackPl,
+    const int blackLevel,
+    const bool graphics,
+    const bool text,
+    const bool useUnicode,
+    const bool debug,
+    const bool noCheat) : text{text}, graphics{graphics}, useUnicode{useUnicode}, debugOutput{debug}, noCheat{noCheat}
+{
+    // set up players
+    // ! [changed] Player/Computer is an ABC - can't instantiate directly
+    whitePlayer = createPlayer(whitePl, whiteLevel, Colour::White); //? need move
+    blackPlayer = createPlayer(blackPl, blackLevel, Colour::Black);
+    currPlayer = whitePlayer.get();
+}
+
 //! does not copy observers since we will never have more than one active board at once
 Board::Board(const Board &other) : observers{},
                                    whitePlayer{isHuman(other.whitePlayer.get()) ? createPlayer(PlayerType::Human, 0, Colour::White) : createPlayer(PlayerType::Computer, (static_cast<Computer *>(other.whitePlayer.get()))->getLvl(), Colour::White)},
@@ -653,7 +671,9 @@ Board::Board(const Board &other) : observers{},
                                    currPlayer{isWhiteTeam(other.currPlayer) ? whitePlayer.get() : blackPlayer.get()},
                                    whiteScore{other.whiteScore}, blackScore{other.blackScore},
                                    text{false},
-                                   graphics{false}
+                                   graphics{false},
+                                   debugOutput{false},
+                                   noCheat{false}
 {
     // SETUP BOARD
     board.resize(NUM_COLS);
@@ -835,24 +855,27 @@ bool Board::boardIsValid() const
         return false;
     }
 
-    //* FEATURE - extra check: number pawns + number promotions <= 8
-    int blackPawn = getPieceTypeCount(PieceType::Pawn, Colour::Black);
-    int whitePawn = getPieceTypeCount(PieceType::Pawn, Colour::White);
-    int promotedWhite = 0;
-    int promotedBlack = 0;
-    promotedWhite = getPromotedCount(getPieceTypeCount(PieceType::Rook, Colour::White)) +
-                    getPromotedCount(getPieceTypeCount(PieceType::Knight, Colour::White)) +
-                    getPromotedCount(getPieceTypeCount(PieceType::Bishop, Colour::White)) +
-                    getPromotedCount(getPieceTypeCount(PieceType::Queen, Colour::White), true);
+    if (noCheat) {
+        //* FEATURE - extra check: number pawns + number promotions <= 8
+        // right number of promotions (num pawns + num promotions <= 8)
+        int blackPawn = getPieceTypeCount(PieceType::Pawn, Colour::Black);
+        int whitePawn = getPieceTypeCount(PieceType::Pawn, Colour::White);
+        int promotedWhite = 0;
+        int promotedBlack = 0;
+        promotedWhite = getPromotedCount(getPieceTypeCount(PieceType::Rook, Colour::White)) +
+                        getPromotedCount(getPieceTypeCount(PieceType::Knight, Colour::White)) +
+                        getPromotedCount(getPieceTypeCount(PieceType::Bishop, Colour::White)) +
+                        getPromotedCount(getPieceTypeCount(PieceType::Queen, Colour::White), true);
 
-    promotedBlack = getPromotedCount(getPieceTypeCount(PieceType::Rook, Colour::Black)) +
-                    getPromotedCount(getPieceTypeCount(PieceType::Knight, Colour::Black)) +
-                    getPromotedCount(getPieceTypeCount(PieceType::Bishop, Colour::Black)) +
-                    getPromotedCount(getPieceTypeCount(PieceType::Queen, Colour::Black), true);
+        promotedBlack = getPromotedCount(getPieceTypeCount(PieceType::Rook, Colour::Black)) +
+                        getPromotedCount(getPieceTypeCount(PieceType::Knight, Colour::Black)) +
+                        getPromotedCount(getPieceTypeCount(PieceType::Bishop, Colour::Black)) +
+                        getPromotedCount(getPieceTypeCount(PieceType::Queen, Colour::Black), true);
 
-    if ((promotedWhite + whitePawn > 8) || (promotedBlack + blackPawn > 8))
-    {
-        return false;
+        if ((promotedWhite + whitePawn > 8) || (promotedBlack + blackPawn > 8))
+        {
+            return false;
+        }
     }
     // 2. no pawn on first or last row
     for (int i = 0; i < NUM_COLS; ++i)

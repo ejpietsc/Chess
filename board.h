@@ -31,6 +31,8 @@ class Board
     bool text;
     bool graphics;
     bool useUnicode;
+    bool debugOutput;
+    bool noCheat;
 
     // called by initBoard()
     void clearBoard(); // done
@@ -44,7 +46,9 @@ public:
         const int blackLevel,
         const bool graphics,
         const bool text,
-        const bool useUnicode); // done
+        const bool useUnicode,
+        const bool debug,
+        const bool noCheat); // done
 
     // Copy ctor and assignment operator
     Board(const Board &other);

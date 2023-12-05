@@ -27,6 +27,8 @@ int main(int argc, char **argv)
     bool useGraphics = true;
     bool useText = true;
     bool useUnicode = false;
+    bool debug = false;
+    bool enhancedChecks = false;
 
     std::vector<std::string> args;
     for (int i = 1; i < argc; ++i)
@@ -36,7 +38,8 @@ int main(int argc, char **argv)
 
     if (isInVector(args, "-d"))
     {
-        cout << "Debug" << endl;
+        cout << "[INFO] Debug output is enabled." << endl;
+        debug = true;
     }
 
     if (isInVector(args, "-ng"))
@@ -66,6 +69,11 @@ int main(int argc, char **argv)
         else {
             cout << "[WARNING] You have requested for unicode display but have disabled the text display. This will not habe any effect." << endl;
         }
+    }
+
+    if (isInVector(args, "-ec")) {
+        cout << "[INFO] Enhanced checks are enabled." << endl;
+        enhancedChecks = true;
     }
 
     cout << "Commands:\n"
@@ -141,7 +149,7 @@ int main(int argc, char **argv)
     }
 
     // create board and commence main gameplay loop
-    Board gameBoard{whitePt, whiteLevel, blackPt, blackLevel, useGraphics, useText, useUnicode};
+    Board gameBoard{whitePt, whiteLevel, blackPt, blackLevel, useGraphics, useText, useUnicode, debug, enhancedChecks};
 
     playGame(gameBoard);
 
