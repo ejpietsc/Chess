@@ -22,12 +22,24 @@ Piece::~Piece() {}
 // TODO vvv ------------------
 void Piece::movePiece(const Position &landingPos)
 {
+    // Special cases for Pawn
     if (this->getType() == PieceType::Pawn)
     {
+        // Access the Piece as a Pawn
         Pawn *p = dynamic_cast<Pawn *>(this);
         if (p != nullptr)
         {
+            // Set the hasMoved flag (ban double moves)
             p->setHasMoved(true);
+
+            // Check if the move is a double move and set the doubleMoved flag
+            // For En Passent capture
+            if (abs(p->pos.row - landingPos.col)) {
+                p->setDoubleMoved(true);
+            }
+            else {
+                p->setDoubleMoved(false);
+            }
         }
     }
 
@@ -94,9 +106,24 @@ int Piece::getRow() const
 
 // === PIECE SUBCLASSES ===
 
+bool Pawn::getHasMoved() const
+{
+    return hasMoved;
+}
+
 void Pawn::setHasMoved(const bool b)
 {
     this->hasMoved = b;
+}
+
+bool Pawn::getDoubleMoved() const
+{
+    return doubleMoved;
+}
+
+void Pawn::setDoubleMoved(const bool b)
+{
+    this->doubleMoved = b;
 }
 
 // return true if newP is a valid move (given no other piece info)

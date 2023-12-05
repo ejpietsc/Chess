@@ -59,9 +59,11 @@ struct Move
     //! [added] two fields for capture info
     bool captured = false;
     PieceType capturedPt;
+    Position enPassentCapture;
     Move(); // ? good default value
     Move(const Position &startPos, const Position &endPos);
     Move(const Position &startPos, const Position &endPos, bool captured, PieceType pt);
+    Move(const Position &startPos, const Position &endPos, bool captured, PieceType pt, const Position &epc);
     Move(const string &startPos, const string &endPos);
 };
 

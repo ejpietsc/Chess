@@ -195,10 +195,20 @@ bool Board::checkMoveEndPos(const Move &m) const
         return false;
     }
 
-    // ! update for en passant
+    // remove pawn moving diagonally when there is no capture
     if (p1t == PieceType::Pawn && !p2 && p1->getPosition().col != m.endPos.col)
-    { // remove pawn moving diagonally when there is no capture
-        return false;
+    {
+        // Check for en passent capture
+        Piece *p3 = getPieceByCoords(m.endPos.col, m.startPos.row);
+        if (
+            p3 &&
+            p3->getType() == PieceType::Pawn &&
+            p3->getColour() != p1->getColour() &&
+            dynamic_cast<Pawn *>(p3)->getDoubleMoved()) {}
+        // Otherwise, the move is invalid
+        else {
+            return false;
+        }
     }
 
     if (p1t != PieceType::Knight && pieceInTheWay(*this, m))
@@ -237,11 +247,27 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
             // 2. check moves that land us on valid spot
             if (checkMoveEndPos(m))
             {
-                // setup capture info
+                Position epp = Position{ep.col, p->getPosition().row};
+                Piece *ep_piece = getPiece(epp);
+
+                //! add capture info
                 if (getPiece(ep) != nullptr)
                 {
                     m.captured = true;
                     m.capturedPt = getPiece(ep)->getType();
+                }
+                else if (
+                    ep_piece &&
+                    ep_piece->getType() == PieceType::Pawn &&
+                    ep_piece->getColour() != p->getColour() &&
+                    dynamic_cast<Pawn *>(ep_piece)->getDoubleMoved())
+                {
+                    cout << "LOLOLOLOL" << endl;
+                    cout << ep.col << ep.row;
+                    cout << epp.col << epp.row;
+                    m.captured = true;
+                    m.capturedPt = PieceType::Pawn;
+                    m.enPassentCapture = epp;
                 }
                 moves.emplace_back(m);
             }
@@ -393,6 +419,9 @@ bool Board::isPlayerStalemated(const Player *plr) const
 //! will prob not work with moves that are complex like en passant - UPDATE LATER
 void Board::doMove(const Move &m)
 {
+    if (getPiece(m.endPos) == nullptr && m.captured) {
+        delPiece(m.enPassentCapture);
+    }
     delPiece(m.endPos);
     Piece *p = getPiece(m.startPos);
     p->movePiece(m.endPos);

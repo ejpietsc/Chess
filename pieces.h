@@ -90,11 +90,15 @@ public:
 class Pawn final : public Piece
 {
     bool hasMoved = false; // used to see if double move is allowed
+    bool doubleMoved = false; // Used for en passent capture
     vector<Position> doGetMoves() const override;
 
 public:
     Pawn(Colour colour, Position pos);
+    bool getHasMoved() const;
     void setHasMoved(const bool b);
+    bool getDoubleMoved() const;
+    void setDoubleMoved(const bool b);
 };
 
 std::unique_ptr<Piece> createPiece(PieceType type, Colour colour, Position pos);

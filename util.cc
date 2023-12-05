@@ -59,7 +59,10 @@ bool operator!=(const Position &p1, const Position &p2)
 
 Move::Move() : startPos{Position{0, 0}}, endPos{Position{0, 0}} {} // ? good default value
 Move::Move(const Position &startPos, const Position &endPos) : startPos{startPos}, endPos{endPos} {}
-Move::Move(const Position &startPos, const Position &endPos, bool captured, PieceType pt) : startPos{startPos}, endPos{endPos}, captured{captured}, capturedPt{pt} {}
+Move::Move(const Position &startPos, const Position &endPos, bool captured, PieceType pt) :
+    startPos{startPos}, endPos{endPos}, captured{captured}, capturedPt{pt} {}
+Move::Move(const Position &startPos, const Position &endPos, bool captured, PieceType pt, const Position &epc) :
+    startPos{startPos}, endPos{endPos}, captured{captured}, capturedPt{pt}, enPassentCapture{epc} {}
 Move::Move(const string &startPos, const string &endPos) : startPos{Position(startPos)}, endPos{Position(endPos)} {}
 
 bool operator==(const Move &m1, const Move &m2)

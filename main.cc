@@ -10,6 +10,7 @@ int main(int argc, char **argv)
 {
     using std::cout;
 
+    // TODO TEST THIS OUT: cout << "\033[1;31mbold red text\033[0m\n" << endl;
     cout << "          " << endl;
     cout << "   ####   " << endl;
     cout << "  ######     _____ _    _ ______  _____ _____ " << endl;
