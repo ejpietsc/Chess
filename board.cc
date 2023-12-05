@@ -415,14 +415,14 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
         }
 
         // !! debug output
-        // if (DEBUG_OUTPUT)
-        // {
-        //     cout << "Past Valid Moves:\n-----------" << endl;
-        //     for (Move &m : moves)
-        //     {
-        //         cout << posToStr(m.startPos) << " to " << posToStr(m.endPos) << endl;
-        //     }
-        // }
+        if (DEBUG_OUTPUT)
+        {
+            cout << "Valid Moves:\n-----------" << endl;
+            for (Move &m : moves)
+            {
+                cout << posToStr(m.startPos) << " to " << posToStr(m.endPos) << endl;
+            }
+        }
     }
 
     return moves;
@@ -494,7 +494,7 @@ bool Board::isPlayerInCheck(const Player *plr) const
     {
         if (m.captured && m.capturedPt == PieceType::King)
         {
-            if (DEBUG_OUTPUT)
+            /*if (DEBUG_OUTPUT)
             {
                 if (plr->getColour() == Colour::Black)
                 {
@@ -504,7 +504,7 @@ bool Board::isPlayerInCheck(const Player *plr) const
                 {
                     cout << "WHITE IN CHECK" << endl;
                 }
-            }
+            }*/
             return true;
         }
     }
@@ -620,6 +620,11 @@ Position Board::makeMove()
     //! DO NOT change the code here! we need to check isCastleMove AFTER
     //! the call to getNextMove - JUST DON'T CHANGE THE CASTLE LOGIC!!
     Move move = currPlayer->getNextMove(validMoves, this);
+
+    // ! [added] return if invalid move given to avoid segfault
+    if (move.endPos.col < 0) {
+        return move.endPos;
+    }
 
     if (isCastleMove(move, *this))
     {

@@ -6,7 +6,7 @@
 
 using namespace std;
 
-// Forward delcarations
+// Forward declarations
 // std::string getUserInput(const std::string prompt);
 // std::pair<std::string, std::string> getHumanMove();
 // PieceType strToPieceType(const string &s);
@@ -74,11 +74,12 @@ Move Human::doGetNextMove(vector<Move> &validMoves, Board *b) const
 Move Human::getHumanMove(vector<Move> &validMoves, Board *b) const
 {
     std::pair<std::string, std::string>mv = getMoveFromUser();
-
     Move move = Move{mv.first, mv.second};
+
     if (!moveIsValid(move, validMoves))
     {
         move.endPos = Position(ILLEGAL_MOVE);
+        return move;
     }
 
     // Special case for En Passent

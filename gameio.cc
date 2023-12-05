@@ -394,14 +394,18 @@ void playGame(Board &gameBoard)
             Player *currPlrPtr = gameBoard.getCurrPlayer();
             Colour currClr = currPlr.getColour();
             Colour otherClr = (currClr == Colour::White) ? Colour::Black : Colour::White;
+            const string clrStr = (currClr == Colour::White ? "White" : "Black");
+            const string otherClrStr = (otherClr == Colour::White ? "White" : "Black");
 
             if (gameBoard.isPlayerCheckmated(currPlrPtr))
             { // current player is checkmated
+                cout << "Checkmate! " << otherClrStr << " wins!" << endl;
                 gameBoard.incrementScore(otherClr, WIN_POINTS);
                 break;
             }
             else if (gameBoard.isPlayerStalemated(currPlrPtr))
             {
+                cout << "Stalemate!" << endl;
                 gameBoard.incrementScore(currClr, STALEMATE_POINTS);
                 gameBoard.incrementScore(otherClr, STALEMATE_POINTS);
                 break;
@@ -409,6 +413,11 @@ void playGame(Board &gameBoard)
 
             else
             { // normal game operations, the player can move
+
+                if (gameBoard.isPlayerInCheck(currPlrPtr))
+                {
+                    cout << clrStr << " is in check." << endl;
+                }
 
                 // ! handle computer move
                 if (currPlr.getPlayerType() == PlayerType::Computer)
@@ -418,7 +427,6 @@ void playGame(Board &gameBoard)
                     continue;
                 }
 
-                const string clrStr = (currClr == Colour::White ? "White" : "Black");
                 cout << clrStr << "'s turn:" << endl;
                 cout << "> ";
 

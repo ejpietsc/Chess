@@ -19,7 +19,7 @@ bool isValidSyntax(char c1, char c2)
 static pair<int, int> strToCoords(const string &s)
 {
     const int len = s.length();
-    if (len != 2 && !isValidSyntax(s[0], s[1]))
+    if (len < 2 || !isValidSyntax(s[0], s[1]))
     {
         return make_pair(-1, -1);
     }
