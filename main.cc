@@ -278,9 +278,9 @@ static bool enterSetupMode(Board &gameBoard)
                 {
                     Position pos = Position{j, i};
                     gameBoard.delPiece(pos);
-                    gameBoard.notifyObservers(pos);
                 }
             }
+            gameBoard.refreshObservers();
         }
 
         else
