@@ -487,6 +487,12 @@ bool Board::putsPlayerInCheck(const Move &m, const Player *plr) const
 {
     Board tmp{*this};
     tmp.delPiece(m.endPos);
+
+    Piece *p = tmp.getPiece(m.startPos);
+    if (p) {
+        p->movePiece(m.endPos);
+    }
+
     tmp.board[m.endPos.col][m.endPos.row].swap(tmp.board[m.startPos.col][m.startPos.row]);
     return tmp.isPlayerInCheck(plr);
 }
@@ -498,6 +504,12 @@ int Board::putsPlayerInCheckMate(const Move &m, const Player *plr) const
 {
     Board tmp{*this};
     tmp.delPiece(m.endPos);
+
+    Piece *p = tmp.getPiece(m.startPos);
+    if (p) {
+        p->movePiece(m.endPos);
+    }
+
     tmp.board[m.endPos.col][m.endPos.row].swap(tmp.board[m.startPos.col][m.startPos.row]);
 
     if (tmp.isPlayerInCheck(plr))
