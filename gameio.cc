@@ -191,7 +191,20 @@ bool enterSetupMode(Board &gameBoard)
         if (lowerCmd == "done")
         {
             if (gameBoard.boardIsValid())
-            {
+            { // remove castling if setup was used
+                for (int i = 0; i < NUM_ROWS; ++i) {
+                    for (int j = 0; j < NUM_COLS; ++j) {
+                        Piece *p = gameBoard.getPieceByCoords(i, j);
+                        if (p) {
+                            if (p->getType() == PieceType::King) {
+                                King *k = dynamic_cast<King*>(p);
+                                if (k) {
+                                    k->setHasMoved(true);
+                                }
+                            }
+                        }
+                    }
+                }
                 return true; // indicate that setup succeeded
             }
             else
