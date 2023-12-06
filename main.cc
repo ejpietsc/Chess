@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     cout << "  ######    \\_____|_|  |_|______|_____/_____/ " << endl;
     cout << "  ######  " << endl;
     cout << " ######## " << endl;
-    cout << "\nWelcome to Chess - By Imane, Amol & Evan with <3!\n"
+    cout << "\nWelcome to Chess - By Imane, Amol & Ethan with <3!\n"
          << endl;
 
     bool useGraphics = true;
