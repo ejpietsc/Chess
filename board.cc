@@ -387,7 +387,9 @@ vector<Move> Board::getValidMoves(const Player *plr, bool experiment) const
                 }
 
                 // Castling moves
-                if (!experiment && p->getType() == PieceType::King && !(dynamic_cast<King *>(p)->getHasMoved()))
+                if (!experiment && p->getType() == PieceType::King && 
+                    ( (p->getColour() == Colour::White && p->getPosition() == Position{4, 0}) || (p->getColour() == Colour::Black && p->getPosition() == Position{4, 7}) ) // ! hotfix
+                    && !(dynamic_cast<King *>(p)->getHasMoved()))
                 {
                     auto castlingMoves = getCastlingMoves(plr);
                     int len = castlingMoves.size();
