@@ -202,12 +202,6 @@ bool enterSetupMode(Board &gameBoard)
                                     king->setHasMoved(true);
                                 }
                             }
-                            if (p->getType() == PieceType::Pawn) {
-                                Pawn *pawn = dynamic_cast<Pawn*>(p);
-                                if (pawn) {
-                                    pawn->setHasMoved(true);
-                                }
-                            }
                         }
                     }
                 }
