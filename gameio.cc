@@ -197,9 +197,15 @@ bool enterSetupMode(Board &gameBoard)
                         Piece *p = gameBoard.getPieceByCoords(i, j);
                         if (p) {
                             if (p->getType() == PieceType::King) {
-                                King *k = dynamic_cast<King*>(p);
-                                if (k) {
-                                    k->setHasMoved(true);
+                                King *king = dynamic_cast<King*>(p);
+                                if (king) {
+                                    king->setHasMoved(true);
+                                }
+                            }
+                            if (p->getType() == PieceType::Pawn) {
+                                Pawn *pawn = dynamic_cast<Pawn*>(p);
+                                if (pawn) {
+                                    pawn->setHasMoved(true);
                                 }
                             }
                         }
