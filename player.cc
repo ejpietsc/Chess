@@ -231,7 +231,7 @@ int calculateMoveValue(const Move m, const Board *b, int scale = 1, int rec = 0)
             nextMoveVals += calculateMoveValue(m1, &tmp, scale, rec - 1);
         }
 
-        score = (score * scale) - (nextMoveVals / nextMoves.size());
+        score = (score * scale) - (nextMoves.size() ? (nextMoveVals / nextMoves.size()) : 0);
     }
 
     return score;

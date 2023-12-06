@@ -24,8 +24,8 @@ class Board
     vector<vector<unique_ptr<Piece>>> board; // 2D vector
     vector<unique_ptr<Observer>> observers;  // textDisplay & GraphicsDisplay
     unique_ptr<Player> whitePlayer;
-    unique_ptr<Player> blackPlayer; //* player is abstract - must be ptr
-    Player *currPlayer;             // non-ownership
+    unique_ptr<Player> blackPlayer;
+    Player *currPlayer;           
     float whiteScore = 0;
     float blackScore = 0;
     bool text;
@@ -78,7 +78,7 @@ public:
     // SetUp mode
     void addPiece(const PieceType &pt, const Colour &clr, const Position &pos); // done
     void delPiece(const Position &pos);                                         // done
-    bool boardIsValid() const;                                                  // todo: finish once isInCheckmate done
+    bool boardIsValid() const;                                                 
 
     // getters
     Player *getPlayerByColour(Colour clr) const; // done
@@ -96,7 +96,6 @@ public:
 
     void flipTurn();                              // done
     void incrementScore(Colour clr, float addTo); // done
-                                                  // add addTo to player's score
 
     // advanced moves
     vector<Move> getCastlingMoves(const Player *plr) const;
@@ -106,20 +105,14 @@ public:
     vector<Move> getMovesToUncheck(vector<Move> &moves) const; // todo
     bool putsPlayerInCheck(const Move &m, const Player *plr) const;
     int putsPlayerInCheckMate(const Move &m, const Player *plr) const;
-    //! [updated] returns position just for the sake of error reporting
+    //! returns position just for the sake of error reporting
     Position makeMove();
-    void doMove(const Move &m);                                                   //! [added]
+    void doMove(const Move &m);                                                  
     bool checkMoveEndPos(const Move &m) const;                                    // Checks if the end location is within bounds and can be occupied
     bool isLegalMove(Move m) const;                                               // Checks if the move doesn't put the player in checkmate
     vector<Move> getValidMoves(const Player *plr, bool experiment = false) const; // Gets a list of valid moves that the player can make
-    // vector<Move> getLegalMoves(const Player *plr) const; // Gets a list of legal moves that the player can make
-    // NOTE: Valid move: Within bounds, acceptable end position
-    // Legal move: Valid move AND doesn't put player in check
 
     bool didPlayerLose(Player *plr);
-    // TODO discuss - ideally board has a getMove() method that calls
-    // TODO   the current player's getMove() method AND AFTERWARDS sets the next player's turn upon
-    // TODO   a SUCCESSFUL turn, instead of main doing this
 };
 // public fn for entire program to use
 bool isKing(const Piece *p);

@@ -585,7 +585,6 @@ void Board::doMove(const Move &m)
 
     if (m.isCastleMove)
     {
-        cout << "CASTLING!" << endl;
         // identify if white or black castle
         bool iswhite = m.startPos.row == 0;
         int rookRow = iswhite ? 0 : 7;
