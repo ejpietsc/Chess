@@ -1,4 +1,4 @@
-# CHESS
+# ♔ CHESS ♔
 
 Chess :)
 
