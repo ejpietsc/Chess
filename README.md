@@ -1,4 +1,4 @@
-# CS246-Chess-Game
+# CHESS
 
 Chess :)
 
